@@ -40,7 +40,13 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	Excalibur->SetupAttachment(GetMesh(), "Sword_Back");
 
 	ShieldMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Shield"));
-	ShieldMesh->SetupAttachment(GetMesh(), "Shield");
+	ShieldMesh->SetupAttachment(GetMesh(), "Shield_Back");
+
+	Torch = CreateDefaultSubobject<UChildActorComponent>(TEXT("Torch"));
+	Torch->SetupAttachment(GetMesh(), "Torch");
+	Torch->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
+	Torch->SetHiddenInGame(true, true);
+	
 
 	//Variables Default Values
 	EvasionSpeedValue = 1.5;
@@ -60,6 +66,11 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	BeastPowerSpeed = 5000.0;
 	bSprint = false;
 	bLockedEnemy = false;
+	bDrawingShield = false;
+	bDrawShield = false;
+	bDrawSword = false;
+	bDrawingSword = false;
+	bTorchActive = false;
 	
 	
 }
@@ -172,6 +183,12 @@ void ACPP_DarkLifeCharacter::ShootArrow()
 	bDrawFinish = false;
 	//PlayAnimMontage(DrawBowAnimation);
 	PlayAnimMontage(ReadyBowAnimation,1.0f,"Aim");
+}
+
+void ACPP_DarkLifeCharacter::SetTorchActive(bool bActivate)
+{
+	bTorchActive = bActivate;
+	Torch->SetHiddenInGame(!bTorchActive,true);
 }
 
 // Called every frame

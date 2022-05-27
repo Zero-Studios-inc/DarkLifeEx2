@@ -22,33 +22,35 @@ public:
 	ACPP_DarkLifeCharacter();
 
 	//Character Parameters
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double Health;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double MaxHealth;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double Stamina;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double MaxStamina;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double Fracture;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double Recharge;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double Defense;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double MaxBeast;
 
 	//Character Components
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		USpringArmComponent* SpringArm;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		UChildActorComponent* Excalibur;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		UChildActorComponent* LongBow;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+		UChildActorComponent* Torch;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		UStaticMeshComponent* ShieldMesh;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		USkeletalMeshComponent* IgnisBomb;
 
 	//Character Animations
@@ -62,6 +64,16 @@ public:
 	//Character Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
 		bool bBeastPowerMovement;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
+		bool bTorchActive;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
+		bool bDrawSword;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
+		bool bDrawingSword;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
+		bool bDrawShield;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
+		bool bDrawingShield;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		double EvasionSpeedValue;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
@@ -125,6 +137,8 @@ public:
 		void StopSprint();
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void ShootArrow();
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+		void SetTorchActive(bool bActivate);
 
 
 	// Called every frame

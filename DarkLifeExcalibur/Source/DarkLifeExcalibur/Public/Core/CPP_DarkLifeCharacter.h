@@ -9,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/ChildActorComponent.h"
 #include "CPP_DarkLifeCharacter.generated.h"
 
@@ -106,6 +107,10 @@ public:
 		bool bDrawFinish;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		bool bLockedEnemy;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		bool bCanThrowProjectile;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		bool bDrawProjectile;
 
 	
 	
@@ -136,10 +141,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void StopSprint();
 	UFUNCTION(BlueprintCallable, Category = "Attack")
+		void StartSprint();
+	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void ShootArrow();
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void SetTorchActive(bool bActivate);
-
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+		void ThrowDeactivate();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -178,6 +178,29 @@ void ACPP_DarkLifeCharacter::StopSprint()
 
 }
 
+void ACPP_DarkLifeCharacter::StartSprint()
+{
+	bSprintKeyPress = true;
+	if ((UGameplayStatics::GetPlayerController(GetWorld(), 0)->IsInputKeyDown(FKey("W")) || 
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->IsInputKeyDown(FKey("Gamepad Left Thumbstick Y-Axis"))) && 
+		(Stamina > 0.0f)) {
+		GetCharacterMovement()->MaxWalkSpeed = 700.0f;
+		bSprint = true;
+		SpringArm->CameraLagSpeed = 20.0f;
+
+		if (StaminaIncreaseHandle.IsValid()) {
+			GetWorldTimerManager().PauseTimer(StaminaIncreaseHandle);
+			GetWorldTimerManager().ClearTimer(StaminaIncreaseHandle);
+		}
+
+		GetWorldTimerManager().SetTimer(StaminaDecreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaDecrease, StaminaIncreaseTime, true, 0.0f);
+
+	 }
+	else {
+		bSprintKeyPress = false;
+	}
+}
+
 void ACPP_DarkLifeCharacter::ShootArrow()
 {
 	bDrawFinish = false;
@@ -189,6 +212,15 @@ void ACPP_DarkLifeCharacter::SetTorchActive(bool bActivate)
 {
 	bTorchActive = bActivate;
 	Torch->SetHiddenInGame(!bTorchActive,true);
+}
+
+void ACPP_DarkLifeCharacter::ThrowDeactivate()
+{
+	StopAnimMontage(GetCurrentMontage());
+	bCanThrowProjectile = false;
+	bDrawProjectile = false;
+	IgnisBomb->SetVisibility(false, false);
+
 }
 
 // Called every frame

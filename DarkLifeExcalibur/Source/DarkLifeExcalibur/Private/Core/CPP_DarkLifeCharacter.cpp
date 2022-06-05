@@ -212,6 +212,7 @@ void ACPP_DarkLifeCharacter::SetTorchActive(bool bActivate)
 {
 	bTorchActive = bActivate;
 	Torch->SetHiddenInGame(!bTorchActive,true);
+	
 }
 
 void ACPP_DarkLifeCharacter::ThrowDeactivate()

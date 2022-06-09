@@ -205,7 +205,9 @@ void ACPP_DarkLifeCharacter::ShootArrow()
 {
 	bDrawFinish = false;
 	//PlayAnimMontage(DrawBowAnimation);
-	PlayAnimMontage(ReadyBowAnimation,1.0f,"Aim");
+	PlayAnimMontage(DrawBowAnimation,1.0f,"Default");
+	
+	
 }
 
 void ACPP_DarkLifeCharacter::SetTorchActive(bool bActivate)
@@ -221,6 +223,14 @@ void ACPP_DarkLifeCharacter::ThrowDeactivate()
 	bCanThrowProjectile = false;
 	bDrawProjectile = false;
 	IgnisBomb->SetVisibility(false, false);
+
+}
+
+void ACPP_DarkLifeCharacter::ArcheryDeactivate()
+{
+	
+	bArchery = false;
+	
 
 }
 

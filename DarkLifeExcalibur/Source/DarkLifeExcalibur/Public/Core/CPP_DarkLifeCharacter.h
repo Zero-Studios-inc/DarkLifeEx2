@@ -111,6 +111,8 @@ public:
 		bool bCanThrowProjectile;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		bool bDrawProjectile;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		bool bArchery;
 
 	
 	
@@ -148,6 +150,8 @@ public:
 		void SetTorchActive(bool bActivate);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void ThrowDeactivate();
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+		void ArcheryDeactivate();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

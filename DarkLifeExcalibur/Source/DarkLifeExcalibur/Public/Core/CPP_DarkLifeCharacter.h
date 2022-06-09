@@ -152,6 +152,8 @@ public:
 		void ThrowDeactivate();
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void ArcheryDeactivate();
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+		bool DetectHitFromTheBack(FHitResult ReceivedHit);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

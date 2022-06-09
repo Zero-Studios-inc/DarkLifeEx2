@@ -234,6 +234,19 @@ void ACPP_DarkLifeCharacter::ArcheryDeactivate()
 
 }
 
+bool ACPP_DarkLifeCharacter::DetectHitFromTheBack(FHitResult ReceivedHit)
+{
+	
+	FVector NormImpactNormal = ReceivedHit.ImpactNormal;
+	FVector NormForwardVector = GetActorForwardVector();
+	UKismetMathLibrary::Vector_Normalize(NormImpactNormal, 0.0001f);
+	UKismetMathLibrary::Vector_Normalize(NormForwardVector, 0.0001f);
+	double dotProduct = UKismetMathLibrary::Dot_VectorVector(NormImpactNormal, NormForwardVector);
+	double AcosD = UKismetMathLibrary::DegAcos(dotProduct);
+	return UKismetMathLibrary::InRange_FloatFloat(AcosD, 90.0f, 180.0f, true, true);
+
+}
+
 // Called every frame
 void ACPP_DarkLifeCharacter::Tick(float DeltaTime)
 {

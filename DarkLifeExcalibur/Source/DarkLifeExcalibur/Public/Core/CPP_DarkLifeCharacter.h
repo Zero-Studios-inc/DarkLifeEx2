@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/PointLightComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -53,6 +54,8 @@ public:
 		UStaticMeshComponent* ShieldMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		USkeletalMeshComponent* IgnisBomb;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+		UPointLightComponent* CharacterLight;
 
 	//Character Animations
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")

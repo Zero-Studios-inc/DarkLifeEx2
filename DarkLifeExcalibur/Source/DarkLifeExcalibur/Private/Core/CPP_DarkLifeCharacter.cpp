@@ -46,6 +46,9 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	Torch->SetupAttachment(GetMesh(), "Torch");
 	Torch->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 	Torch->SetHiddenInGame(true, true);
+
+	CharacterLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("CharacterLight"));
+	CharacterLight->SetupAttachment(RootComponent);
 	
 
 	//Variables Default Values

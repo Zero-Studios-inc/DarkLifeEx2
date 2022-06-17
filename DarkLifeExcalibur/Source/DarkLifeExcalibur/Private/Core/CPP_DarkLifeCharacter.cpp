@@ -74,6 +74,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bDrawSword = false;
 	bDrawingSword = false;
 	bTorchActive = false;
+	bJump = false;
 	
 	
 }
@@ -250,6 +251,16 @@ bool ACPP_DarkLifeCharacter::DetectHitFromTheBack(FHitResult ReceivedHit)
 
 }
 
+void ACPP_DarkLifeCharacter::JumpActivation(bool ActivationValue)
+{
+	bJump = ActivationValue;
+}
+
+void ACPP_DarkLifeCharacter::PerformJump()
+{
+	if (bJump) { Jump(); }
+}
+
 // Called every frame
 void ACPP_DarkLifeCharacter::Tick(float DeltaTime)
 {
@@ -261,6 +272,8 @@ void ACPP_DarkLifeCharacter::Tick(float DeltaTime)
 void ACPP_DarkLifeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACPP_DarkLifeCharacter::PerformJump);
 
 }
+
 

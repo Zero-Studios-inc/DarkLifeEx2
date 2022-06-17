@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/PointLightComponent.h"
+#include "Components/InputComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -87,6 +88,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		bool bSprint;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		bool bJump;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		double WalkSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		double RunSpeed;
@@ -157,6 +160,11 @@ public:
 		void ArcheryDeactivate();
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		bool DetectHitFromTheBack(FHitResult ReceivedHit);
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+		void JumpActivation(bool ActivationValue);
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+		void PerformJump();
+
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

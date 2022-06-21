@@ -55,8 +55,8 @@ public:
 		UStaticMeshComponent* ShieldMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		USkeletalMeshComponent* IgnisBomb;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-		UPointLightComponent* CharacterLight;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+		UPointLightComponent* CharacterLight;*/
 
 	//Character Animations
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")

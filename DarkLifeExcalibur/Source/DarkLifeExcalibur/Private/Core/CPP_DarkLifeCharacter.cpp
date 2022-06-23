@@ -65,6 +65,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bSprintKeyPress = false;
 	bWalk = false;
 	WalkSpeed = 150.0;
+	RunSlowSpeed = 300;
 	RunSpeed = 350.0;
 	BeastPowerSpeed = 5000.0;
 	bSprint = false;
@@ -75,6 +76,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bDrawingSword = false;
 	bTorchActive = false;
 	bJump = false;
+	bSlowRun = false;
 	
 	
 }
@@ -202,6 +204,18 @@ void ACPP_DarkLifeCharacter::StartSprint()
 	 }
 	else {
 		bSprintKeyPress = false;
+	}
+}
+
+void ACPP_DarkLifeCharacter::StartSlowRun(bool bStart)
+{
+	if ((bStart) && (!bSlowRun)) {
+		bSlowRun = true;
+		GetCharacterMovement()->MaxWalkSpeed = RunSlowSpeed;
+	}
+	else if ((!bStart)&&(bSlowRun)) {
+		bSlowRun = false;
+		GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 	}
 }
 

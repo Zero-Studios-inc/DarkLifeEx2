@@ -92,6 +92,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		double WalkSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		double RunSlowSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		bool bSlowRun;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		double RunSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		double BeastPowerSpeed;
@@ -146,10 +150,12 @@ public:
 		void PoisonIncrease();
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void ResetCombo();
-	UFUNCTION(BlueprintCallable, Category = "Attack")
+	UFUNCTION(BlueprintCallable, Category = "Movement")
 		void StopSprint();
-	UFUNCTION(BlueprintCallable, Category = "Attack")
+	UFUNCTION(BlueprintCallable, Category = "Movement")
 		void StartSprint();
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+		void StartSlowRun(bool bStart);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void ShootArrow();
 	UFUNCTION(BlueprintCallable, Category = "Attack")

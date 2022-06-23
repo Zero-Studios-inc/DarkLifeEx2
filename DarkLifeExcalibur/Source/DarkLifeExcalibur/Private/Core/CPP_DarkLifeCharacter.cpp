@@ -190,9 +190,7 @@ void ACPP_DarkLifeCharacter::StopSprint()
 void ACPP_DarkLifeCharacter::StartSprint()
 {
 	bSprintKeyPress = true;
-	if ((UGameplayStatics::GetPlayerController(GetWorld(), 0)->IsInputKeyDown(FKey("W")) || 
-		UGameplayStatics::GetPlayerController(GetWorld(), 0)->IsInputKeyDown(FKey("Gamepad Left Thumbstick Y-Axis"))) && 
-		(Stamina > 0.0f)) {
+	if (( GetInputAxisValue("MoveForward")>0)&&(Stamina > 0.0f)) {
 		GetCharacterMovement()->MaxWalkSpeed = 700.0f;
 		bSprint = true;
 		SpringArm->CameraLagSpeed = 20.0f;

@@ -77,6 +77,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bTorchActive = false;
 	bJump = false;
 	bSlowRun = false;
+	bStaminaBoost = false;
 	
 	
 }
@@ -135,9 +136,11 @@ void ACPP_DarkLifeCharacter::StaminaIncrease()
 
 void ACPP_DarkLifeCharacter::StaminaDecrease()
 {
-	Stamina = UKismetMathLibrary::FClamp(Stamina + (-0.3f),0.0f,MaxStamina);
-	if (Stamina <= 0.0f) {
-		StopSprint();
+	if (!bStaminaBoost) {
+		Stamina = UKismetMathLibrary::FClamp(Stamina + (-0.3f), 0.0f, MaxStamina);
+		if (Stamina <= 0.0f) {
+			StopSprint();
+		}
 	}
 }
 
@@ -171,7 +174,7 @@ void ACPP_DarkLifeCharacter::StopSprint()
 
 	bSprint = false;
 
-	if (StaminaIncreaseHandle.IsValid()) {
+	if (StaminaDecreaseHandle.IsValid()) {
 		GetWorldTimerManager().PauseTimer(StaminaDecreaseHandle);
 		GetWorldTimerManager().ClearTimer(StaminaDecreaseHandle);
 	}

@@ -107,6 +107,8 @@ public:
 		double StaminaIncreaseDelay;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters|Modifiers")
 		double StaminaIncreaseTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters|Modifiers")
+		bool bStaminaBoost;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		bool bSaveAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")

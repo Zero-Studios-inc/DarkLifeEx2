@@ -65,7 +65,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bSprintKeyPress = false;
 	bWalk = false;
 	WalkSpeed = 150.0;
-	RunSlowSpeed = 300;
+	RunSlowSpeed = 200;
 	RunSpeed = 350.0;
 	BeastPowerSpeed = 5000.0;
 	bSprint = false;
@@ -167,6 +167,12 @@ void ACPP_DarkLifeCharacter::StopSprint()
 		if (bWalk) {
 			GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 		}
+
+		else if (bSlowRun)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = RunSlowSpeed;
+		}
+
 		else {
 			GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 		}

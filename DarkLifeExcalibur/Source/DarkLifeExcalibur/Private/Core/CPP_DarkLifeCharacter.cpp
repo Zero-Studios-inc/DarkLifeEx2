@@ -65,7 +65,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bSprintKeyPress = false;
 	bWalk = false;
 	WalkSpeed = 150.0;
-	RunSlowSpeed = 200;
+	RunSlowSpeed = 100;
 	RunSpeed = 350.0;
 	BeastPowerSpeed = 5000.0;
 	bSprint = false;
@@ -159,44 +159,46 @@ void ACPP_DarkLifeCharacter::ResetCombo()
 
 void ACPP_DarkLifeCharacter::StopSprint()
 {
-	bSprintKeyPress = false;
-	if (bBeastPowerMovement) {
-		GetCharacterMovement()->MaxWalkSpeed = BeastPowerSpeed;
-	}
-	else {
-		if (bWalk) {
-			GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	if (!bSlowRun) {
+		bSprintKeyPress = false;
+		if (bBeastPowerMovement) {
+			GetCharacterMovement()->MaxWalkSpeed = BeastPowerSpeed;
 		}
-
-		else if (bSlowRun)
-		{
-			GetCharacterMovement()->MaxWalkSpeed = RunSlowSpeed;
-		}
-
 		else {
-			GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+			if (bWalk) {
+				GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+			}
+
+			else if (bSlowRun)
+			{
+				GetCharacterMovement()->MaxWalkSpeed = RunSlowSpeed;
+			}
+
+			else {
+				GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+			}
 		}
 	}
 
-	bSprint = false;
+		bSprint = false;
 
-	if (StaminaDecreaseHandle.IsValid()) {
-		GetWorldTimerManager().PauseTimer(StaminaDecreaseHandle);
-		GetWorldTimerManager().ClearTimer(StaminaDecreaseHandle);
-	}
+		if (StaminaDecreaseHandle.IsValid()) {
+			GetWorldTimerManager().PauseTimer(StaminaDecreaseHandle);
+			GetWorldTimerManager().ClearTimer(StaminaDecreaseHandle);
+		}
 
-	if (bLockedEnemy) {
-		SpringArm->CameraLagSpeed = 30.0f;
-	}
+		if (bLockedEnemy) {
+			SpringArm->CameraLagSpeed = 30.0f;
+		}
 
-	GetWorldTimerManager().SetTimer(StaminaIncreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaIncrease, StaminaIncreaseTime, true, 0.0f);
-
+		GetWorldTimerManager().SetTimer(StaminaIncreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaIncrease, StaminaIncreaseTime, true, 0.0f);
+	
 }
 
 void ACPP_DarkLifeCharacter::StartSprint()
 {
 	bSprintKeyPress = true;
-	if (( GetInputAxisValue("MoveForward")>0)&&(Stamina > 0.0f)) {
+	if (( GetInputAxisValue("MoveForward")>0)&&(Stamina > 0.0f)&&(!bSlowRun)) {
 		GetCharacterMovement()->MaxWalkSpeed = 700.0f;
 		bSprint = true;
 		SpringArm->CameraLagSpeed = 20.0f;
@@ -214,16 +216,23 @@ void ACPP_DarkLifeCharacter::StartSprint()
 	}
 }
 
-void ACPP_DarkLifeCharacter::StartSlowRun(bool bStart)
+void ACPP_DarkLifeCharacter::StartSlowRun(double SurfaceDistance,double MinimumDistance, double SpeedDecreaseFactor)
 {
-	if ((bStart) && (!bSlowRun)) {
-		bSlowRun = true;
-		GetCharacterMovement()->MaxWalkSpeed = RunSlowSpeed;
+	if (SurfaceDistance <= MinimumDistance ) {
+		if (!bSlowRun) {
+			bSlowRun = true;
+			double SpeedRatio;
+			SpeedRatio = RunSpeed / SurfaceDistance;
+			const double newSpeed = RunSpeed - (SpeedRatio * SpeedDecreaseFactor);
+			GetCharacterMovement()->MaxWalkSpeed = UKismetMathLibrary::FClamp(newSpeed, RunSlowSpeed, RunSpeed);
+		}
 	}
-	else if ((!bStart)&&(bSlowRun)) {
-		bSlowRun = false;
-		GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
-	}
+	else if (bSlowRun) {
+			bSlowRun = false;
+			GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+			StopSprint();
+		}
+	
 }
 
 void ACPP_DarkLifeCharacter::ShootArrow()

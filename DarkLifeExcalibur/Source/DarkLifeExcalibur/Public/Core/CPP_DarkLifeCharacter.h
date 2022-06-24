@@ -157,7 +157,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 		void StartSprint();
 	UFUNCTION(BlueprintCallable, Category = "Movement")
-		void StartSlowRun(bool bStart);
+		void StartSlowRun(double SurfaceDistance, double MinimumDistance ,double SpeedDecreaseFactor);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void ShootArrow();
 	UFUNCTION(BlueprintCallable, Category = "Attack")

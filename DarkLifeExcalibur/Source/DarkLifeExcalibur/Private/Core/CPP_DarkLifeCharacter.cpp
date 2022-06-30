@@ -47,8 +47,8 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	Torch->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 	Torch->SetHiddenInGame(true, true);
 
-	/*CharacterLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("CharacterLight"));
-	CharacterLight->SetupAttachment(RootComponent);*/
+	CharacterLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("CharacterLight"));
+	CharacterLight->SetupAttachment(RootComponent);
 	
 
 	//Variables Default Values
@@ -288,7 +288,10 @@ void ACPP_DarkLifeCharacter::JumpActivation(bool ActivationValue)
 
 void ACPP_DarkLifeCharacter::PerformJump()
 {
-	if (bJump) { Jump(); }
+	if (bJump) {
+		StopSprint();
+		Jump(); 
+	}
 }
 
 // Called every frame

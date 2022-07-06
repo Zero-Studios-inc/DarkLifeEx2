@@ -106,7 +106,7 @@ void ACPP_DarkLifeCharacter::EvasionStepAnimations()
 				else if (GetInputAxisValue("MoveForward") < 0) {
 					SpringArm->bEnableCameraLag = false;
 					PlayAnimMontage(EvasionAnimations[3], EvasionSpeedValue);
-					SpringArm->bEnableCameraLag = true;
+					//SpringArm->bEnableCameraLag = true;
 				}
 			}
 		}

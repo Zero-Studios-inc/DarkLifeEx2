@@ -78,6 +78,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bJump = false;
 	bSlowRun = false;
 	bStaminaBoost = false;
+	bTorchUp = false;
 	
 	
 }

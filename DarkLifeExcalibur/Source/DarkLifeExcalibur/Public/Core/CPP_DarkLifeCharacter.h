@@ -72,6 +72,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
 		bool bTorchActive;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
+		bool bTorchUp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
 		bool bDrawSword;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
 		bool bDrawingSword;

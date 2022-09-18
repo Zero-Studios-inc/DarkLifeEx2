@@ -10,6 +10,8 @@ ACPP_Enemy::ACPP_Enemy()
 	PrimaryActorTick.bCanEverTick = true;
 
 	AIState = AIDefaultState;
+	bCollisionActivate = true;
+	
 
 }
 
@@ -17,6 +19,8 @@ ACPP_Enemy::ACPP_Enemy()
 void ACPP_Enemy::BeginPlay()
 {
 	Super::BeginPlay();
+	//EnemyController = UAIBlueprintHelperLibrary::GetAIController(this);
+	
 	
 }
 
@@ -35,3 +39,24 @@ void ACPP_Enemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
+void ACPP_Enemy::HitStopEffect(){
+	
+}
+
+/*void ACPP_Enemy::SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower)
+{
+	Health = InHealth;
+	Damage = InDamage;
+	Stamina = InStamina;
+	StaminaDamage = InStaminaDamage;
+	Magic = InMagic;
+	GiveXP = InGiveXP;
+	GiveBeastPower = InGiveBeastPower;
+
+	//UBlackboardComponent* EnemyBlackboard = UAIBlueprintHelperLibrary::GetBlackboard(this);
+	//EnemyBlackboard->SetValueAsFloat(HealthKey, UKismetMathLibrary::Conv_DoubleToFloat(Health));
+	//EnemyBlackboard->SetValueAsFloat(StaminaKey, UKismetMathLibrary::Conv_DoubleToFloat(Stamina));
+	//EnemyBlackboard->SetValueAsFloat(MagicKey, UKismetMathLibrary::Conv_DoubleToFloat(Magic));
+	
+	
+}*/

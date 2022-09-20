@@ -39,8 +39,17 @@ void ACPP_Enemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
-void ACPP_Enemy::HitStopEffect(){
-	
+void ACPP_Enemy::RestoringCustomTimeDilation()
+{
+	CustomTimeDilation = 1.0;
+	UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->CustomTimeDilation = 1.0;
+}
+
+void ACPP_Enemy::HitStopEffect(double TimeDilationValue){
+	CustomTimeDilation = TimeDilationValue;
+	UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->CustomTimeDilation = TimeDilationValue;
+	FTimerHandle RestoringTimeDilationHandle;
+	GetWorld()->GetTimerManager().SetTimer(RestoringTimeDilationHandle, this, &ACPP_Enemy::RestoringCustomTimeDilation, 0.1f, false);
 }
 
 /*void ACPP_Enemy::SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower)

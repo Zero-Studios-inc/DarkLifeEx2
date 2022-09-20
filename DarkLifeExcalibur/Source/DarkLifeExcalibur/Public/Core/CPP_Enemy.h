@@ -10,6 +10,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "CPP_Enemy.generated.h"
 
 UENUM(BlueprintType)
@@ -83,15 +84,20 @@ protected:
 		EAIGeneralState AIDefaultState;
 	//UPROPERTY(BlueprintReadWrite, Category = "AI")
 		//AAIController* EnemyController;
+	UFUNCTION()
+		void RestoringCustomTimeDilation();
+
 	
 	
 		
 public:	
 
     UFUNCTION(BlueprintCallable, Category = "Combat|Effects")
-	void HitStopEffect(); 
+	void HitStopEffect(double TimeDilationValue); 
 	//UFUNCTION(BlueprintCallable, Category = "Parameters")
    //void SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower);
+
+	
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

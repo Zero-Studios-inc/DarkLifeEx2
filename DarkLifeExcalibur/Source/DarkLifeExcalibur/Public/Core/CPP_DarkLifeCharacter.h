@@ -152,6 +152,8 @@ public:
 		void StaminaDecrease();
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
 		void PoisonIncrease();
+	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
+		void HealthIncrease(double value);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void ResetCombo();
 	UFUNCTION(BlueprintCallable, Category = "Movement")

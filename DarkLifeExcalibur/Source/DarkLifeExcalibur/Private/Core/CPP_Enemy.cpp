@@ -45,6 +45,11 @@ void ACPP_Enemy::RestoringCustomTimeDilation()
 	UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->CustomTimeDilation = 1.0;
 }
 
+double ACPP_Enemy::HealthDecrease(double value)
+{
+	return Health-=value;
+}
+
 void ACPP_Enemy::HitStopEffect(double TimeDilationValue){
 	CustomTimeDilation = TimeDilationValue;
 	UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->CustomTimeDilation = TimeDilationValue;

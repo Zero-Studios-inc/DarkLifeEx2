@@ -64,12 +64,12 @@ public:
     
 	//AI Key Names
 	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
-	FName HealthKey;
+	FName HealthKey = "Health";
 	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
-	FName StaminaKey;
+	FName StaminaKey = "Stamina";
 	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
-	FName MagicKey;
-	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
+	FName MagicKey = "Key";
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|AI Key Names")
 	FName EnemyName;
 
 
@@ -94,6 +94,8 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Combat|Effects")
 	void HitStopEffect(double TimeDilationValue); 
+	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
+	double HealthDecrease(double value);
 	//UFUNCTION(BlueprintCallable, Category = "Parameters")
    //void SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower);
 

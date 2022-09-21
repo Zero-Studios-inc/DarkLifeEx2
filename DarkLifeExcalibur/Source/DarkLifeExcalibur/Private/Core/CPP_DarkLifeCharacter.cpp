@@ -269,6 +269,12 @@ void ACPP_DarkLifeCharacter::ArcheryDeactivate()
 
 }
 
+void ACPP_DarkLifeCharacter::HealthIncrease(double value)
+{
+	
+	Health = UKismetMathLibrary::FClamp(Health + value,0.0f,MaxHealth);
+}
+
 bool ACPP_DarkLifeCharacter::DetectHitFromTheBack(FHitResult ReceivedHit)
 {
 	

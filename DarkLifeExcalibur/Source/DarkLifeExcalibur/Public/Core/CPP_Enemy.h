@@ -72,7 +72,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|AI Key Names")
 	FName EnemyName;
 
-
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -82,8 +82,7 @@ protected:
 		EAIGeneralState AIState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|States")
 		EAIGeneralState AIDefaultState;
-	//UPROPERTY(BlueprintReadWrite, Category = "AI")
-		//AAIController* EnemyController;
+	
 	UFUNCTION()
 		void RestoringCustomTimeDilation();
 

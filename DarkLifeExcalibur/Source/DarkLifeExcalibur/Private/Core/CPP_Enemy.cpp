@@ -19,7 +19,7 @@ ACPP_Enemy::ACPP_Enemy()
 void ACPP_Enemy::BeginPlay()
 {
 	Super::BeginPlay();
-	//EnemyController = UAIBlueprintHelperLibrary::GetAIController(this);
+	
 	
 	
 }

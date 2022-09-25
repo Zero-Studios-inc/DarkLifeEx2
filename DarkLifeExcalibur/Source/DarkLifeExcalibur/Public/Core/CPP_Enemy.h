@@ -82,6 +82,9 @@ protected:
 		EAIGeneralState AIState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|States")
 		EAIGeneralState AIDefaultState;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+		double InitHealth;
+			
 	
 	UFUNCTION()
 		void RestoringCustomTimeDilation();

@@ -19,6 +19,7 @@ ACPP_Enemy::ACPP_Enemy()
 void ACPP_Enemy::BeginPlay()
 {
 	Super::BeginPlay();
+	InitHealth = Health;
 	
 	
 	

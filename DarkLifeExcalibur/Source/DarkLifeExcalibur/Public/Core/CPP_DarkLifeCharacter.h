@@ -127,6 +127,8 @@ public:
 		bool bDrawProjectile;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		bool bArchery;
+	UPROPERTY(BlueprintReadWrite, Category = "Camera Transitions")
+		AActor* CurrentViewActor;
 
 	
 	

@@ -6,6 +6,7 @@
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Camera/CameraComponent.h"
+#include "../Core/CPP_DarkLifeCharacter.h"
 #include "CPP_CharaterAttachViewTarget.generated.h"
 
 /**
@@ -19,6 +20,8 @@ class DARKLIFEEXCALIBUR_API UCPP_CharaterAttachViewTarget : public UAnimNotifySt
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName BoneName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool bAttachToSelfBone = false;
     	
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Anim, float TotalDuration) override;
 	

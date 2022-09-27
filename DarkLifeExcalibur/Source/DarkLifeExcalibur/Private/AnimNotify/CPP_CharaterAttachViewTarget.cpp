@@ -9,9 +9,22 @@ void UCPP_CharaterAttachViewTarget::NotifyBegin(USkeletalMeshComponent* MeshComp
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(MeshComp->GetWorld(), 0);
 	if (PlayerController)
 	{
-		AActor* ViewTarget = PlayerController->GetViewTarget();
-		UCameraComponent* Camera = Cast<UCameraComponent>(ViewTarget->FindComponentByClass(UCameraComponent::StaticClass()));
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepRelative, true);
-		Camera->AttachToComponent(MeshComp, AttachmentRules, BoneName);
+		UCameraComponent* Camera;
+
+		if (!bAttachToSelfBone)
+		{
+			AActor* ViewTarget = PlayerController->GetViewTarget();
+			Camera = Cast<UCameraComponent>(ViewTarget->FindComponentByClass(UCameraComponent::StaticClass()));
+			Camera->AttachToComponent(MeshComp, AttachmentRules, BoneName);
+		}
+		else 
+		{
+			ACPP_DarkLifeCharacter* CharacterRef = Cast<ACPP_DarkLifeCharacter>(MeshComp->GetOwner());
+			Camera = Cast<UCameraComponent>(CharacterRef->FindComponentByClass(UCameraComponent::StaticClass()));
+			Camera->AttachToComponent(MeshComp, AttachmentRules, BoneName);
+			
+
+		}
 	}
 }

@@ -3,6 +3,7 @@
 
 #include "Core/CPP_Enemy.h"
 
+
 // Sets default values
 ACPP_Enemy::ACPP_Enemy()
 {
@@ -49,6 +50,11 @@ void ACPP_Enemy::RestoringCustomTimeDilation()
 double ACPP_Enemy::HealthDecrease(double value)
 {
 	return Health-=value;
+}
+
+void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
+{
+	AIState = NewState;
 }
 
 void ACPP_Enemy::HitStopEffect(double TimeDilationValue){

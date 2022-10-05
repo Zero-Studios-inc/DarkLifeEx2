@@ -18,7 +18,11 @@ enum class EAIGeneralState : uint8 {
 	Patrol = 1 UMETA(DisplayName = "Patrol"),
 	Attack = 2 UMETA(DisplayName = "Attack"),
 	Rest = 3 UMETA(DisplayName = "Rest"),
-	Move = 4 UMETA(DisplayName = "Move")
+	Move = 4 UMETA(DisplayName = "Move"),
+	Wait = 5 UMETA(DisplayName = "Wait"),
+	Searching = 6 UMETA(DisplayName = "Searching"),
+	Stunt = 7 UMETA(DisplayName = "Stunt"),
+	ReceivingExecution = 8 UMETA(DisplayName = "ReceivingExecution")
 
 };
 
@@ -68,6 +72,8 @@ public:
 	FName StaminaKey = "Stamina";
 	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
 	FName MagicKey = "Key";
+	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
+	FName State = "State";
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|AI Key Names")
 	FName EnemyName;
 
@@ -97,6 +103,8 @@ public:
 	void HitStopEffect(double TimeDilationValue); 
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
 	double HealthDecrease(double value);
+	UFUNCTION(BlueprintCallable, Category = "Parameters")
+		void ChangeAIState(EAIGeneralState NewState);
 	//UFUNCTION(BlueprintCallable, Category = "Parameters")
    //void SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower);
 

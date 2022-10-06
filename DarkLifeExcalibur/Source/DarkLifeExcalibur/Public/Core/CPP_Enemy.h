@@ -54,6 +54,8 @@ public:
 	double GiveXP;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	double GiveBeastPower;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double PatrolSpeed;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	bool bCanBeExecuted;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")

@@ -22,7 +22,11 @@ enum class EAIGeneralState : uint8 {
 	Wait = 5 UMETA(DisplayName = "Wait"),
 	Searching = 6 UMETA(DisplayName = "Searching"),
 	Stunt = 7 UMETA(DisplayName = "Stunt"),
-	ReceivingExecution = 8 UMETA(DisplayName = "ReceivingExecution")
+	ReceivingExecution = 8 UMETA(DisplayName = "ReceivingExecution"),
+	QuestStart = 9 UMETA(DisplayName = "QuestStart"),
+	QuestEnd = 10 UMETA(DisplayName = "QuestEnd"),
+	Teleport = 11 UMETA(DisplayName = "Teleport"),
+	Defeated = 12 UMETA(DisplayName = "Defeated")
 
 };
 

@@ -80,6 +80,10 @@ public:
 	FName MagicKey = "Key";
 	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
 	FName State = "State";
+	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
+	FName TargetActor = "TargetActor";
+	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
+	FName TargetLocation = "TargetLocation";
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|AI Key Names")
 	FName EnemyName;
 
@@ -91,6 +95,8 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "AI|States")
 		EAIGeneralState AIState;
+	UPROPERTY(BlueprintReadWrite, Category = "AI|States")
+		EAIGeneralState AIPreviousState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|States")
 		EAIGeneralState AIDefaultState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")

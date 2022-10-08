@@ -27,6 +27,12 @@ void ACPP_Enemy::BeginPlay()
 }
 
 
+void ACPP_Enemy::GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const
+{
+	OutLocation = GetMesh()->GetSocketLocation("headSocket");
+	OutRotation = GetMesh()->GetSocketRotation("headSocket");
+}
+
 // Called every frame
 void ACPP_Enemy::Tick(float DeltaTime)
 {
@@ -40,6 +46,8 @@ void ACPP_Enemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
+
 
 void ACPP_Enemy::RestoringCustomTimeDilation()
 {

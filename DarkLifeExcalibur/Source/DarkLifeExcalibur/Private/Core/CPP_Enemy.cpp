@@ -60,6 +60,12 @@ double ACPP_Enemy::HealthDecrease(double value)
 	return Health-=value;
 }
 
+double ACPP_Enemy::StaminaDecrease(double value)
+{
+	return Stamina -= value;
+}
+
+
 void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 {
 	AIState = NewState;

@@ -115,8 +115,10 @@ public:
 	void HitStopEffect(double TimeDilationValue); 
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
 	double HealthDecrease(double value);
+	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
+	double StaminaDecrease(double value);
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
-		void ChangeAIState(EAIGeneralState NewState);
+	void ChangeAIState(EAIGeneralState NewState);
 	//UFUNCTION(BlueprintCallable, Category = "Parameters")
    //void SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower);
 

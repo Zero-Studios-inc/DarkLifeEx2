@@ -12,6 +12,7 @@ ACPP_Enemy::ACPP_Enemy()
 
 	AIState = AIDefaultState;
 	bCollisionActivate = true;
+	MovementSpeed = 500.0;
 	
 
 }

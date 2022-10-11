@@ -78,6 +78,8 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bJump = false;
 	bSlowRun = false;
 	bStaminaBoost = false;
+	bTorchUp = false;
+	bInvulnerability = false;
 	
 	
 }
@@ -266,6 +268,12 @@ void ACPP_DarkLifeCharacter::ArcheryDeactivate()
 	bArchery = false;
 	
 
+}
+
+void ACPP_DarkLifeCharacter::HealthIncrease(double value)
+{
+	
+	Health = UKismetMathLibrary::FClamp(Health + value,0.0f,MaxHealth);
 }
 
 bool ACPP_DarkLifeCharacter::DetectHitFromTheBack(FHitResult ReceivedHit)

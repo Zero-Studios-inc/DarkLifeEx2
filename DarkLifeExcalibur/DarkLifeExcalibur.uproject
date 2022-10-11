@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.0",
+	"EngineAssociation": "{B007E2E9-4B73-A51B-7428-9AAE5BCDF789}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -35,6 +35,10 @@
 			"Name": "DialoguePlugin",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/847aa65dc3024a37ae83ed89307524bd"
+		},
+		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true
 		}
 	]
 }

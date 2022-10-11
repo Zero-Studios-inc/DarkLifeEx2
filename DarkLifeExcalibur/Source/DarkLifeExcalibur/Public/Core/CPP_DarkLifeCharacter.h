@@ -72,6 +72,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
 		bool bTorchActive;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
+		bool bTorchUp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
 		bool bDrawSword;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
 		bool bDrawingSword;
@@ -125,6 +127,10 @@ public:
 		bool bDrawProjectile;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		bool bArchery;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		bool bInvulnerability;
+	UPROPERTY(BlueprintReadWrite, Category = "Camera Transitions")
+		AActor* CurrentViewActor;
 
 	
 	
@@ -150,6 +156,8 @@ public:
 		void StaminaDecrease();
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
 		void PoisonIncrease();
+	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
+		void HealthIncrease(double value);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void ResetCombo();
 	UFUNCTION(BlueprintCallable, Category = "Movement")

@@ -58,10 +58,14 @@ public:
 	double PatrolSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double MovementSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double MinDistanceToThrow;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double MaxDistanceToThrow;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	bool bCanBeExecuted;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
-	bool bInFloor;
+	bool bForceState;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	bool bBoss;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")

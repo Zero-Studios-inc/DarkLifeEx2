@@ -94,6 +94,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		double WalkSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		double CrouchSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		double RunSlowSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		bool bSlowRun;
@@ -129,6 +131,8 @@ public:
 		bool bArchery;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		bool bInvulnerability;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		bool bCrouched;
 	UPROPERTY(BlueprintReadWrite, Category = "Camera Transitions")
 		AActor* CurrentViewActor;
 

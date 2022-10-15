@@ -12,6 +12,7 @@ ACPP_Enemy::ACPP_Enemy()
 
 	AIState = AIDefaultState;
 	bCollisionActivate = true;
+	MovementSpeed = 500.0;
 	
 
 }
@@ -27,6 +28,12 @@ void ACPP_Enemy::BeginPlay()
 }
 
 
+void ACPP_Enemy::GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const
+{
+	OutLocation = GetMesh()->GetSocketLocation("headSocket");
+	OutRotation = GetMesh()->GetSocketRotation("headSocket");
+}
+
 // Called every frame
 void ACPP_Enemy::Tick(float DeltaTime)
 {
@@ -41,6 +48,8 @@ void ACPP_Enemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
+
+
 void ACPP_Enemy::RestoringCustomTimeDilation()
 {
 	CustomTimeDilation = 1.0;
@@ -51,6 +60,12 @@ double ACPP_Enemy::HealthDecrease(double value)
 {
 	return Health-=value;
 }
+
+double ACPP_Enemy::StaminaDecrease(double value)
+{
+	return Stamina -= value;
+}
+
 
 void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 {

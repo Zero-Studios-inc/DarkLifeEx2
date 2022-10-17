@@ -22,7 +22,11 @@ enum class EAIGeneralState : uint8 {
 	Wait = 5 UMETA(DisplayName = "Wait"),
 	Searching = 6 UMETA(DisplayName = "Searching"),
 	Stunt = 7 UMETA(DisplayName = "Stunt"),
-	ReceivingExecution = 8 UMETA(DisplayName = "ReceivingExecution")
+	ReceivingExecution = 8 UMETA(DisplayName = "ReceivingExecution"),
+	QuestStart = 9 UMETA(DisplayName = "QuestStart"),
+	QuestEnd = 10 UMETA(DisplayName = "QuestEnd"),
+	Teleport = 11 UMETA(DisplayName = "Teleport"),
+	Defeated = 12 UMETA(DisplayName = "Defeated")
 
 };
 
@@ -50,10 +54,18 @@ public:
 	double GiveXP;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	double GiveBeastPower;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double PatrolSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double MovementSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double MinDistanceToThrow;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double MaxDistanceToThrow;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	bool bCanBeExecuted;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
-	bool bInFloor;
+	bool bForceState;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	bool bBoss;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
@@ -74,6 +86,10 @@ public:
 	FName MagicKey = "Key";
 	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
 	FName State = "State";
+	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
+	FName TargetActor = "TargetActor";
+	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
+	FName TargetLocation = "TargetLocation";
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|AI Key Names")
 	FName EnemyName;
 
@@ -85,6 +101,8 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "AI|States")
 		EAIGeneralState AIState;
+	UPROPERTY(BlueprintReadWrite, Category = "AI|States")
+		EAIGeneralState AIPreviousState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|States")
 		EAIGeneralState AIDefaultState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
@@ -103,12 +121,14 @@ public:
 	void HitStopEffect(double TimeDilationValue); 
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
 	double HealthDecrease(double value);
+	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
+	double StaminaDecrease(double value);
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
-		void ChangeAIState(EAIGeneralState NewState);
+	void ChangeAIState(EAIGeneralState NewState);
 	//UFUNCTION(BlueprintCallable, Category = "Parameters")
    //void SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower);
 
-	
+	virtual void GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const override;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

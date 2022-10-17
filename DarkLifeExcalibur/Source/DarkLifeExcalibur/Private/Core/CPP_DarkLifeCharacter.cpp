@@ -80,6 +80,8 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bStaminaBoost = false;
 	bTorchUp = false;
 	bInvulnerability = false;
+	bCrouched = false;
+	CrouchSpeed = 20.0;
 	
 	
 }
@@ -168,16 +170,20 @@ void ACPP_DarkLifeCharacter::StopSprint()
 		}
 		else {
 			if (bWalk) {
-				GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+				if(bCrouched){GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;}
+				else {GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;}
 			}
 
 			else if (bSlowRun)
 			{
-				GetCharacterMovement()->MaxWalkSpeed = RunSlowSpeed;
+				if(bCrouched){GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;}
+				else {GetCharacterMovement()->MaxWalkSpeed = RunSlowSpeed;}
+				
 			}
 
 			else {
-				GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+				if(bCrouched){GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;}
+				else {GetCharacterMovement()->MaxWalkSpeed = RunSpeed;}
 			}
 		}
 	}

@@ -39,6 +39,11 @@
 		{
 			"Name": "ModelingToolsEditorMode",
 			"Enabled": true
+		},
+		{
+			"Name": "UnrealBucket",
+			"Enabled": true,
+			"MarketplaceURL": "https://publish.unrealengine.com/v3/edit-product/3ce48046720d4a66b4f804b0d135a820"
 		}
 	]
 }

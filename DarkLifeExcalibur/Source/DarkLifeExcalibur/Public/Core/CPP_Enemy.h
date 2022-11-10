@@ -57,6 +57,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double PatrolSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double WalkSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double RunSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double SearchingSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double MovementSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double MinDistanceToThrow;

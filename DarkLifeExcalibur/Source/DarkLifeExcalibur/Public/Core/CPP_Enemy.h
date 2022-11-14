@@ -99,11 +99,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|AI Key Names")
 	FName EnemyName;
 
+	UPROPERTY(BlueprintReadWrite, Category = "AI")
+		AAIController* EnemyAIController;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "AI")
+		TMap<EAIGeneralState, UBehaviorTree*> BTStateRelation;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	UBlackboardComponent* Blackboard;
 
 	UPROPERTY(BlueprintReadWrite, Category = "AI|States")
 		EAIGeneralState AIState;
@@ -117,6 +121,9 @@ protected:
 	
 	UFUNCTION()
 		void RestoringCustomTimeDilation();
+
+	UFUNCTION()
+		void SetParameters();
 
 	
 	

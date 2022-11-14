@@ -22,6 +22,13 @@ void ACPP_Enemy::BeginPlay()
 {
 	Super::BeginPlay();
 	InitHealth = Health;
+	Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	SetParameters();
+	if (IsValid(UAIBlueprintHelperLibrary::GetAIController(this)))
+	{
+		EnemyAIController = UAIBlueprintHelperLibrary::GetAIController(this);
+	}
+	ChangeAIState(AIDefaultState);
 	
 	
 	
@@ -32,6 +39,7 @@ void ACPP_Enemy::GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotati
 {
 	OutLocation = GetMesh()->GetSocketLocation("headSocket");
 	OutRotation = GetMesh()->GetSocketRotation("headSocket");
+	
 }
 
 // Called every frame
@@ -56,6 +64,17 @@ void ACPP_Enemy::RestoringCustomTimeDilation()
 	UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->CustomTimeDilation = 1.0;
 }
 
+void ACPP_Enemy::SetParameters()
+{
+		
+	if (IsValid(Blackboard)) {
+		Blackboard->SetValueAsFloat(HealthKey, Health);
+		Blackboard->SetValueAsFloat(StaminaKey, Stamina);
+		Blackboard->SetValueAsFloat(MagicKey, Magic);
+	}
+
+}
+
 double ACPP_Enemy::HealthDecrease(double value)
 {
 	return Health-=value;
@@ -69,7 +88,24 @@ double ACPP_Enemy::StaminaDecrease(double value)
 
 void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 {
-	AIState = NewState;
+	if ((BTStateRelation.Find(NewState))){
+
+		AIPreviousState = AIState;
+		AIState = NewState;
+		
+
+		//UAIBlueprintHelperLibrary::GetAIController(this)->RunBehaviorTree((UBehaviorTree*)BTStateRelation.Find(NewState));
+		if (IsValid(Blackboard)) {
+			Blackboard->SetValueAsEnum(State, (uint8)NewState);
+			if (AIState == EAIGeneralState::Attack)
+			{
+				GetCharacterMovement()->RotationRate = FRotator(0.0f, 90.0f, 0.0f);
+			}
+			else GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 0.0f);
+
+		}
+	}
+	
 }
 
 void ACPP_Enemy::HitStopEffect(double TimeDilationValue){

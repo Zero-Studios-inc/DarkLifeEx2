@@ -124,6 +124,10 @@ protected:
 
 	UFUNCTION()
 		void SetParameters();
+	UFUNCTION(BlueprintCallable)
+		void ChangeStateBySight();
+	UFUNCTION(BlueprintCallable)
+		void ChangeStateBySightLost();
 
 	
 	

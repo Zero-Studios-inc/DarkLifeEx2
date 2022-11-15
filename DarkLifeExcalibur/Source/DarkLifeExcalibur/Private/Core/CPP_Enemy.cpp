@@ -66,13 +66,60 @@ void ACPP_Enemy::RestoringCustomTimeDilation()
 
 void ACPP_Enemy::SetParameters()
 {
-		
+
 	if (IsValid(Blackboard)) {
 		Blackboard->SetValueAsFloat(HealthKey, Health);
 		Blackboard->SetValueAsFloat(StaminaKey, Stamina);
 		Blackboard->SetValueAsFloat(MagicKey, Magic);
 	}
 
+}
+
+void ACPP_Enemy::ChangeStateBySight()
+{
+	if (AIState != EAIGeneralState::Attack) {
+		ChangeAIState(EAIGeneralState::Attack);
+	}
+}
+
+void ACPP_Enemy::ChangeStateBySightLost()
+{
+	
+	if (IsValid(Blackboard)) {
+		Blackboard->SetValueAsObject(TargetActor, NULL);
+		switch (AIState)
+		{
+		case EAIGeneralState::Idle:
+			break;
+		case EAIGeneralState::Patrol:
+			break;
+		case EAIGeneralState::Attack:
+			Blackboard->SetValueAsVector(TargetLocation, UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
+			break;
+		case EAIGeneralState::Rest:
+			break;
+		case EAIGeneralState::Move:
+			break;
+		case EAIGeneralState::Wait:
+			break;
+		case EAIGeneralState::Searching:
+			break;
+		case EAIGeneralState::Stunt:
+			break;
+		case EAIGeneralState::ReceivingExecution:
+			break;
+		case EAIGeneralState::QuestStart:
+			break;
+		case EAIGeneralState::QuestEnd:
+			break;
+		case EAIGeneralState::Teleport:
+			break;
+		case EAIGeneralState::Defeated:
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 double ACPP_Enemy::HealthDecrease(double value)
@@ -93,8 +140,8 @@ void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 		AIPreviousState = AIState;
 		AIState = NewState;
 		
-
-		//UAIBlueprintHelperLibrary::GetAIController(this)->RunBehaviorTree((UBehaviorTree*)BTStateRelation.Find(NewState));
+		UBehaviorTree* NewBT = BTStateRelation.FindRef(NewState);
+		UAIBlueprintHelperLibrary::GetAIController(this)->RunBehaviorTree(NewBT);
 		if (IsValid(Blackboard)) {
 			Blackboard->SetValueAsEnum(State, (uint8)NewState);
 			if (AIState == EAIGeneralState::Attack)

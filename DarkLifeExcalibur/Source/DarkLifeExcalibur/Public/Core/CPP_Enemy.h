@@ -99,10 +99,28 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|AI Key Names")
 	FName EnemyName;
 
+	//AI
 	UPROPERTY(BlueprintReadWrite, Category = "AI")
 		AAIController* EnemyAIController;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "AI")
 		TMap<EAIGeneralState, UBehaviorTree*> BTStateRelation;
+
+	//Animations
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+		TArray <UAnimMontage*> HitAnim;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+		TArray <UAnimMontage*> AttackAnim;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+		TArray <UAnimMontage*> EvadeAnim;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+		UAnimMontage* BlockAnim;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+		UAnimMontage* DeathAnim;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+		UAnimMontage* ThrowAnim;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+		UAnimMontage* StuntAnim;
+
 	
 protected:
 	// Called when the game starts or when spawned

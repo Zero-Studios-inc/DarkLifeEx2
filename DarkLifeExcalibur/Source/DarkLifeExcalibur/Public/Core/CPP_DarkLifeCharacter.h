@@ -184,6 +184,8 @@ public:
 		void JumpActivation(bool ActivationValue);
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 		void PerformJump();
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+		void HandWeaponsVisibility(bool hide);
 
 
 	// Called every frame

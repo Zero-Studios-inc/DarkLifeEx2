@@ -308,6 +308,22 @@ void ACPP_DarkLifeCharacter::PerformJump()
 	}
 }
 
+void ACPP_DarkLifeCharacter::HandWeaponsVisibility(bool hide)
+{
+	if (bTorchActive) {
+		Torch->SetHiddenInGame(hide, true);
+	}
+
+	if (bDrawSword) {
+		Excalibur->SetHiddenInGame(hide, true);
+	}
+
+
+	if (bDrawShield) {
+		ShieldMesh->SetHiddenInGame(hide, true);
+	}
+}
+
 // Called every frame
 void ACPP_DarkLifeCharacter::Tick(float DeltaTime)
 {

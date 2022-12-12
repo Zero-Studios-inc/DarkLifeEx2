@@ -135,6 +135,8 @@ public:
 		bool bCrouched;
 	UPROPERTY(BlueprintReadWrite, Category = "Camera Transitions")
 		AActor* CurrentViewActor;
+	UPROPERTY(BlueprintReadWrite)
+		AActor* CurrentEnemy;
 
 	
 	
@@ -180,6 +182,8 @@ public:
 		void ArcheryDeactivate();
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		bool DetectHitFromTheBack(FHitResult ReceivedHit);
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+		void UnlockTarget();
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 		void JumpActivation(bool ActivationValue);
 	UFUNCTION(BlueprintCallable, Category = "Movement")

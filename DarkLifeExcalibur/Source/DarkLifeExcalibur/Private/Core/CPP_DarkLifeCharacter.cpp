@@ -295,6 +295,15 @@ bool ACPP_DarkLifeCharacter::DetectHitFromTheBack(FHitResult ReceivedHit)
 
 }
 
+void ACPP_DarkLifeCharacter::UnlockTarget()
+{
+	bLockedEnemy = false;
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	CurrentEnemy = nullptr;
+	
+}
+
 void ACPP_DarkLifeCharacter::JumpActivation(bool ActivationValue)
 {
 	bJump = ActivationValue;

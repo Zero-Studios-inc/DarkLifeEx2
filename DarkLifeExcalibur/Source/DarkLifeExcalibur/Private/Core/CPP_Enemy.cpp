@@ -29,7 +29,7 @@ void ACPP_Enemy::BeginPlay()
 		EnemyAIController = UAIBlueprintHelperLibrary::GetAIController(this);
 	}
 	ChangeAIState(AIDefaultState);
-	
+	PlayerCharacterRef = Cast<ACPP_DarkLifeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	
 	
 }
@@ -126,6 +126,25 @@ bool ACPP_Enemy::HitAngleInRange(FVector ImpactNormal, FVector Vector, double mi
 {
 	double dotProduct = UKismetMathLibrary::Dot_VectorVector(ImpactNormal, Vector);
 	return UKismetMathLibrary::InRange_FloatFloat(UKismetMathLibrary::DegAcos(dotProduct), minAngle, maxAngle,inclusiveMin,inclusiveMax);
+	
+}
+
+void ACPP_Enemy::DeathFunction()
+{
+	bForceState = true;
+	ChangeAIState(EAIGeneralState::Wait);
+	StopAnimMontage(GetCurrentMontage());
+	if (IsValid(PlayerCharacterRef)) {
+		if (PlayerCharacterRef->bLockedEnemy) {
+			PlayerCharacterRef->UnlockTarget();
+				bLockable = false;
+		}
+	}
+
+	GetCharacterMovement()->StopMovementImmediately();
+	SetActorEnableCollision(false);
+	PlayAnimMontage(DeathAnim);
+	
 	
 }
 

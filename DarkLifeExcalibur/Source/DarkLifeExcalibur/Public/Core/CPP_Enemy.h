@@ -135,6 +135,8 @@ protected:
 		EAIGeneralState AIDefaultState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double InitHealth;
+	UPROPERTY()
+		ACPP_DarkLifeCharacter* PlayerCharacterRef;
 			
 	
 	UFUNCTION()
@@ -148,6 +150,8 @@ protected:
 		void ChangeStateBySightLost();
 	UFUNCTION()
 		bool HitAngleInRange(FVector ImpactNormal, FVector Vector,double minAngle, double maxAngle, bool inclusiveMin, bool inclusiveMax);
+	UFUNCTION(BlueprintCallable)
+		void DeathFunction();
 	
 	
 		

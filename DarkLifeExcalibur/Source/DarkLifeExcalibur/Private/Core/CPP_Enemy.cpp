@@ -122,6 +122,13 @@ void ACPP_Enemy::ChangeStateBySightLost()
 	}
 }
 
+bool ACPP_Enemy::HitAngleInRange(FVector ImpactNormal, FVector Vector, double minAngle, double maxAngle, bool inclusiveMin, bool inclusiveMax)
+{
+	double dotProduct = UKismetMathLibrary::Dot_VectorVector(ImpactNormal, Vector);
+	return UKismetMathLibrary::InRange_FloatFloat(UKismetMathLibrary::DegAcos(dotProduct), minAngle, maxAngle,inclusiveMin,inclusiveMax);
+	
+}
+
 double ACPP_Enemy::HealthDecrease(double value)
 {
 	return Health-=value;
@@ -153,6 +160,41 @@ void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 		}
 	}
 	
+}
+
+void ACPP_Enemy::HitAnimation(FHitResult HitInfo)
+{
+	FVector ImpactNormal = HitInfo.ImpactNormal;
+
+	if (HitAnim.Num() > 1) {
+		if (HitAnim.IsValidIndex(0) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true))) {
+			//Back Hit Animation
+			PlayAnimMontage(HitAnim[3]);
+		}
+		else if (HitAnim.IsValidIndex(1) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(),54.0f, 90.0f, true, true))) {
+			
+			if (HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f, true, false)) {
+				//Right Hit Animation
+				PlayAnimMontage(HitAnim[2]);
+			}
+			else {
+				//Left Hit Animation
+				PlayAnimMontage(HitAnim[1]);
+			}
+		}
+		else if (HitAnim.IsValidIndex(2)&&(HitAngleInRange(ImpactNormal,GetActorForwardVector(),0.0f,44.0f,true,true)))
+		{
+			//Front Hit Animation
+			PlayAnimMontage(HitAnim[0]);
+		}
+	}
+	else {
+
+		//If only have one hit animation or Front Hit Animation
+		if (HitAnim.IsValidIndex(0)) {
+			PlayAnimMontage(HitAnim[0]);
+		}
+	}
 }
 
 void ACPP_Enemy::HitStopEffect(double TimeDilationValue){

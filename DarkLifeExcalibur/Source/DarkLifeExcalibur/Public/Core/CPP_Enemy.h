@@ -146,7 +146,8 @@ protected:
 		void ChangeStateBySight();
 	UFUNCTION(BlueprintCallable)
 		void ChangeStateBySightLost();
-
+	UFUNCTION()
+		bool HitAngleInRange(FVector ImpactNormal, FVector Vector,double minAngle, double maxAngle, bool inclusiveMin, bool inclusiveMax);
 	
 	
 		
@@ -160,6 +161,8 @@ public:
 	double StaminaDecrease(double value);
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
 	void ChangeAIState(EAIGeneralState NewState);
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+	void HitAnimation(FHitResult HitInfo);
 	//UFUNCTION(BlueprintCallable, Category = "Parameters")
    //void SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower);
 

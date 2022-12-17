@@ -137,6 +137,8 @@ public:
 		AActor* CurrentViewActor;
 	UPROPERTY(BlueprintReadWrite)
 		AActor* CurrentEnemy;
+	
+
 
 	
 	
@@ -148,6 +150,8 @@ protected:
 		FTimerHandle StaminaIncreaseHandle;
 	UPROPERTY()
 		FTimerHandle StaminaDecreaseHandle;
+	UPROPERTY()
+		bool bTorchPreviousState = false;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -175,7 +179,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void ShootArrow();
 	UFUNCTION(BlueprintCallable, Category = "Attack")
-		void SetTorchActive(bool bActivate);
+		void SetTorchActive(bool bActivate, bool bRestorePreviousState);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void ThrowDeactivate();
 	UFUNCTION(BlueprintCallable, Category = "Attack")

@@ -252,10 +252,17 @@ void ACPP_DarkLifeCharacter::ShootArrow()
 	
 }
 
-void ACPP_DarkLifeCharacter::SetTorchActive(bool bActivate)
+void ACPP_DarkLifeCharacter::SetTorchActive(bool bActivate, bool bRestorePreviousState)
 {
-	bTorchActive = bActivate;
-	Torch->SetHiddenInGame(!bTorchActive,true);
+	if (!bRestorePreviousState) {
+		bTorchPreviousState = bTorchActive;
+		bTorchActive = bActivate;
+		Torch->SetHiddenInGame(!bTorchActive, true);
+	}
+	else {
+		bTorchActive = bTorchPreviousState;
+		Torch->SetHiddenInGame(!bTorchActive, true);
+	}
 	
 }
 

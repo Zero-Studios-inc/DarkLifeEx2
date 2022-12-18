@@ -15,6 +15,17 @@
 #include "Components/ChildActorComponent.h"
 #include "CPP_DarkLifeCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class ECharacterCombatState : uint8 {
+	OneHandSword = 0 UMETA(DisplayName = "OneHandSword"),
+	TwoHandSword = 1 UMETA(DisplayName = "TwoHandSword"),
+	OneHandShield = 2 UMETA(DisplayName = "OneHandShield"),
+	OneHandTorch = 3 UMETA(DisplayName = "OneHandTorch"),
+	TwoBareHand = 4 UMETA(DisplayName = "TwoBareHand")
+	
+
+};
+
 UCLASS()
 class DARKLIFEEXCALIBUR_API ACPP_DarkLifeCharacter : public ACharacter
 {
@@ -59,6 +70,18 @@ public:
 		UPointLightComponent* CharacterLight;
 
 	//Character Animations
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> OneHandSwordAnimations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> TwoHandSwordAnimations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> ShieldAttackAnimations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> TorchAttackAnimations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> BareHandAttackAnimations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> RightHandAttackAnimations;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> EvasionAnimations;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
@@ -137,7 +160,11 @@ public:
 		AActor* CurrentViewActor;
 	UPROPERTY(BlueprintReadWrite)
 		AActor* CurrentEnemy;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		ECharacterCombatState CombatState = ECharacterCombatState::OneHandShield;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		ECharacterCombatState PreviousCombatState;
+
 
 
 	
@@ -152,6 +179,8 @@ protected:
 		FTimerHandle StaminaDecreaseHandle;
 	UPROPERTY()
 		bool bTorchPreviousState = false;
+	UPROPERTY()
+		bool bDrawSwordPreviousState = false;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -194,7 +223,12 @@ public:
 		void PerformJump();
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 		void HandWeaponsVisibility(bool hide);
-
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+		void PlayAnimationByCharacterState(int32 animationIndex);
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+		void SetVariablesByCombatState();
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+		void SetCombatState(ECharacterCombatState newCombatState);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

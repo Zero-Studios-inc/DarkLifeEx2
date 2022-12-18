@@ -90,6 +90,8 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 void ACPP_DarkLifeCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	bDrawSword = false;
+	bDrawingShield = false;
 	
 }
 
@@ -338,6 +340,74 @@ void ACPP_DarkLifeCharacter::HandWeaponsVisibility(bool hide)
 	if (bDrawShield) {
 		ShieldMesh->SetHiddenInGame(hide, true);
 	}
+}
+
+void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex)
+{
+	switch (CombatState)
+	{
+	case ECharacterCombatState::OneHandSword:
+		PlayAnimMontage(OneHandSwordAnimations[animationIndex]);
+		break;
+	case ECharacterCombatState::TwoHandSword:
+		PlayAnimMontage(TwoHandSwordAnimations[animationIndex]);
+		break;
+	case ECharacterCombatState::OneHandShield:
+		PlayAnimMontage(ShieldAttackAnimations[animationIndex]);
+		break;
+	case ECharacterCombatState::OneHandTorch:
+		PlayAnimMontage(TorchAttackAnimations[animationIndex]);
+		break;
+	case ECharacterCombatState::TwoBareHand:
+		PlayAnimMontage(BareHandAttackAnimations[animationIndex]);
+
+		break;
+	default:
+		break;
+	}
+}
+
+void ACPP_DarkLifeCharacter::SetVariablesByCombatState()
+{
+	bDrawSwordPreviousState = bDrawSword;
+	
+	switch (CombatState)
+	{
+	case ECharacterCombatState::OneHandSword:
+		bDrawSword = true;
+		SetTorchActive(false, true);
+		bDrawShield = !bTorchActive;
+		break;
+	case ECharacterCombatState::TwoHandSword:
+		bDrawSword = bDrawSwordPreviousState;
+		bDrawShield = false;
+		SetTorchActive(false, false);
+		break;
+	case ECharacterCombatState::OneHandShield:
+		bDrawShield = true;
+		bDrawSword = false;
+		SetTorchActive(false, false);
+		break;
+	case ECharacterCombatState::OneHandTorch:
+		bDrawSword = false;
+		bDrawShield = false;
+		SetTorchActive(true, false);
+		break;
+	case ECharacterCombatState::TwoBareHand:
+		bDrawSword = false;
+		bDrawShield = false;
+		SetTorchActive(false, false);
+		break;
+	default:
+		break;
+	}
+}
+
+void ACPP_DarkLifeCharacter::SetCombatState(ECharacterCombatState newCombatState)
+{
+	PreviousCombatState = CombatState;
+	CombatState = newCombatState;
+	SetVariablesByCombatState();
 }
 
 // Called every frame

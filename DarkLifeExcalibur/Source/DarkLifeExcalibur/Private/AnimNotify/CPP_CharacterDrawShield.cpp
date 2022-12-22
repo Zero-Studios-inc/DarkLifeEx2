@@ -26,5 +26,8 @@ void UCPP_CharacterDrawShield::NotifyBegin(USkeletalMeshComponent* MeshComp, UAn
 				PlayerCharacter->SetCombatState(ECharacterCombatState::OneHandShield);
 			}
 		}
+
+		PlayerCharacter->ResetCombo();
+		PlayerCharacter->StopSprint();
 	}
 }

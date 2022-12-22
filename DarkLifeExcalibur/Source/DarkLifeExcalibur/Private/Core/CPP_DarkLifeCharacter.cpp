@@ -375,7 +375,7 @@ void ACPP_DarkLifeCharacter::SetVariablesByCombatState()
 	{
 	case ECharacterCombatState::OneHandSword:
 		bDrawSword = true;
-		SetTorchActive(false, true);
+		SetTorchActive(false, false);
 		bDrawShield = !bTorchActive;
 		break;
 	case ECharacterCombatState::TwoHandSword:

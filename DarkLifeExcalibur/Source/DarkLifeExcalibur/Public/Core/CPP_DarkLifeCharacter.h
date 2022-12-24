@@ -88,6 +88,10 @@ public:
 		UAnimMontage* DrawBowAnimation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimMontage* ReadyBowAnimation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> CurrentStateAnimations;
+
+	
 
 	//Character Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
@@ -156,6 +160,10 @@ public:
 		bool bInvulnerability;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		bool bCrouched;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		int ComboCounter = 0;
+
+
 	UPROPERTY(BlueprintReadWrite, Category = "Camera Transitions")
 		AActor* CurrentViewActor;
 	UPROPERTY(BlueprintReadWrite)
@@ -224,11 +232,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 		void HandWeaponsVisibility(bool hide);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
-		void PlayAnimationByCharacterState(int32 animationIndex);
+		void PlayAnimationByCharacterState(int32 animationIndex, bool &Success);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void SetVariablesByCombatState();
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void SetCombatState(ECharacterCombatState newCombatState);
+
+
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

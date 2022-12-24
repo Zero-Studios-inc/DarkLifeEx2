@@ -64,9 +64,9 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	StaminaIncreaseTime = 0.01;
 	bSprintKeyPress = false;
 	bWalk = false;
-	WalkSpeed = 150.0;
+	WalkSpeed = 120.0;
 	RunSlowSpeed = 100;
-	RunSpeed = 350.0;
+	RunSpeed = 312.0;
 	BeastPowerSpeed = 5000.0;
 	bSprint = false;
 	bLockedEnemy = false;
@@ -92,6 +92,7 @@ void ACPP_DarkLifeCharacter::BeginPlay()
 	Super::BeginPlay();
 	bDrawSword = false;
 	bDrawingShield = false;
+	CurrentStateAnimations = BareHandAttackAnimations;
 	
 }
 
@@ -342,29 +343,25 @@ void ACPP_DarkLifeCharacter::HandWeaponsVisibility(bool hide)
 	}
 }
 
-void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex)
+void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex, bool &Success)
 {
-	switch (CombatState)
-	{
-	case ECharacterCombatState::OneHandSword:
-		PlayAnimMontage(OneHandSwordAnimations[animationIndex]);
-		break;
-	case ECharacterCombatState::TwoHandSword:
-		PlayAnimMontage(TwoHandSwordAnimations[animationIndex]);
-		break;
-	case ECharacterCombatState::OneHandShield:
-		PlayAnimMontage(ShieldAttackAnimations[animationIndex]);
-		break;
-	case ECharacterCombatState::OneHandTorch:
-		PlayAnimMontage(TorchAttackAnimations[animationIndex]);
-		break;
-	case ECharacterCombatState::TwoBareHand:
-		PlayAnimMontage(BareHandAttackAnimations[animationIndex]);
-
-		break;
-	default:
-		break;
+	 Success = false;
+	if ((!CurrentStateAnimations.IsEmpty()) && (CurrentStateAnimations.IsValidIndex(ComboCounter))) {
+		if ((animationIndex + 1) == CurrentStateAnimations.Num()) {
+			ComboCounter = 0;
+			PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+			Success = true;
+			
+		}
+		else {
+			ComboCounter = animationIndex + 1;
+			PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+			Success = true;
+			
+		}
 	}
+	
+	
 }
 
 void ACPP_DarkLifeCharacter::SetVariablesByCombatState()
@@ -375,26 +372,34 @@ void ACPP_DarkLifeCharacter::SetVariablesByCombatState()
 	{
 	case ECharacterCombatState::OneHandSword:
 		bDrawSword = true;
+		bDrawShield = true;
+		CurrentStateAnimations = OneHandSwordAnimations;
+		Fracture = UKismetMathLibrary::FClamp(Fracture - 10, 10.0f, 9999.0f);
 		break;
 	case ECharacterCombatState::TwoHandSword:
 		bDrawSword = true;
 		bDrawShield = false;
 		SetTorchActive(false, false);
+		Fracture = UKismetMathLibrary::FClamp(Fracture + 10, Fracture, 9999.0f);
+		CurrentStateAnimations = TwoHandSwordAnimations;
 		break;
 	case ECharacterCombatState::OneHandShield:
 		bDrawShield = true;
 		bDrawSword = false;
 		SetTorchActive(false, false);
+		CurrentStateAnimations = ShieldAttackAnimations;
 		break;
 	case ECharacterCombatState::OneHandTorch:
 		bDrawSword = false;
 		bDrawShield = false;
 		SetTorchActive(true, false);
+		CurrentStateAnimations = TorchAttackAnimations;
 		break;
 	case ECharacterCombatState::TwoBareHand:
 		bDrawSword = false;
 		bDrawShield = false;
 		SetTorchActive(false, false);
+		CurrentStateAnimations = BareHandAttackAnimations;
 		break;
 	default:
 		break;

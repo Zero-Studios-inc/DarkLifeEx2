@@ -162,6 +162,10 @@ public:
 		bool bCrouched;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		int ComboCounter = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		bool bDrawShieldPreviousState;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		bool bTorchPreviousState;
 
 
 	UPROPERTY(BlueprintReadWrite, Category = "Camera Transitions")
@@ -185,8 +189,6 @@ protected:
 		FTimerHandle StaminaIncreaseHandle;
 	UPROPERTY()
 		FTimerHandle StaminaDecreaseHandle;
-	UPROPERTY()
-		bool bTorchPreviousState = false;
 	UPROPERTY()
 		bool bDrawSwordPreviousState = false;
 

@@ -91,7 +91,10 @@ void ACPP_DarkLifeCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	bDrawSword = false;
-	bDrawingShield = false;
+	bDrawShield = false;
+	bDrawSwordPreviousState = bDrawSword;
+	bDrawShieldPreviousState = bDrawShield;
+	bTorchPreviousState = false;
 	CurrentStateAnimations = BareHandAttackAnimations;
 	
 }
@@ -266,6 +269,9 @@ void ACPP_DarkLifeCharacter::SetTorchActive(bool bActivate, bool bRestorePreviou
 		bTorchActive = bTorchPreviousState;
 		Torch->SetHiddenInGame(!bTorchActive, true);
 	}
+
+	ThrowDeactivate();
+	StopSprint();
 	
 }
 

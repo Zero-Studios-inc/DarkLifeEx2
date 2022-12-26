@@ -13,6 +13,11 @@ void UCPP_CharacterDrawShield::NotifyBegin(USkeletalMeshComponent* MeshComp, UAn
 			if (PlayerCharacter->bDrawSword) {
 				PlayerCharacter->SetCombatState(ECharacterCombatState::TwoHandSword);
 			}
+
+			else if(PlayerCharacter->bTorchActive){
+				PlayerCharacter->SetCombatState(ECharacterCombatState::OneHandSword);
+			}
+
 			else {
 				PlayerCharacter->SetCombatState(ECharacterCombatState::TwoBareHand);
 			}

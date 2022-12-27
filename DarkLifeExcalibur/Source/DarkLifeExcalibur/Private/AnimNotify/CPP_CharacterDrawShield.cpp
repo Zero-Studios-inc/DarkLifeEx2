@@ -11,13 +11,10 @@ void UCPP_CharacterDrawShield::NotifyBegin(USkeletalMeshComponent* MeshComp, UAn
 		if (PlayerCharacter->bDrawShield) {
 			PlayerCharacter->ShieldMesh->AttachToComponent(PlayerCharacter->GetMesh(), AttachmentRules, "Shield_Back");
 			if (PlayerCharacter->bDrawSword) {
-				PlayerCharacter->SetCombatState(ECharacterCombatState::TwoHandSword);
-			}
-
-			else if(PlayerCharacter->bTorchActive){
-				PlayerCharacter->SetCombatState(ECharacterCombatState::OneHandSword);
-			}
-
+				
+					PlayerCharacter->SetCombatState(ECharacterCombatState::TwoHandSword);
+				}
+				
 			else {
 				PlayerCharacter->SetCombatState(ECharacterCombatState::TwoBareHand);
 			}
@@ -25,6 +22,7 @@ void UCPP_CharacterDrawShield::NotifyBegin(USkeletalMeshComponent* MeshComp, UAn
 		else {
 			PlayerCharacter->ShieldMesh->AttachToComponent(PlayerCharacter->GetMesh(), AttachmentRules, "Shield");
 			if (PlayerCharacter->bDrawSword) {
+				PlayerCharacter->bTorchPreviousState = false;
 				PlayerCharacter->SetCombatState(ECharacterCombatState::OneHandSword);
 			}
 			else {

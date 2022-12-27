@@ -264,14 +264,17 @@ void ACPP_DarkLifeCharacter::SetTorchActive(bool bActivate, bool bRestorePreviou
 		bTorchPreviousState = bTorchActive;
 		bTorchActive = bActivate;
 		Torch->SetHiddenInGame(!bTorchActive, true);
+		
 	}
 	else {
 		bTorchActive = bTorchPreviousState;
 		Torch->SetHiddenInGame(!bTorchActive, true);
 	}
 
+	
 	ThrowDeactivate();
 	StopSprint();
+	
 	
 }
 
@@ -379,13 +382,17 @@ void ACPP_DarkLifeCharacter::SetVariablesByCombatState()
 	case ECharacterCombatState::OneHandSword:
 		bDrawSword = true;
 		bDrawShield = true;
+		SetTorchActive(false , true);
 		CurrentStateAnimations = OneHandSwordAnimations;
 		Fracture = UKismetMathLibrary::FClamp(Fracture - 10, 10.0f, 9999.0f);
 		break;
 	case ECharacterCombatState::TwoHandSword:
 		bDrawSword = true;
+		bDrawShieldPreviousState = bDrawShield;
 		bDrawShield = false;
-		SetTorchActive(false, false);
+		bTorchPreviousState = bTorchActive;
+		bTorchActive = false;
+		SetTorchActive(false, bTorchPreviousState);
 		Fracture = UKismetMathLibrary::FClamp(Fracture + 10, Fracture, 9999.0f);
 		CurrentStateAnimations = TwoHandSwordAnimations;
 		break;

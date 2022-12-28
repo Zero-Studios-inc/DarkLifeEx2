@@ -22,7 +22,7 @@ void UCPP_CharacterDrawShield::NotifyBegin(USkeletalMeshComponent* MeshComp, UAn
 		else {
 			PlayerCharacter->ShieldMesh->AttachToComponent(PlayerCharacter->GetMesh(), AttachmentRules, "Shield");
 			if (PlayerCharacter->bDrawSword) {
-				PlayerCharacter->bTorchPreviousState = false;
+				PlayerCharacter->bDrawShield = true;
 				PlayerCharacter->SetCombatState(ECharacterCombatState::OneHandSword);
 			}
 			else {

@@ -126,6 +126,7 @@ public:
 		double RunSlowSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		bool bSlowRun;
+		
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		double RunSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
@@ -213,8 +214,9 @@ public:
 		void StopSprint();
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 		void StartSprint();
-	UFUNCTION(BlueprintCallable, Category = "Movement")
-		void StartSlowRun(double SurfaceDistance, double MinimumDistance ,double SpeedDecreaseFactor);
+	/*UFUNCTION(BlueprintCallable, Category = "Movement")
+		void StartSlowRun(double SurfaceDistance, double MinimumDistance, double SpeedDecreaseFactor);
+		*/
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void ShootArrow();
 	UFUNCTION(BlueprintCallable, Category = "Attack")

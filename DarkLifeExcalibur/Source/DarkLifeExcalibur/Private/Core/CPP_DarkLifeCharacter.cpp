@@ -65,7 +65,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bSprintKeyPress = false;
 	bWalk = false;
 	WalkSpeed = 120.0;
-	RunSlowSpeed = 100;
+	//RunSlowSpeed = 100;
 	RunSpeed = 312.0;
 	BeastPowerSpeed = 5000.0;
 	bSprint = false;
@@ -76,7 +76,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bDrawingSword = false;
 	bTorchActive = false;
 	bJump = false;
-	bSlowRun = false;
+	//bSlowRun = false;
 	bStaminaBoost = false;
 	bTorchUp = false;
 	bInvulnerability = false;
@@ -230,7 +230,7 @@ void ACPP_DarkLifeCharacter::StartSprint()
 	}
 }
 
-void ACPP_DarkLifeCharacter::StartSlowRun(double SurfaceDistance,double MinimumDistance, double SpeedDecreaseFactor)
+/*void ACPP_DarkLifeCharacter::StartSlowRun(double SurfaceDistance, double MinimumDistance, double SpeedDecreaseFactor)
 {
 	if (SurfaceDistance <= MinimumDistance ) {
 		if (!bSlowRun) {
@@ -248,6 +248,7 @@ void ACPP_DarkLifeCharacter::StartSlowRun(double SurfaceDistance,double MinimumD
 		}
 	
 }
+*/
 
 void ACPP_DarkLifeCharacter::ShootArrow()
 {
@@ -261,8 +262,9 @@ void ACPP_DarkLifeCharacter::ShootArrow()
 void ACPP_DarkLifeCharacter::SetTorchActive(bool bActivate, bool bRestorePreviousState)
 {
 	if (!bRestorePreviousState) {
-		bTorchPreviousState = bTorchActive;
+		
 		bTorchActive = bActivate;
+		bTorchPreviousState = bTorchActive;
 		Torch->SetHiddenInGame(!bTorchActive, true);
 		
 	}
@@ -271,6 +273,7 @@ void ACPP_DarkLifeCharacter::SetTorchActive(bool bActivate, bool bRestorePreviou
 		Torch->SetHiddenInGame(!bTorchActive, true);
 	}
 
+	
 	
 	ThrowDeactivate();
 	StopSprint();
@@ -381,8 +384,14 @@ void ACPP_DarkLifeCharacter::SetVariablesByCombatState()
 	{
 	case ECharacterCombatState::OneHandSword:
 		bDrawSword = true;
-		bDrawShield = true;
-		SetTorchActive(false , true);
+		if (!bDrawShield) { 
+			SetTorchActive(true, false); 
+			
+		}
+		else { 
+			SetTorchActive(false, false); 
+			
+		}
 		CurrentStateAnimations = OneHandSwordAnimations;
 		Fracture = UKismetMathLibrary::FClamp(Fracture - 10, 10.0f, 9999.0f);
 		break;

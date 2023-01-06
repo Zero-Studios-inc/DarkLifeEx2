@@ -35,8 +35,7 @@ public:
 protected:
 	UPROPERTY(BlueprintReadOnly)
 		EExcaliburPart ExcaliburPart;
-	UPROPERTY(BlueprintRead)
-	EItemCategory ItemType = EItemCategory::ExcaliburModule;
+	
 	
 
 	

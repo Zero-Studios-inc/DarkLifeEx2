@@ -409,13 +409,17 @@ void ACPP_DarkLifeCharacter::SetVariablesByCombatState()
 		bDrawShield = true;
 		bDrawSword = false;
 		SetTorchActive(false, false);
-		CurrentStateAnimations = ShieldAttackAnimations;
+		//CurrentStateAnimations = ShieldAttackAnimations;
+		//Just for testing
+		CurrentStateAnimations = BareHandAttackAnimations;
 		break;
 	case ECharacterCombatState::OneHandTorch:
 		bDrawSword = false;
 		bDrawShield = false;
 		SetTorchActive(true, false);
-		CurrentStateAnimations = TorchAttackAnimations;
+		//CurrentStateAnimations = TorchAttackAnimations;
+		//Just for testing
+		CurrentStateAnimations = BareHandAttackAnimations;
 		break;
 	case ECharacterCombatState::TwoBareHand:
 		bDrawSword = false;

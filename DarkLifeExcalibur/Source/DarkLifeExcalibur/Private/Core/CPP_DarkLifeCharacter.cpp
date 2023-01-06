@@ -95,7 +95,7 @@ void ACPP_DarkLifeCharacter::BeginPlay()
 	bDrawSwordPreviousState = bDrawSword;
 	bDrawShieldPreviousState = bDrawShield;
 	bTorchPreviousState = false;
-	CurrentStateAnimations = BareHandAttackAnimations;
+	SetCombatState(ECharacterCombatState::TwoBareHand);
 	
 }
 

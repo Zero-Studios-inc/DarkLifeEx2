@@ -379,6 +379,7 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 void ACPP_DarkLifeCharacter::SetVariablesByCombatState()
 {
 	bDrawSwordPreviousState = bDrawSword;
+	ComboCounter = 0;
 	
 	switch (CombatState)
 	{

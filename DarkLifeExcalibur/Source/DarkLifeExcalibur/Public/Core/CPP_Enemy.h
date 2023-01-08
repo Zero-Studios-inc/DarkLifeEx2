@@ -109,6 +109,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
 		TArray <UAnimMontage*> HitAnim;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+		TArray <UAnimMontage*> PunchDamageAnim;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
 		TArray <UAnimMontage*> AttackAnim;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
 		TArray <UAnimMontage*> EvadeAnim;
@@ -152,6 +154,10 @@ protected:
 		bool HitAngleInRange(FVector ImpactNormal, FVector Vector,double minAngle, double maxAngle, bool inclusiveMin, bool inclusiveMax);
 	UFUNCTION(BlueprintCallable)
 		void DeathFunction();
+	UFUNCTION()
+		void PlaySwordHitAnimation(FVector ImpactNormal);
+	UFUNCTION()
+		void PlayPunchHitAnimation(int32 ComboCounter);
 	
 	
 		
@@ -166,7 +172,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
 	void ChangeAIState(EAIGeneralState NewState);
 	UFUNCTION(BlueprintCallable, Category = "Animation")
-	void HitAnimation(FHitResult HitInfo);
+	void HitAnimation(FHitResult HitInfo, ECharacterDamageType DamageType, int32 ComboCounter);
 	//UFUNCTION(BlueprintCallable, Category = "Parameters")
    //void SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower);
 

@@ -148,6 +148,48 @@ void ACPP_Enemy::DeathFunction()
 	
 }
 
+void ACPP_Enemy::PlaySwordHitAnimation(FVector ImpactNormal)
+{
+	
+	if (HitAnim.Num() > 1) {
+		if (HitAnim.IsValidIndex(0) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true))) {
+			//Back Hit Animation
+			PlayAnimMontage(HitAnim[3]);
+		}
+		else if (HitAnim.IsValidIndex(1) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 54.0f, 90.0f, true, true))) {
+
+			if (HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f, true, false)) {
+				//Right Hit Animation
+				PlayAnimMontage(HitAnim[2]);
+			}
+			else {
+				//Left Hit Animation
+				PlayAnimMontage(HitAnim[1]);
+			}
+		}
+		else if (HitAnim.IsValidIndex(2) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 0.0f, 44.0f, true, true)))
+		{
+			//Front Hit Animation
+			PlayAnimMontage(HitAnim[0]);
+		}
+	}
+	else {
+
+		//If only have one hit animation or Front Hit Animation
+		if (HitAnim.IsValidIndex(0)) {
+			PlayAnimMontage(HitAnim[0]);
+		}
+	}
+}
+
+void ACPP_Enemy::PlayPunchHitAnimation(int32 ComboCounter)
+{
+	if ((!PunchDamageAnim.IsEmpty()) && (PunchDamageAnim.IsValidIndex(ComboCounter)))
+	{
+		PlayAnimMontage(PunchDamageAnim[ComboCounter]);
+	}
+}
+
 double ACPP_Enemy::HealthDecrease(double value)
 {
 	return Health-=value;
@@ -181,38 +223,24 @@ void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 	
 }
 
-void ACPP_Enemy::HitAnimation(FHitResult HitInfo)
+void ACPP_Enemy::HitAnimation(FHitResult HitInfo, ECharacterDamageType DamageType, int32 ComboCounter)
 {
 	FVector ImpactNormal = HitInfo.ImpactNormal;
-
-	if (HitAnim.Num() > 1) {
-		if (HitAnim.IsValidIndex(0) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true))) {
-			//Back Hit Animation
-			PlayAnimMontage(HitAnim[3]);
-		}
-		else if (HitAnim.IsValidIndex(1) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(),54.0f, 90.0f, true, true))) {
-			
-			if (HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f, true, false)) {
-				//Right Hit Animation
-				PlayAnimMontage(HitAnim[2]);
-			}
-			else {
-				//Left Hit Animation
-				PlayAnimMontage(HitAnim[1]);
-			}
-		}
-		else if (HitAnim.IsValidIndex(2)&&(HitAngleInRange(ImpactNormal,GetActorForwardVector(),0.0f,44.0f,true,true)))
-		{
-			//Front Hit Animation
-			PlayAnimMontage(HitAnim[0]);
-		}
-	}
-	else {
-
-		//If only have one hit animation or Front Hit Animation
-		if (HitAnim.IsValidIndex(0)) {
-			PlayAnimMontage(HitAnim[0]);
-		}
+	switch (DamageType)
+	{
+	case ECharacterDamageType::Sword:
+		PlaySwordHitAnimation(ImpactNormal);
+		break;
+	case ECharacterDamageType::Shield:
+		break;
+	case ECharacterDamageType::Torch:
+		break;
+	case ECharacterDamageType::Punch:
+		PlayPunchHitAnimation(ComboCounter);
+		break;
+	default:
+		PlaySwordHitAnimation(ImpactNormal);
+		break;
 	}
 }
 

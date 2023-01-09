@@ -23,7 +23,15 @@ enum class ECharacterCombatState : uint8 {
 	OneHandTorch = 3 UMETA(DisplayName = "OneHandTorch"),
 	TwoBareHand = 4 UMETA(DisplayName = "TwoBareHand")
 	
+};
 
+UENUM(BlueprintType)
+enum class ECharacterDamageType : uint8 {
+	Sword = 0 UMETA(DisplayName = "Sword"),
+	Shield = 1 UMETA(DisplayName = "Shield"),
+	Torch = 2 UMETA(DisplayName = "Torch"),
+	Punch = 3 UMETA(DisplayName = "Punch")
+	
 };
 
 UCLASS()

@@ -358,20 +358,31 @@ void ACPP_DarkLifeCharacter::HandWeaponsVisibility(bool hide)
 void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex, bool &Success)
 {
 	 Success = false;
-	if ((!CurrentStateAnimations.IsEmpty()) && (CurrentStateAnimations.IsValidIndex(ComboCounter))) {
-		if ((animationIndex + 1) == CurrentStateAnimations.Num()) {
-			ComboCounter = 0;
-			PlayAnimMontage(CurrentStateAnimations[animationIndex]);
-			Success = true;
-			
-		}
-		else {
-			ComboCounter = animationIndex + 1;
-			PlayAnimMontage(CurrentStateAnimations[animationIndex]);
-			Success = true;
-			
-		}
-	}
+
+	 if (!bBlocking) {
+
+		 if ((!CurrentStateAnimations.IsEmpty()) && (CurrentStateAnimations.IsValidIndex(ComboCounter))) {
+			 if ((animationIndex + 1) == CurrentStateAnimations.Num()) {
+				 ComboCounter = 0;
+				 PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+				 Success = true;
+
+			 }
+			 else {
+				 ComboCounter = animationIndex + 1;
+				 PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+				 Success = true;
+
+			 }
+		 }
+	 }
+	 else {
+		 PlayAnimMontage(ShieldAttackAnimations[0]);
+		 bBlocking = false;
+		 ResetCombo();
+		 StopSprint();
+		 Success = true;
+	 }
 	
 	
 }

@@ -122,6 +122,8 @@ public:
 		UAnimMontage* ThrowAnim;
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
 		UAnimMontage* StuntAnim;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+		UAnimMontage* ShieldImpactAnim;
 
 	
 protected:

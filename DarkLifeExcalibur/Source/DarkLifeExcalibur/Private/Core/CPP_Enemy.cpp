@@ -232,6 +232,7 @@ void ACPP_Enemy::HitAnimation(FHitResult HitInfo, ECharacterDamageType DamageTyp
 		PlaySwordHitAnimation(ImpactNormal);
 		break;
 	case ECharacterDamageType::Shield:
+		PlayAnimMontage(ShieldImpactAnim);
 		break;
 	case ECharacterDamageType::Torch:
 		break;

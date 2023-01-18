@@ -361,21 +361,35 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 
 	 if (!bBlocking) {
 
-		 if ((!CurrentStateAnimations.IsEmpty()) && (CurrentStateAnimations.IsValidIndex(ComboCounter))) {
-			 if ((animationIndex + 1) == CurrentStateAnimations.Num()) {
-				 ComboCounter = 0;
-				 PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+		 if (bSprint) {
+			 if (AttackOnSprintAnimations.IsValidIndex((int32)CombatState)) {
+				 PlayAnimMontage(AttackOnSprintAnimations[(int32)CombatState]);
 				 Success = true;
-
-			 }
-			 else {
-				 ComboCounter = animationIndex + 1;
-				 PlayAnimMontage(CurrentStateAnimations[animationIndex]);
-				 Success = true;
-
 			 }
 		 }
+		 else {
+			 if ((!CurrentStateAnimations.IsEmpty()) && (CurrentStateAnimations.IsValidIndex(ComboCounter))) {
+				 if ((animationIndex + 1) == CurrentStateAnimations.Num()) {
+					 ComboCounter = 0;
+					 PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+					 Success = true;
+
+				 }
+				 else {
+					 ComboCounter = animationIndex + 1;
+					 PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+					 Success = true;
+
+				 }
+			 }
+		 }
+
+		 StopSprint();
+		 bBlocking = false;
+		
 	 }
+
+	
 	 else {
 		 PlayAnimMontage(ShieldAttackAnimations[0]);
 		 bBlocking = false;

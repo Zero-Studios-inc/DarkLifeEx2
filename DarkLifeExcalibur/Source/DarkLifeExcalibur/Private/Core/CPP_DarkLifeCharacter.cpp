@@ -86,6 +86,27 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	
 }
 
+void ACPP_DarkLifeCharacter::UpdateStaminaByCharacterCombatState()
+{
+	switch (CombatState)
+	{
+	case ECharacterCombatState::OneHandSword:
+		Stamina = UKismetMathLibrary::FClamp(Stamina - (MaxStamina / 6.0), 0.0, MaxStamina);
+		break;
+	case ECharacterCombatState::TwoHandSword:
+		Stamina = UKismetMathLibrary::FClamp(Stamina - (MaxStamina / 3.0), 0.0, MaxStamina);
+		break;
+	case ECharacterCombatState::OneHandShield:
+		break;
+	case ECharacterCombatState::OneHandTorch:
+		break;
+	case ECharacterCombatState::TwoBareHand:
+		break;
+	default:
+		break;
+	}
+}
+
 // Called when the game starts or when spawned
 void ACPP_DarkLifeCharacter::BeginPlay()
 {
@@ -205,7 +226,7 @@ void ACPP_DarkLifeCharacter::StopSprint()
 			SpringArm->CameraLagSpeed = 30.0f;
 		}
 
-		GetWorldTimerManager().SetTimer(StaminaIncreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaIncrease, StaminaIncreaseTime, true, 0.0f);
+		GetWorldTimerManager().SetTimer(StaminaIncreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaIncrease, StaminaIncreaseTime, true, 5.0f);
 	
 }
 
@@ -353,52 +374,6 @@ void ACPP_DarkLifeCharacter::HandWeaponsVisibility(bool hide)
 	if (bDrawShield) {
 		ShieldMesh->SetHiddenInGame(hide, true);
 	}
-}
-
-void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex, bool &Success)
-{
-	 Success = false;
-
-	 if (!bBlocking) {
-
-		 if (bSprint) {
-			 if (AttackOnSprintAnimations.IsValidIndex((int32)CombatState)) {
-				 PlayAnimMontage(AttackOnSprintAnimations[(int32)CombatState]);
-				 Success = true;
-			 }
-		 }
-		 else {
-			 if ((!CurrentStateAnimations.IsEmpty()) && (CurrentStateAnimations.IsValidIndex(ComboCounter))) {
-				 if ((animationIndex + 1) == CurrentStateAnimations.Num()) {
-					 ComboCounter = 0;
-					 PlayAnimMontage(CurrentStateAnimations[animationIndex]);
-					 Success = true;
-
-				 }
-				 else {
-					 ComboCounter = animationIndex + 1;
-					 PlayAnimMontage(CurrentStateAnimations[animationIndex]);
-					 Success = true;
-
-				 }
-			 }
-		 }
-
-		 StopSprint();
-		 bBlocking = false;
-		
-	 }
-
-	
-	 else {
-		 PlayAnimMontage(ShieldAttackAnimations[0]);
-		 bBlocking = false;
-		 ResetCombo();
-		 StopSprint();
-		 Success = true;
-	 }
-	
-	
 }
 
 void ACPP_DarkLifeCharacter::SetVariablesByCombatState()

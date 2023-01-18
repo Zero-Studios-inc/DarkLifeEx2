@@ -226,7 +226,7 @@ void ACPP_DarkLifeCharacter::StopSprint()
 			SpringArm->CameraLagSpeed = 30.0f;
 		}
 
-		GetWorldTimerManager().SetTimer(StaminaIncreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaIncrease, StaminaIncreaseTime, true, 5.0f);
+		GetWorldTimerManager().SetTimer(StaminaIncreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaIncrease, StaminaIncreaseTime, true, 3.0f);
 	
 }
 

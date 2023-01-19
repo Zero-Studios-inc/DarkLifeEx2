@@ -93,6 +93,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> EvasionAnimations;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> AttackOnSprintAnimations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimMontage* DrawBowAnimation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimMontage* ReadyBowAnimation;
@@ -200,6 +202,8 @@ protected:
 		FTimerHandle StaminaDecreaseHandle;
 	UPROPERTY()
 		bool bDrawSwordPreviousState = false;
+	UFUNCTION()
+		void UpdateStaminaByCharacterCombatState();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -244,7 +248,52 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 		void HandWeaponsVisibility(bool hide);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
-		void PlayAnimationByCharacterState(int32 animationIndex, bool &Success);
+		void PlayAnimationByCharacterState(int32 animationIndex, bool& Success)
+	{
+		Success = false;
+
+		if (!bBlocking) {
+
+			if (bSprint) {
+				if (AttackOnSprintAnimations.IsValidIndex((int32)CombatState)) {
+					PlayAnimMontage(AttackOnSprintAnimations[(int32)CombatState]);
+					Success = true;
+				}
+			}
+			else {
+				if ((!CurrentStateAnimations.IsEmpty()) && (CurrentStateAnimations.IsValidIndex(ComboCounter))) {
+					if ((animationIndex + 1) == CurrentStateAnimations.Num()) {
+						ComboCounter = 0;
+						PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+						Success = true;
+
+					}
+					else {
+						ComboCounter = animationIndex + 1;
+						PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+						Success = true;
+
+					}
+				}
+			}
+
+			StopSprint();
+			bBlocking = false;
+
+		}
+
+
+		else {
+			PlayAnimMontage(ShieldAttackAnimations[0]);
+			bBlocking = false;
+			Success = true;
+		}
+
+
+		UpdateStaminaByCharacterCombatState();
+		//StopSprint();
+
+	}
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void SetVariablesByCombatState();
 	UFUNCTION(BlueprintCallable, Category = "Attack")

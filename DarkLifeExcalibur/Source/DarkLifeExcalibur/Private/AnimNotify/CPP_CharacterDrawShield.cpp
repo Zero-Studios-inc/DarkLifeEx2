@@ -31,6 +31,6 @@ void UCPP_CharacterDrawShield::NotifyBegin(USkeletalMeshComponent* MeshComp, UAn
 		}
 
 		PlayerCharacter->ResetCombo();
-		PlayerCharacter->StopSprint();
+		//PlayerCharacter->StopSprint();
 	}
 }

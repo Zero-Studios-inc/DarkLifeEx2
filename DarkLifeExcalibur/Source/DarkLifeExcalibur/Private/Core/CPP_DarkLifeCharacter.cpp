@@ -168,7 +168,7 @@ void ACPP_DarkLifeCharacter::StaminaIncrease()
 void ACPP_DarkLifeCharacter::StaminaDecrease()
 {
 	if (!bStaminaBoost) {
-		Stamina = UKismetMathLibrary::FClamp(Stamina + (-0.3f), 0.0f, MaxStamina);
+		Stamina = UKismetMathLibrary::FClamp(Stamina + (-1.0f), 0.0f, MaxStamina);
 		if (Stamina <= 0.0f) {
 			StopSprint();
 		}
@@ -297,7 +297,7 @@ void ACPP_DarkLifeCharacter::SetTorchActive(bool bActivate, bool bRestorePreviou
 	
 	
 	ThrowDeactivate();
-	StopSprint();
+	//StopSprint();
 	
 	
 }

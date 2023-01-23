@@ -107,6 +107,13 @@ void ACPP_DarkLifeCharacter::UpdateStaminaByCharacterCombatState()
 	}
 }
 
+bool ACPP_DarkLifeCharacter::HitAngleInRange(FVector ImpactNormal, FVector Vector, double minAngle, double maxAngle, bool inclusiveMin, bool inclusiveMax)
+{
+	double dotProduct = UKismetMathLibrary::Dot_VectorVector(ImpactNormal, Vector);
+	return UKismetMathLibrary::InRange_FloatFloat(UKismetMathLibrary::DegAcos(dotProduct), minAngle, maxAngle, inclusiveMin, inclusiveMax);
+	
+}
+
 // Called when the game starts or when spawned
 void ACPP_DarkLifeCharacter::BeginPlay()
 {
@@ -376,6 +383,53 @@ void ACPP_DarkLifeCharacter::HandWeaponsVisibility(bool hide)
 	}
 }
 
+void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex, bool& Success)
+{
+	Success = false;
+
+	if (!bBlocking) {
+
+		if (bSprint) {
+			if (AttackOnSprintAnimations.IsValidIndex((int32)CombatState)) {
+				PlayAnimMontage(AttackOnSprintAnimations[(int32)CombatState]);
+				Success = true;
+			}
+		}
+		else {
+			if ((!CurrentStateAnimations.IsEmpty()) && (CurrentStateAnimations.IsValidIndex(ComboCounter))) {
+				if ((animationIndex + 1) == CurrentStateAnimations.Num()) {
+					ComboCounter = 0;
+					PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+					Success = true;
+
+				}
+				else {
+					ComboCounter = animationIndex + 1;
+					PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+					Success = true;
+
+				}
+			}
+		}
+
+		StopSprint();
+		bBlocking = false;
+
+	}
+
+
+	else {
+		PlayAnimMontage(ShieldAttackAnimations[0]);
+		bBlocking = false;
+		Success = true;
+	}
+
+
+	UpdateStaminaByCharacterCombatState();
+	//StopSprint();
+
+}
+
 void ACPP_DarkLifeCharacter::SetVariablesByCombatState()
 {
 	bDrawSwordPreviousState = bDrawSword;
@@ -439,6 +493,59 @@ void ACPP_DarkLifeCharacter::SetCombatState(ECharacterCombatState newCombatState
 	CombatState = newCombatState;
 	SetVariablesByCombatState();
 }
+
+void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType DamageType)
+{
+	FVector ImpactNormal = HitInfo.ImpactNormal;
+	switch (DamageType)
+	{
+	case EEnemyDamageType::RegularDamage:
+		PlayRegularDamageHitAnimation(ImpactNormal);
+		break;
+	case EEnemyDamageType::StrongDamage:
+		break;
+	case EEnemyDamageType::StuntDamage:
+		break;
+	default:
+		break;
+	}
+
+}
+
+void ACPP_DarkLifeCharacter::PlayRegularDamageHitAnimation(FVector ImpactNormal)
+{
+	if (HitAnimations.Num() > 1) {
+		if (HitAnimations.IsValidIndex(0) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true))) {
+			//Back Hit Animation
+			PlayAnimMontage(HitAnimations[3]);
+		}
+		else if (HitAnimations.IsValidIndex(1) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 54.0f, 90.0f, true, true))) {
+
+			if (HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f, true, false)) {
+				//Right Hit Animation
+				PlayAnimMontage(HitAnimations[2]);
+			}
+			else {
+				//Left Hit Animation
+				PlayAnimMontage(HitAnimations[1]);
+			}
+		}
+		else if (HitAnimations.IsValidIndex(2) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 0.0f, 44.0f, true, true)))
+		{
+			//Front Hit Animation
+			PlayAnimMontage(HitAnimations[0]);
+		}
+	}
+	else {
+
+		//If only have one hit animation or Front Hit Animation
+		if (HitAnimations.IsValidIndex(0)) {
+			PlayAnimMontage(HitAnimations[0]);
+		}
+	}
+}
+
+
 
 // Called every frame
 void ACPP_DarkLifeCharacter::Tick(float DeltaTime)

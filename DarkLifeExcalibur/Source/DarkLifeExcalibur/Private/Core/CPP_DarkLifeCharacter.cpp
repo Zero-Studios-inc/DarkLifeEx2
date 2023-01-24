@@ -114,6 +114,21 @@ bool ACPP_DarkLifeCharacter::HitAngleInRange(FVector ImpactNormal, FVector Vecto
 	
 }
 
+void ACPP_DarkLifeCharacter::SetWalkSpeed()
+{
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+}
+
+void ACPP_DarkLifeCharacter::SetCrouchSpeed()
+{
+	GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;
+}
+
+void ACPP_DarkLifeCharacter::SetRunSpeed()
+{
+	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+}
+
 // Called when the game starts or when spawned
 void ACPP_DarkLifeCharacter::BeginPlay()
 {
@@ -255,6 +270,43 @@ void ACPP_DarkLifeCharacter::StartSprint()
 	 }
 	else {
 		bSprintKeyPress = false;
+	}
+}
+
+void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement)
+{
+	CurrentCharacterMovement = NewMovement;
+	switch (CurrentCharacterMovement)
+	{
+	case ECharacterMovement::Walk:
+		StopSprint();
+		SetWalkSpeed();
+		bWalk = true;
+		bCrouched = false;
+		break;
+	case ECharacterMovement::Jog:
+		StopSprint();
+		SetRunSpeed();
+		bWalk = false;
+		bCrouched = false;
+		break;
+	case ECharacterMovement::Sprint:
+		StartSprint();
+		bWalk = false;
+		break;
+	case ECharacterMovement::Crouch:
+		bCrouched = true;
+		SetCrouchSpeed();
+		StopSprint();
+		break;
+	case ECharacterMovement::Dodge:
+		StopSprint();
+		break;
+	case ECharacterMovement::Ladder:
+		StopSprint();
+		break;
+	default:
+		break;
 	}
 }
 

@@ -43,6 +43,19 @@ enum class EEnemyDamageType : uint8 {
 
 };
 
+UENUM(BlueprintType)
+enum class ECharacterMovement : uint8 {
+	Walk = 0 UMETA(DisplayName = "Walk"),
+	Jog = 1 UMETA(DisplayName = "Jog"),
+	Sprint = 2 UMETA(DisplayName = "Sprint"),
+	Crouch = 3 UMETA(DisplayName = "Crouch"),
+	Dodge  = 4 UMETA (DisplayName = "Dodge"),
+	Ladder = 5 UMETA(DisplayName = "Ladder")
+
+
+};
+
+
 UCLASS()
 class DARKLIFEEXCALIBUR_API ACPP_DarkLifeCharacter : public ACharacter
 {
@@ -152,6 +165,8 @@ public:
 		double RunSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		double BeastPowerSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		ECharacterMovement CurrentCharacterMovement = ECharacterMovement::Jog;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters|Modifiers")
 		double StaminaDividerMinLimit;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters|Modifiers")
@@ -217,6 +232,12 @@ protected:
 		void UpdateStaminaByCharacterCombatState();
 	UFUNCTION()
 		bool HitAngleInRange(FVector ImpactNormal, FVector Vector, double minAngle, double maxAngle, bool inclusiveMin, bool inclusiveMax);
+	UFUNCTION()
+		void SetWalkSpeed();
+	UFUNCTION()
+		void SetRunSpeed();
+	UFUNCTION()
+		void SetCrouchSpeed();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -239,6 +260,8 @@ public:
 		void StopSprint();
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 		void StartSprint();
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+		void SetCharacterMovement(ECharacterMovement NewMovement);
 	/*UFUNCTION(BlueprintCallable, Category = "Movement")
 		void StartSlowRun(double SurfaceDistance, double MinimumDistance, double SpeedDecreaseFactor);
 		*/

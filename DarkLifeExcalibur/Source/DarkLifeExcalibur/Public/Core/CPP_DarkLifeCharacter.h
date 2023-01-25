@@ -34,6 +34,28 @@ enum class ECharacterDamageType : uint8 {
 	
 };
 
+UENUM(BlueprintType)
+enum class EEnemyDamageType : uint8 {
+	RegularDamage = 0 UMETA(DisplayName = "RegularDamage"),
+	StrongDamage = 1 UMETA(DisplayName = "StrongDamage"),
+	StuntDamage = 2 UMETA(DisplayName = "StuntDamage")
+
+
+};
+
+UENUM(BlueprintType)
+enum class ECharacterMovement : uint8 {
+	Walk = 0 UMETA(DisplayName = "Walk"),
+	Jog = 1 UMETA(DisplayName = "Jog"),
+	Sprint = 2 UMETA(DisplayName = "Sprint"),
+	Crouch = 3 UMETA(DisplayName = "Crouch"),
+	Dodge  = 4 UMETA (DisplayName = "Dodge"),
+	Ladder = 5 UMETA(DisplayName = "Ladder")
+
+
+};
+
+
 UCLASS()
 class DARKLIFEEXCALIBUR_API ACPP_DarkLifeCharacter : public ACharacter
 {
@@ -100,6 +122,8 @@ public:
 		UAnimMontage* ReadyBowAnimation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> CurrentStateAnimations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> HitAnimations;
 
 	
 
@@ -141,6 +165,8 @@ public:
 		double RunSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		double BeastPowerSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+		ECharacterMovement CurrentCharacterMovement = ECharacterMovement::Jog;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters|Modifiers")
 		double StaminaDividerMinLimit;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters|Modifiers")
@@ -204,6 +230,14 @@ protected:
 		bool bDrawSwordPreviousState = false;
 	UFUNCTION()
 		void UpdateStaminaByCharacterCombatState();
+	UFUNCTION()
+		bool HitAngleInRange(FVector ImpactNormal, FVector Vector, double minAngle, double maxAngle, bool inclusiveMin, bool inclusiveMax);
+	UFUNCTION()
+		void SetWalkSpeed();
+	UFUNCTION()
+		void SetRunSpeed();
+	UFUNCTION()
+		void SetCrouchSpeed();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -226,6 +260,8 @@ public:
 		void StopSprint();
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 		void StartSprint();
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+		void SetCharacterMovement(ECharacterMovement NewMovement);
 	/*UFUNCTION(BlueprintCallable, Category = "Movement")
 		void StartSlowRun(double SurfaceDistance, double MinimumDistance, double SpeedDecreaseFactor);
 		*/
@@ -248,56 +284,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 		void HandWeaponsVisibility(bool hide);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
-		void PlayAnimationByCharacterState(int32 animationIndex, bool& Success)
-	{
-		Success = false;
-
-		if (!bBlocking) {
-
-			if (bSprint) {
-				if (AttackOnSprintAnimations.IsValidIndex((int32)CombatState)) {
-					PlayAnimMontage(AttackOnSprintAnimations[(int32)CombatState]);
-					Success = true;
-				}
-			}
-			else {
-				if ((!CurrentStateAnimations.IsEmpty()) && (CurrentStateAnimations.IsValidIndex(ComboCounter))) {
-					if ((animationIndex + 1) == CurrentStateAnimations.Num()) {
-						ComboCounter = 0;
-						PlayAnimMontage(CurrentStateAnimations[animationIndex]);
-						Success = true;
-
-					}
-					else {
-						ComboCounter = animationIndex + 1;
-						PlayAnimMontage(CurrentStateAnimations[animationIndex]);
-						Success = true;
-
-					}
-				}
-			}
-
-			StopSprint();
-			bBlocking = false;
-
-		}
-
-
-		else {
-			PlayAnimMontage(ShieldAttackAnimations[0]);
-			bBlocking = false;
-			Success = true;
-		}
-
-
-		UpdateStaminaByCharacterCombatState();
-		//StopSprint();
-
-	}
+		void PlayAnimationByCharacterState(int32 animationIndex, bool& Success);
+	
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void SetVariablesByCombatState();
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void SetCombatState(ECharacterCombatState newCombatState);
+	UFUNCTION(BlueprintCallable, Category = "Animations")
+		void HitAnimation(FHitResult HitInfo, EEnemyDamageType DamageType);
+	UFUNCTION(BlueprintCallable, Category = "Animations")
+		void PlayRegularDamageHitAnimation(FVector ImpactNormal);
 
 
 

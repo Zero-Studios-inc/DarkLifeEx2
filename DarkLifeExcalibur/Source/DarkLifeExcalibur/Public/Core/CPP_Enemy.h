@@ -30,6 +30,8 @@ enum class EAIGeneralState : uint8 {
 
 };
 
+
+
 UCLASS()
 class DARKLIFEEXCALIBUR_API ACPP_Enemy : public ACharacter
 {

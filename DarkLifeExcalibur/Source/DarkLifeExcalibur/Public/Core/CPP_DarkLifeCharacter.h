@@ -55,6 +55,14 @@ enum class ECharacterMovement : uint8 {
 
 };
 
+UENUM(BlueprintType)
+enum class ECharacterNegativeStatus : uint8 {
+	None = 0 UMETA(DisplayName = "None"),
+	Stunt = 1 UMETA(DisplayName = "Stunt"),
+	Poison = 2 UMETA(DisplayName = "Poison")
+	
+};
+
 
 UCLASS()
 class DARKLIFEEXCALIBUR_API ACPP_DarkLifeCharacter : public ACharacter
@@ -124,6 +132,8 @@ public:
 		TArray<UAnimMontage*> CurrentStateAnimations;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> HitAnimations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> StuntAnimations;
 
 	
 
@@ -213,6 +223,8 @@ public:
 		ECharacterCombatState CombatState = ECharacterCombatState::OneHandShield;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		ECharacterCombatState PreviousCombatState;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Status")
+		ECharacterNegativeStatus CurrentCharacterNegativeStatus = ECharacterNegativeStatus::None;
 
 
 
@@ -290,10 +302,14 @@ public:
 		void SetVariablesByCombatState();
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void SetCombatState(ECharacterCombatState newCombatState);
-	UFUNCTION(BlueprintCallable, Category = "Animations")
+	UFUNCTION(BlueprintCallable, Category = "Animations")		
 		void HitAnimation(FHitResult HitInfo, EEnemyDamageType DamageType);
 	UFUNCTION(BlueprintCallable, Category = "Animations")
 		void PlayRegularDamageHitAnimation(FVector ImpactNormal);
+	UFUNCTION(BlueprintCallable, Category = "Animations")
+		void PlayStuntDamageHitAnimation();
+	UFUNCTION(BlueprintCallable, Category = "Character Status")
+	void SetCharacterNegativeStatus(ECharacterNegativeStatus NewNegativeStatus);
 
 
 

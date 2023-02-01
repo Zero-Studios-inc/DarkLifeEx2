@@ -557,6 +557,7 @@ void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType D
 	case EEnemyDamageType::StrongDamage:
 		break;
 	case EEnemyDamageType::StuntDamage:
+		PlayStuntDamageHitAnimation();
 		break;
 	default:
 		break;
@@ -595,6 +596,21 @@ void ACPP_DarkLifeCharacter::PlayRegularDamageHitAnimation(FVector ImpactNormal)
 			PlayAnimMontage(HitAnimations[0]);
 		}
 	}
+}
+
+void ACPP_DarkLifeCharacter::PlayStuntDamageHitAnimation()
+{
+	if (CombatState == ECharacterCombatState::OneHandSword) 
+	{
+		if (StuntAnimations.IsValidIndex(0)) {
+			PlayAnimMontage(StuntAnimations[0]);
+		}
+	}
+}
+
+void ACPP_DarkLifeCharacter::SetCharacterNegativeStatus(ECharacterNegativeStatus NewNegativeStatus)
+{
+	CurrentCharacterNegativeStatus = NewNegativeStatus;
 }
 
 

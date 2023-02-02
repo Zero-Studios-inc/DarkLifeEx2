@@ -30,7 +30,8 @@ enum class ECharacterDamageType : uint8 {
 	Sword = 0 UMETA(DisplayName = "Sword"),
 	Shield = 1 UMETA(DisplayName = "Shield"),
 	Torch = 2 UMETA(DisplayName = "Torch"),
-	Punch = 3 UMETA(DisplayName = "Punch")
+	Punch = 3 UMETA(DisplayName = "Punch"),
+	Arrow = 4 UMETA(DisplaName = "Arrow")
 	
 };
 

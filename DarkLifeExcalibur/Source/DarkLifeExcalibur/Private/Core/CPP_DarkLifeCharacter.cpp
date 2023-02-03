@@ -600,7 +600,7 @@ void ACPP_DarkLifeCharacter::PlayRegularDamageHitAnimation(FVector ImpactNormal)
 
 void ACPP_DarkLifeCharacter::PlayStuntDamageHitAnimation()
 {
-	if (CombatState == ECharacterCombatState::OneHandSword) 
+	if ((CombatState == ECharacterCombatState::OneHandSword) || (CombatState == ECharacterCombatState::OneHandShield))
 	{
 		if (StuntAnimations.IsValidIndex(0)) {
 			PlayAnimMontage(StuntAnimations[0]);

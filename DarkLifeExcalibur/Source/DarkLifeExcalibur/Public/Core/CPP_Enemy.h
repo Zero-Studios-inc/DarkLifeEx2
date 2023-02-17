@@ -108,23 +108,23 @@ public:
 		TMap<EAIGeneralState, UBehaviorTree*> BTStateRelation;
 
 	//Animations
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Animations")
 		TArray <UAnimMontage*> HitAnim;
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Animations")
 		TArray <UAnimMontage*> PunchDamageAnim;
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray <UAnimMontage*> AttackAnim;
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray <UAnimMontage*> EvadeAnim;
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimMontage* BlockAnim;
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimMontage* DeathAnim;
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimMontage* ThrowAnim;
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimMontage* StuntAnim;
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Animations")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimMontage* ShieldImpactAnim;
 
 	

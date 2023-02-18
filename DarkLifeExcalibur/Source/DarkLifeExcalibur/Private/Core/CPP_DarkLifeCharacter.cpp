@@ -283,12 +283,18 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 		SetWalkSpeed();
 		bWalk = true;
 		bCrouched = false;
+		if (GetCharacterMovement()->IsCrouching()) {
+			UnCrouch();
+		}
 		break;
 	case ECharacterMovement::Jog:
 		StopSprint();
 		SetRunSpeed();
 		bWalk = false;
 		bCrouched = false;
+		if (GetCharacterMovement()->IsCrouching()) {
+			UnCrouch();
+		}
 		break;
 	case ECharacterMovement::Sprint:
 		StartSprint();
@@ -298,6 +304,7 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 		bCrouched = true;
 		SetCrouchSpeed();
 		StopSprint();
+		Crouch();
 		break;
 	case ECharacterMovement::Dodge:
 		StopSprint();

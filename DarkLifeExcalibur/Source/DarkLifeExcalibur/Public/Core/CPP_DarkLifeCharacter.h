@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/InputComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -11,6 +12,8 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Engine/EngineTypes.h"
+#include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/ChildActorComponent.h"
 #include "CPP_DarkLifeCharacter.generated.h"
@@ -70,9 +73,18 @@ class DARKLIFEEXCALIBUR_API ACPP_DarkLifeCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+//Event Dispatchers
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttacking);
+
 public:
 	// Sets default values for this character's properties
 	ACPP_DarkLifeCharacter();
+
+
+	//Event Dispatchers
+	UPROPERTY(BlueprintAssignable, Category="Camera")
+		FOnAttacking Attacking;
+
 
 	//Character Parameters
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
@@ -149,6 +161,8 @@ public:
 		bool bDrawSword;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
 		bool bDrawingSword;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
+		bool bDrawingBow;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
 		bool bDrawShield;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
@@ -251,6 +265,16 @@ protected:
 		void SetRunSpeed();
 	UFUNCTION()
 		void SetCrouchSpeed();
+
+	//Input
+
+	UFUNCTION()
+		void LookUp(float value);
+	UFUNCTION()
+		void Turn(float value);
+
+	UFUNCTION()
+		void Sprint();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

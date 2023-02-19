@@ -10,7 +10,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	
-
+	
 	//Parameters Default Values
 	Health = 100;
 	MaxHealth = 100;
@@ -74,6 +74,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bDrawShield = false;
 	bDrawSword = false;
 	bDrawingSword = false;
+	bDrawingBow = false;
 	bTorchActive = false;
 	bJump = false;
 	//bSlowRun = false;
@@ -127,6 +128,41 @@ void ACPP_DarkLifeCharacter::SetCrouchSpeed()
 void ACPP_DarkLifeCharacter::SetRunSpeed()
 {
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+}
+
+void ACPP_DarkLifeCharacter::LookUp(float value)
+{
+	if (!bLockedEnemy) {
+		if (bDrawingBow) {
+			AddControllerPitchInput(value * 0.2f);
+		}
+		else AddControllerPitchInput(value);
+	}
+}
+
+void ACPP_DarkLifeCharacter::Turn(float value)
+{
+	if (!bLockedEnemy) {
+		if (bDrawingBow) {
+			AddControllerYawInput(value * 0.2f);
+		}
+		else AddControllerYawInput(value);
+	}
+}
+
+void ACPP_DarkLifeCharacter::Sprint()
+{
+	if (CurrentCharacterMovement != ECharacterMovement::Ladder) {
+		if (!bBeastPowerMovement) {
+			if (!bSprintKeyPress) {
+				if (bCanThrowProjectile) {
+					ThrowDeactivate();
+					StartSprint();
+				}
+				else StartSprint();
+			}
+		}
+	}
 }
 
 // Called when the game starts or when spawned
@@ -459,12 +495,14 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 				if ((animationIndex + 1) == CurrentStateAnimations.Num()) {
 					ComboCounter = 0;
 					PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+					Attacking.Broadcast();
 					Success = true;
 
 				}
 				else {
 					ComboCounter = animationIndex + 1;
 					PlayAnimMontage(CurrentStateAnimations[animationIndex]);
+					Attacking.Broadcast();
 					Success = true;
 
 				}
@@ -634,7 +672,12 @@ void ACPP_DarkLifeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACPP_DarkLifeCharacter::PerformJump);
+	PlayerInputComponent->BindAxis("LookUp", this, &ACPP_DarkLifeCharacter::LookUp);
+	PlayerInputComponent->BindAxis("Turn", this, &ACPP_DarkLifeCharacter::Turn);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, & ACPP_DarkLifeCharacter::Sprint);
 
 }
+
+
 
 

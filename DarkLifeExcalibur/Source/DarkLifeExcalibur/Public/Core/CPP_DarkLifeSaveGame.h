@@ -16,9 +16,25 @@ class DARKLIFEEXCALIBUR_API UCPP_DarkLifeSaveGame : public USaveGame
 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY( BlueprintReadWrite)
 		int HealAmount;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 		int HealBackup;
+	UPROPERTY(BlueprintReadWrite)
+		double CurrentHealth;
+	UPROPERTY(BlueprintReadWrite)
+		double CurrentRecharge;
+	UPROPERTY(BlueprintReadWrite)
+		double CurrentStamina;
+	UPROPERTY(BlueprintReadWrite)
+		double CurrentFracture;
+	UPROPERTY(BlueprintReadWrite)
+		double CurrentBeast;
+	UPROPERTY(BlueprintReadWrite)
+		double CurrentDefense;
+	UPROPERTY(BlueprintReadWrite)
+		int32 SelectedShieldIndex;
+	UPROPERTY(BlueprintReadWrite)
+		FName StreamingLevelName;
 	
 };

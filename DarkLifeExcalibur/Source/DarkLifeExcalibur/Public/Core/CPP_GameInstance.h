@@ -27,5 +27,7 @@ public:
 		bool bCleanStart;
 	UPROPERTY(BlueprintReadOnly)
 		ACPP_DarkLifeCharacter* CharacterRef;
-	
+/*UPROPERTY(BlueprintReadWrite)
+		UCPP_DarkLifeSaveGame* SaveGameRef;*/
+
 };

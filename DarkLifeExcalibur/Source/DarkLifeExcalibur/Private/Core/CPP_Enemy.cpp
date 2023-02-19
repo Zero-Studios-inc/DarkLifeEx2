@@ -226,22 +226,24 @@ void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 void ACPP_Enemy::HitAnimation(FHitResult HitInfo, ECharacterDamageType DamageType, int32 ComboCounter)
 {
 	FVector ImpactNormal = HitInfo.ImpactNormal;
-	switch (DamageType)
-	{
-	case ECharacterDamageType::Sword:
-		PlaySwordHitAnimation(ImpactNormal);
-		break;
-	case ECharacterDamageType::Shield:
-		PlayAnimMontage(ShieldImpactAnim);
-		break;
-	case ECharacterDamageType::Torch:
-		break;
-	case ECharacterDamageType::Punch:
-		PlayPunchHitAnimation(ComboCounter);
-		break;
-	default:
-		PlaySwordHitAnimation(ImpactNormal);
-		break;
+	if (bPlayHitAnimation) {
+		switch (DamageType)
+		{
+		case ECharacterDamageType::Sword:
+			PlaySwordHitAnimation(ImpactNormal);
+			break;
+		case ECharacterDamageType::Shield:
+			PlayAnimMontage(ShieldImpactAnim);
+			break;
+		case ECharacterDamageType::Torch:
+			break;
+		case ECharacterDamageType::Punch:
+			PlayPunchHitAnimation(ComboCounter);
+			break;
+		default:
+			PlaySwordHitAnimation(ImpactNormal);
+			break;
+		}
 	}
 }
 

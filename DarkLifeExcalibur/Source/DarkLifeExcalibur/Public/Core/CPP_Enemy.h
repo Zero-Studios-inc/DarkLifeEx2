@@ -84,6 +84,8 @@ public:
 	bool bLockable = true;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
  	bool bCollisionActivate;
+	UPROPERTY()
+		bool bPlayHitAnimation = true;
     
 	//AI Key Names
 	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
@@ -143,6 +145,7 @@ protected:
 		double InitHealth;
 	UPROPERTY()
 		ACPP_DarkLifeCharacter* PlayerCharacterRef;
+	
 			
 	
 	UFUNCTION()

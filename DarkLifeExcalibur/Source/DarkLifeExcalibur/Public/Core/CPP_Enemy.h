@@ -84,6 +84,8 @@ public:
 	bool bLockable = true;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
  	bool bCollisionActivate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+		bool bCanBlock;
 	UPROPERTY()
 		bool bPlayHitAnimation = true;
     

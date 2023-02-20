@@ -39,21 +39,21 @@ public:
 
 	//Character
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
-		int32 CharacterLevel;
+		int32 CharacterLevel = 1;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
 		double CharacterXP;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
-		double CharacterHealthBase;
+		double CharacterHealthBase = 100.0f;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
-		double CharacterRechargeBase;
+		double CharacterRechargeBase = 1.0f;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
 		double CharacterBeastBase;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
-		double CharacterStaminaBase;
+		double CharacterStaminaBase = 200.0f;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
-		double CharacterDefenseBase;
+		double CharacterDefenseBase = 10.0f;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
-		double CharacterFractureBase;
+		double CharacterFractureBase = 0.5f;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
 		FTransform LastSavePoint;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")

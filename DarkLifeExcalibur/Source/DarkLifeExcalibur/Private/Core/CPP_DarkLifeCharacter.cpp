@@ -157,9 +157,11 @@ void ACPP_DarkLifeCharacter::Sprint()
 			if (!bSprintKeyPress) {
 				if (bCanThrowProjectile) {
 					ThrowDeactivate();
-					StartSprint();
+					SetCharacterMovement(ECharacterMovement::Sprint);
 				}
-				else StartSprint();
+				SetCharacterMovement(ECharacterMovement::Sprint);
+					
+				
 			}
 		}
 	}
@@ -228,7 +230,7 @@ void ACPP_DarkLifeCharacter::StaminaDecrease()
 	if (!bStaminaBoost) {
 		Stamina = UKismetMathLibrary::FClamp(Stamina + (-1.0f), 0.0f, MaxStamina);
 		if (Stamina <= 0.0f) {
-			StopSprint();
+			SetCharacterMovement(ECharacterMovement::Jog);
 		}
 	}
 }
@@ -312,6 +314,7 @@ void ACPP_DarkLifeCharacter::StartSprint()
 void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement)
 {
 	CurrentCharacterMovement = NewMovement;
+	CharacterMovementChange.Broadcast(NewMovement);
 	switch (CurrentCharacterMovement)
 	{
 	case ECharacterMovement::Walk:
@@ -333,6 +336,8 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 		}
 		break;
 	case ECharacterMovement::Sprint:
+		StopAnimMontage(GetCurrentMontage());
+		ResetCombo();
 		StartSprint();
 		bWalk = false;
 		break;

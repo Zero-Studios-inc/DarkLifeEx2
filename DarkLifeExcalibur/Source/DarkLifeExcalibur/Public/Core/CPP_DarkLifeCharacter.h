@@ -75,6 +75,7 @@ class DARKLIFEEXCALIBUR_API ACPP_DarkLifeCharacter : public ACharacter
 
 //Event Dispatchers
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttacking);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterMovementChange, ECharacterMovement, NewCharacterMovement);
 
 public:
 	// Sets default values for this character's properties
@@ -84,7 +85,8 @@ public:
 	//Event Dispatchers
 	UPROPERTY(BlueprintAssignable, Category="Camera")
 		FOnAttacking Attacking;
-
+	UPROPERTY(BlueprintAssignable, Category = "Camera")
+		FOnCharacterMovementChange CharacterMovementChange;
 
 	//Character Parameters
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")

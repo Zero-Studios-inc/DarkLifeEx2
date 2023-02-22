@@ -57,7 +57,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
 		FTransform LastSavePoint;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
-		double CharacterXPBase;
+		double CharacterXPBase = 100.0f;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
 		int32 ProjectileAmount;
 

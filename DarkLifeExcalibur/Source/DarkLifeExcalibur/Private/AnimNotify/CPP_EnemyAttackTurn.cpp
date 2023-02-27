@@ -12,7 +12,7 @@ void UCPP_EnemyAttackTurn::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeq
 		FVector TargetLocation = CharacterRef->GetActorLocation();
 		FVector CurrentLocation = EnemyRef->GetActorLocation();
 		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(CurrentLocation, TargetLocation);
-		EnemyRef->SetActorRotation(TargetRotation);
+		EnemyRef->SetActorRotation(FRotator(EnemyRef->GetActorRotation().Pitch, TargetRotation.Yaw,EnemyRef->GetActorRotation().Roll));
 	
 	}
 	

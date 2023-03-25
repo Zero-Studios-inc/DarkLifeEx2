@@ -88,6 +88,11 @@ public:
 		bool bCanBlock;
 	UPROPERTY()
 		bool bPlayHitAnimation = true;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+		double DistanceAttackMinValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+		double DistanceAttackMaxValue;
+
     
 	//AI Key Names
 	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
@@ -130,6 +135,8 @@ public:
 		UAnimMontage* StuntAnim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		UAnimMontage* ShieldImpactAnim;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray <UAnimMontage*> DistanceAnim;
 
 	
 protected:

@@ -92,6 +92,11 @@ public:
 		double DistanceAttackMinValue;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double DistanceAttackMaxValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+		bool bParry =  false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+		bool bParryExecution = false;
+
 
     
 	//AI Key Names
@@ -137,6 +142,8 @@ public:
 		UAnimMontage* ShieldImpactAnim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray <UAnimMontage*> DistanceAnim;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray <UAnimMontage*> ParryFinisher;
 
 	
 protected:
@@ -189,6 +196,9 @@ public:
 	void ChangeAIState(EAIGeneralState NewState);
 	UFUNCTION(BlueprintCallable, Category = "Animation")
 	void HitAnimation(FHitResult HitInfo, ECharacterDamageType DamageType, int32 ComboCounter);
+
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+		void PlayParryFinisherAnimation();
 	//UFUNCTION(BlueprintCallable, Category = "Parameters")
    //void SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower);
 

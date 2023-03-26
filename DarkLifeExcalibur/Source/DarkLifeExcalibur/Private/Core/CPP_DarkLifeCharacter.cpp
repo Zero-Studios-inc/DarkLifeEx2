@@ -663,6 +663,15 @@ void ACPP_DarkLifeCharacter::SetCharacterNegativeStatus(ECharacterNegativeStatus
 	CurrentCharacterNegativeStatus = NewNegativeStatus;
 }
 
+void ACPP_DarkLifeCharacter::PlayParryFinisherAnimation(int parryIndex)
+{
+	if (ParryFinisher.IsValidIndex(parryIndex)) {
+		if (IsValid(ParryFinisher[parryIndex])) {
+			PlayAnimMontage(ParryFinisher[parryIndex]);
+		}
+	}
+}
+
 
 
 // Called every frame

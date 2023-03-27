@@ -149,7 +149,8 @@ public:
 		TArray<UAnimMontage*> HitAnimations;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> StuntAnimations;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> ParryFinisher;
 	
 
 	//Character Variables
@@ -337,6 +338,8 @@ public:
 		void PlayStuntDamageHitAnimation();
 	UFUNCTION(BlueprintCallable, Category = "Character Status")
 	void SetCharacterNegativeStatus(ECharacterNegativeStatus NewNegativeStatus);
+	UFUNCTION(BlueprintCallable, Category = "Animations")
+		void PlayParryFinisherAnimation(int parryIndex);
 
 
 

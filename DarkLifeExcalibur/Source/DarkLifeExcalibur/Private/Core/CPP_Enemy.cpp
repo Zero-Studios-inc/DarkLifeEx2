@@ -247,6 +247,23 @@ void ACPP_Enemy::HitAnimation(FHitResult HitInfo, ECharacterDamageType DamageTyp
 	}
 }
 
+void ACPP_Enemy::PlayParryFinisherAnimation()
+{
+	if (bParryExecution) {
+
+		int parryIndex = UKismetMathLibrary::RandomInteger(ParryFinisher.Num());
+
+		if (ParryFinisher.IsValidIndex(parryIndex)) {
+			if (IsValid(ParryFinisher[parryIndex])) {
+				PlayAnimMontage(ParryFinisher[parryIndex]);
+				if (IsValid(PlayerCharacterRef)) {
+					PlayerCharacterRef->PlayParryFinisherAnimation(parryIndex);
+				}
+			}
+		}
+	}
+}
+
 void ACPP_Enemy::HitStopEffect(double TimeDilationValue){
 	CustomTimeDilation = TimeDilationValue;
 	UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->CustomTimeDilation = TimeDilationValue;

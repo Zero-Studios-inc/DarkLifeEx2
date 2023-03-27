@@ -102,6 +102,7 @@ void ACPP_DarkLifeCharacter::UpdateStaminaByCharacterCombatState()
 	case ECharacterCombatState::OneHandTorch:
 		break;
 	case ECharacterCombatState::TwoBareHand:
+		Stamina = UKismetMathLibrary::FClamp(Stamina - (MaxStamina / 12.0), 0.0, MaxStamina);
 		break;
 	default:
 		break;
@@ -661,6 +662,15 @@ void ACPP_DarkLifeCharacter::PlayStuntDamageHitAnimation()
 void ACPP_DarkLifeCharacter::SetCharacterNegativeStatus(ECharacterNegativeStatus NewNegativeStatus)
 {
 	CurrentCharacterNegativeStatus = NewNegativeStatus;
+}
+
+void ACPP_DarkLifeCharacter::PlayParryFinisherAnimation(int parryIndex)
+{
+	if (ParryFinisher.IsValidIndex(parryIndex)) {
+		if (IsValid(ParryFinisher[parryIndex])) {
+			PlayAnimMontage(ParryFinisher[parryIndex]);
+		}
+	}
 }
 
 

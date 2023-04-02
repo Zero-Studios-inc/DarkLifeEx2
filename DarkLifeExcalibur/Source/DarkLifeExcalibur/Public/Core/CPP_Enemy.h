@@ -4,13 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "CPP_DarkLifeCharacter.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+
+class ACPP_DarkLifeCharacter;
+
 #include "CPP_Enemy.generated.h"
+
 
 UENUM(BlueprintType)
 enum class EAIGeneralState : uint8 {
@@ -96,6 +99,8 @@ public:
 		bool bParry =  false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		bool bParryExecution = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+		bool bExecutionActive = false;
 
 
     
@@ -144,6 +149,8 @@ public:
 		TArray <UAnimMontage*> DistanceAnim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray <UAnimMontage*> ParryFinisher;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> BackFinisher;
 
 	
 protected:
@@ -160,7 +167,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double InitHealth;
 	UPROPERTY()
-		ACPP_DarkLifeCharacter* PlayerCharacterRef;
+	ACPP_DarkLifeCharacter* PlayerCharacterRef;
 	
 			
 	
@@ -181,6 +188,7 @@ protected:
 		void PlaySwordHitAnimation(FVector ImpactNormal);
 	UFUNCTION()
 		void PlayPunchHitAnimation(int32 ComboCounter);
+
 	
 	
 		
@@ -198,7 +206,14 @@ public:
 	void HitAnimation(FHitResult HitInfo, ECharacterDamageType DamageType, int32 ComboCounter);
 
 	UFUNCTION(BlueprintCallable, Category = "Animation")
-		void PlayParryFinisherAnimation();
+		void PlayParryFinisherAnimation(int parryFinishAnimation);
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+		void PlayFromTheBackFinisherAnimation(int backFinishIndex);
+
+
+	UFUNCTION()
+		EAIGeneralState GetAIPreviousState();
+
 	//UFUNCTION(BlueprintCallable, Category = "Parameters")
    //void SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower);
 

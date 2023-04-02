@@ -16,7 +16,13 @@
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/ChildActorComponent.h"
+
+class ACPP_Enemy;
+
 #include "CPP_DarkLifeCharacter.generated.h"
+
+#pragma once
+
 
 UENUM(BlueprintType)
 enum class ECharacterCombatState : uint8 {
@@ -27,6 +33,14 @@ enum class ECharacterCombatState : uint8 {
 	TwoBareHand = 4 UMETA(DisplayName = "TwoBareHand")
 	
 };
+
+UENUM(BlueprintType)
+enum class ECharacterFinishMoveType : uint8 {
+	AfterParry = 0 UMETA(DisplayName = "AfterParry"),
+	FromTheBack = 1 UMETA(DisplayName = "FromTheBack")
+
+};
+
 
 UENUM(BlueprintType)
 enum class ECharacterDamageType : uint8 {
@@ -151,6 +165,8 @@ public:
 		TArray<UAnimMontage*> StuntAnimations;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> ParryFinisher;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> BackFinisher;
 	
 
 	//Character Variables
@@ -339,7 +355,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character Status")
 	void SetCharacterNegativeStatus(ECharacterNegativeStatus NewNegativeStatus);
 	UFUNCTION(BlueprintCallable, Category = "Animations")
-		void PlayParryFinisherAnimation(int parryIndex);
+		void PlayParryFinisherAnimation(int parryIndex, UAnimMontage*& ParryMontage);
+	UFUNCTION(BlueprintCallable, Category = "Animations")
+		void PlayFromTheBackFinisherAnimation(int backFinishIndex, UAnimMontage*& FromTheBackMontage);
+	UFUNCTION(BlueprintCallable, Category = "Animations")
+		void PlayRandomFinishAnimation(ECharacterFinishMoveType FinishMovementType, double& AnimationLenght);
 
 
 

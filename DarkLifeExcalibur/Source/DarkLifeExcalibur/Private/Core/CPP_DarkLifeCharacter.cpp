@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "Core/CPP_Enemy.h"
 #include "Core/CPP_DarkLifeCharacter.h"
 
 // Sets default values
@@ -664,11 +664,63 @@ void ACPP_DarkLifeCharacter::SetCharacterNegativeStatus(ECharacterNegativeStatus
 	CurrentCharacterNegativeStatus = NewNegativeStatus;
 }
 
-void ACPP_DarkLifeCharacter::PlayParryFinisherAnimation(int parryIndex)
+void ACPP_DarkLifeCharacter::PlayParryFinisherAnimation(int parryIndex, UAnimMontage*& ParryMontage)
 {
 	if (ParryFinisher.IsValidIndex(parryIndex)) {
 		if (IsValid(ParryFinisher[parryIndex])) {
 			PlayAnimMontage(ParryFinisher[parryIndex]);
+			ParryMontage = ParryFinisher[parryIndex];
+			
+		}
+	}
+}
+
+void ACPP_DarkLifeCharacter::PlayFromTheBackFinisherAnimation(int backFinishIndex, UAnimMontage*& FromTheBackMontage)
+{
+	if (BackFinisher.IsValidIndex(backFinishIndex)) {
+		if (IsValid(BackFinisher[backFinishIndex])) {
+			PlayAnimMontage(BackFinisher[backFinishIndex]);
+			FromTheBackMontage = BackFinisher[backFinishIndex];
+		}
+	 }
+}
+
+void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType FinishMovementType, double& AnimationLength)
+{
+	if (IsValid(CurrentEnemy)) {
+		ACPP_Enemy* EnemyRef = Cast<ACPP_Enemy>(CurrentEnemy);
+		if (IsValid(EnemyRef)) {
+			if ((EnemyRef->bCanBeExecuted)&&(EnemyRef->bExecutionActive)) {
+
+				int randomIndex = 0;
+				UAnimMontage* ParryMontage = nullptr;
+				UAnimMontage* BackMontage = nullptr;
+
+				switch (FinishMovementType)
+				{
+				case ECharacterFinishMoveType::AfterParry:
+					
+					randomIndex = UKismetMathLibrary::RandomInteger(ParryFinisher.Num() - 1);
+					PlayParryFinisherAnimation(randomIndex, ParryMontage);
+					EnemyRef->PlayParryFinisherAnimation(randomIndex);
+					AnimationLength = ParryMontage->GetPlayLength();
+					break;
+				case ECharacterFinishMoveType::FromTheBack:
+					
+					randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num() - 1);
+					PlayFromTheBackFinisherAnimation(randomIndex, BackMontage);
+					EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
+					AnimationLength = BackMontage->GetPlayLength();
+					break;
+				default:
+					
+					randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num() - 1);
+					PlayFromTheBackFinisherAnimation(randomIndex, BackMontage);
+					EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
+					AnimationLength = BackMontage->GetPlayLength();
+					break;
+				}
+		  }
 		}
 	}
 }

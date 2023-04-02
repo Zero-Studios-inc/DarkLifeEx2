@@ -21,8 +21,12 @@ void UCPP_CharacterParryDetection::NotifyTick(USkeletalMeshComponent* MeshComp, 
 	if (IsValid(CurrentEnemy)) {
 		if (CurrentEnemy->bParry == true)
 		{
-			CurrentEnemy->ChangeAIState(EAIGeneralState::Stunt);
-			CurrentEnemy->bParry = false;
+			//CurrentEnemy->ChangeAIState(EAIGeneralState::Stunt);
+
+			//Print if Parry Happened
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("PARRY, PARRY, PARRY"), true, FVector2D(2.f, 2.f));
+
+		
 		}
 	}
 }

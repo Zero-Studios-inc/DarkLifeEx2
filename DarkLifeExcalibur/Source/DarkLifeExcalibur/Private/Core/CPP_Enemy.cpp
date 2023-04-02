@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "Core/CPP_DarkLifeCharacter.h"
 #include "Core/CPP_Enemy.h"
 
 
@@ -20,6 +20,7 @@ ACPP_Enemy::ACPP_Enemy()
 // Called when the game starts or when spawned
 void ACPP_Enemy::BeginPlay()
 {
+
 	Super::BeginPlay();
 	InitHealth = Health;
 	Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(UGameplayStatics::GetPlayerController(GetWorld(), 0));
@@ -218,6 +219,10 @@ void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 			}
 			else GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 0.0f);
 
+			if ((AIPreviousState != EAIGeneralState::Stunt) && (AIState == EAIGeneralState::Stunt)) {
+				bForceState = true;
+			}
+			
 		}
 	}
 	
@@ -247,21 +252,29 @@ void ACPP_Enemy::HitAnimation(FHitResult HitInfo, ECharacterDamageType DamageTyp
 	}
 }
 
-void ACPP_Enemy::PlayParryFinisherAnimation()
+void ACPP_Enemy::PlayParryFinisherAnimation(int parryFinishAnimation)
 {
-	if (bParryExecution) {
 
-		int parryIndex = UKismetMathLibrary::RandomInteger(ParryFinisher.Num());
-
-		if (ParryFinisher.IsValidIndex(parryIndex)) {
-			if (IsValid(ParryFinisher[parryIndex])) {
-				PlayAnimMontage(ParryFinisher[parryIndex]);
-				if (IsValid(PlayerCharacterRef)) {
-					PlayerCharacterRef->PlayParryFinisherAnimation(parryIndex);
-				}
+		if (ParryFinisher.IsValidIndex(parryFinishAnimation)) {
+			if (IsValid(ParryFinisher[parryFinishAnimation])) {
+				PlayAnimMontage(ParryFinisher[parryFinishAnimation]);
+				
 			}
 		}
 	}
+
+void ACPP_Enemy::PlayFromTheBackFinisherAnimation(int backFinishIndex)
+{
+	if (BackFinisher.IsValidIndex(backFinishIndex)) {
+		if (IsValid(BackFinisher[backFinishIndex])) {
+			PlayAnimMontage(BackFinisher[backFinishIndex]);
+		}
+	}
+}
+
+EAIGeneralState ACPP_Enemy::GetAIPreviousState()
+{
+	return AIPreviousState;
 }
 
 void ACPP_Enemy::HitStopEffect(double TimeDilationValue){

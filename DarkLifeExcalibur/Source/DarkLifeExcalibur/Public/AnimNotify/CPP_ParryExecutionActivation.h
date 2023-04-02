@@ -16,8 +16,9 @@ class DARKLIFEEXCALIBUR_API UCPP_ParryExecutionActivation : public UAnimNotifySt
 	GENERATED_BODY()
 public:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float Duration) override;
-	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 
+	UPROPERTY(Editanywhere)
+		bool bActive = false;
 private:
 	ACPP_Enemy* EnemyRef;
 };

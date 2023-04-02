@@ -7,13 +7,14 @@ void UCPP_ParryExecutionActivation::NotifyBegin(USkeletalMeshComponent* MeshComp
 {
 	EnemyRef = Cast<ACPP_Enemy>(MeshComp->GetOwner());
 	if (IsValid(EnemyRef)) {
-		EnemyRef->bParryExecution = true;
+		EnemyRef->bParryExecution = bActive;
+
+		if (bActive == false) {
+			
+			EnemyRef->ChangeAIState(EnemyRef->GetAIPreviousState());
+			EnemyRef->bForceState = false;
+		}
 	}
 }
 
-void UCPP_ParryExecutionActivation::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
-{
-	if (IsValid(EnemyRef)) {
-		EnemyRef->bParryExecution = false;
-	}
-}
+

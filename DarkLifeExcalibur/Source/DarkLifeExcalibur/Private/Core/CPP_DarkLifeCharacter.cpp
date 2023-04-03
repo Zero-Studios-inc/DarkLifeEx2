@@ -700,21 +700,21 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 				{
 				case ECharacterFinishMoveType::AfterParry:
 					
-					randomIndex = UKismetMathLibrary::RandomInteger(ParryFinisher.Num() - 1);
+					randomIndex = UKismetMathLibrary::RandomInteger(ParryFinisher.Num());
 					PlayParryFinisherAnimation(randomIndex, ParryMontage);
 					EnemyRef->PlayParryFinisherAnimation(randomIndex);
 					AnimationLength = ParryMontage->GetPlayLength();
 					break;
 				case ECharacterFinishMoveType::FromTheBack:
 					
-					randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num() - 1);
+					randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num());
 					PlayFromTheBackFinisherAnimation(randomIndex, BackMontage);
 					EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
 					AnimationLength = BackMontage->GetPlayLength();
 					break;
 				default:
 					
-					randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num() - 1);
+					randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num());
 					PlayFromTheBackFinisherAnimation(randomIndex, BackMontage);
 					EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
 					AnimationLength = BackMontage->GetPlayLength();

@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Core/CPP_Enemy.h"
 #include "Core/CPP_DarkLifeCharacter.h"
+#include "Core/CPP_Enemy.h"
+
 
 // Sets default values
 ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()

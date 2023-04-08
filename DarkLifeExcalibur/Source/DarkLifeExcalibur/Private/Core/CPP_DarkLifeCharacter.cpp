@@ -298,7 +298,8 @@ void ACPP_DarkLifeCharacter::StartSprint()
 	if (( GetInputAxisValue("MoveForward")>0)&&(Stamina > 0.0f)&&(!bSlowRun)) {
 		GetCharacterMovement()->MaxWalkSpeed = 700.0f;
 		bSprint = true;
-		SpringArm->CameraLagSpeed = 20.0f;
+		SpringArm->bEnableCameraLag = true;
+		SpringArm->CameraLagSpeed = 15.0f;
 
 		if (StaminaIncreaseHandle.IsValid()) {
 			GetWorldTimerManager().PauseTimer(StaminaIncreaseHandle);

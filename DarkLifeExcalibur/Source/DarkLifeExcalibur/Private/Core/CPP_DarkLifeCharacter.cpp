@@ -727,6 +727,42 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 	}
 }
 
+void ACPP_DarkLifeCharacter::PlayRandomChargeAnimationByCombatState()
+{ 
+	int AnimationsCount;
+	TArray<UAnimMontage*> ChargeAttackArray;
+
+	switch (CombatState)
+	{
+	case ECharacterCombatState::OneHandSword:
+		AnimationsCount = UKismetMathLibrary::RandomInteger(OneHandChargeAttack.Num());
+		ChargeAttackArray = OneHandChargeAttack;
+		break;
+	case ECharacterCombatState::TwoHandSword:
+		AnimationsCount = UKismetMathLibrary::RandomInteger(TwoHandsChargeAttack.Num());
+		ChargeAttackArray = TwoHandsChargeAttack;
+		break;
+	case ECharacterCombatState::OneHandShield:
+		break;
+	case ECharacterCombatState::OneHandTorch:
+		break;
+	case ECharacterCombatState::TwoBareHand:
+		break;
+	default:
+		break;
+	}
+
+	if (ChargeAttackArray.Num() > 0) {
+		AnimationsCount = UKismetMathLibrary::RandomInteger(ChargeAttackArray.Num());
+		if (ChargeAttackArray.IsValidIndex(AnimationsCount)) {
+			PlayAnimMontage(ChargeAttackArray[AnimationsCount]);
+			ResetCombo();
+		}
+
+	}
+
+}
+
 
 
 // Called every frame

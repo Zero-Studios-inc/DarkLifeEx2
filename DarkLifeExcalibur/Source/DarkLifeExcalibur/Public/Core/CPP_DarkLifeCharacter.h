@@ -167,6 +167,10 @@ public:
 		TArray<UAnimMontage*> ParryFinisher;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> BackFinisher;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> OneHandChargeAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> TwoHandsChargeAttack;
 	
 
 	//Character Variables
@@ -247,7 +251,8 @@ public:
 		bool bDrawShieldPreviousState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		bool bTorchPreviousState;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		double ChargeAttackKeyDownTime = 1.5f;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Camera Transitions")
 		AActor* CurrentViewActor;
@@ -360,6 +365,8 @@ public:
 		void PlayFromTheBackFinisherAnimation(int backFinishIndex, UAnimMontage*& FromTheBackMontage);
 	UFUNCTION(BlueprintCallable, Category = "Animations")
 		void PlayRandomFinishAnimation(ECharacterFinishMoveType FinishMovementType, double& AnimationLenght);
+	UFUNCTION(BlueprintCallable, Category = "Animations")
+		void PlayRandomChargeAnimationByCombatState();
 
 
 

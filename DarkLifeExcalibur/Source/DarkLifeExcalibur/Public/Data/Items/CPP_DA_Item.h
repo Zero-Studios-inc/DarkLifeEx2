@@ -23,13 +23,16 @@ enum class EItemCategory : uint8 {
 
 
 UCLASS()
-class DARKLIFEEXCALIBUR_API UCPP_DA_Item : public UDataAsset
+class DARKLIFEEXCALIBUR_API UCPP_DA_Item : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 
+
+
+
 public:
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-		EItemCategory ItemType;
+UPROPERTY(BlueprintReadOnly)
+	EItemCategory ItemType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString ItemName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -51,5 +54,4 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USoundBase* Sound;
 
-	
 };

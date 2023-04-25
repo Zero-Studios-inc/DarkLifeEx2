@@ -28,11 +28,14 @@ class DARKLIFEEXCALIBUR_API UCPP_DA_Item_ExcaliburModule : public UCPP_DA_Item
 {
 	GENERATED_BODY()
 public:
+
+	UCPP_DA_Item_ExcaliburModule()
+	{
+		ItemType = EItemCategory::ExcaliburModule;
+	}
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 ID;
-
-protected:
 	UPROPERTY(BlueprintReadOnly)
 		EExcaliburPart ExcaliburPart;
 	

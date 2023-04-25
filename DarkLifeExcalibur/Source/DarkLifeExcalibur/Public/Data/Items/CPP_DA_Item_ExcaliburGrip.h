@@ -14,4 +14,7 @@ class DARKLIFEEXCALIBUR_API UCPP_DA_Item_ExcaliburGrip : public UCPP_DA_Item_Exc
 {
 	GENERATED_BODY()
 	
+		UCPP_DA_Item_ExcaliburGrip() {
+		ExcaliburPart = EExcaliburPart::Grip;
+	}
 };

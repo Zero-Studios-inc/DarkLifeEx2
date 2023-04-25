@@ -14,4 +14,9 @@ class DARKLIFEEXCALIBUR_API UCPP_DA_Item_ExcaliburPommel : public UCPP_DA_Item_E
 {
 	GENERATED_BODY()
 	
+public:
+	UCPP_DA_Item_ExcaliburPommel()
+	{
+		ExcaliburPart = EExcaliburPart::Pommel;
+	}
 };

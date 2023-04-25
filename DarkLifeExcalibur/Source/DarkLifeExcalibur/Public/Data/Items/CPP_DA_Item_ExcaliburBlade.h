@@ -14,7 +14,16 @@ class DARKLIFEEXCALIBUR_API UCPP_DA_Item_ExcaliburBlade : public UCPP_DA_Item_Ex
 {
 	GENERATED_BODY()
 
-private:
-		EExcaliburPart ExcaliburPart = EExcaliburPart::Blade;
+	
+public:
+	
+	UCPP_DA_Item_ExcaliburBlade()
+	{
+		ExcaliburPart = EExcaliburPart::Blade;
+	}
+
+UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double Fracture;
+	
 	
 };

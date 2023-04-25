@@ -13,5 +13,11 @@ UCLASS()
 class DARKLIFEEXCALIBUR_API UCPP_DA_Item_ExcaliburCrossguard : public UCPP_DA_Item_ExcaliburModule
 {
 	GENERATED_BODY()
+
+public:
+	 
+	UCPP_DA_Item_ExcaliburCrossguard() {
+		ExcaliburPart = EExcaliburPart::Crossguard;
+	}
 	
 };

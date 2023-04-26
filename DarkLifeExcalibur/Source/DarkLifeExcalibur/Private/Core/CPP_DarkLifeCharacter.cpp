@@ -495,6 +495,7 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 		if (bSprint) {
 			if (AttackOnSprintAnimations.IsValidIndex((int32)CombatState)) {
 				PlayAnimMontage(AttackOnSprintAnimations[(int32)CombatState]);
+				UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), ChargeAttackTimer);
 				Success = true;
 			}
 		}

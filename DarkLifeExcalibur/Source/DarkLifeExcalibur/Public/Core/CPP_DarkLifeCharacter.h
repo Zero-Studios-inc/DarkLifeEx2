@@ -253,6 +253,8 @@ public:
 		bool bTorchPreviousState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		double ChargeAttackKeyDownTime = 1.5f;
+	UPROPERTY(BlueprintReadWrite, Category = "Attack")
+		FTimerHandle ChargeAttackTimer;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Camera Transitions")
 		AActor* CurrentViewActor;

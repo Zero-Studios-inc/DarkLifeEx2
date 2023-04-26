@@ -12,6 +12,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/KismetInputLibrary.h"
 #include "Engine/EngineTypes.h"
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
@@ -253,8 +254,12 @@ public:
 		bool bTorchPreviousState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		double ChargeAttackKeyDownTime = 1.5f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		bool bAttackKeyPressed = false;
 	UPROPERTY(BlueprintReadWrite, Category = "Attack")
 		FTimerHandle ChargeAttackTimer;
+	UPROPERTY(BlueprintReadWrite, Category = "Attack")
+		FKey LightAttackKey;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Camera Transitions")
 		AActor* CurrentViewActor;
@@ -291,6 +296,10 @@ protected:
 		void SetRunSpeed();
 	UFUNCTION()
 		void SetCrouchSpeed();
+	UFUNCTION(BlueprintCallable)
+		void CheckChargeAttackKey();
+	UFUNCTION(BlueprintCallable)
+		void AttackFunction();
 
 	//Input
 

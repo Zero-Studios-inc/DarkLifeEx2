@@ -127,6 +127,37 @@ void ACPP_DarkLifeCharacter::SetCrouchSpeed()
 	GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;
 }
 
+void ACPP_DarkLifeCharacter::CheckChargeAttackKey()
+{
+	bool bKeyDownTimeCheck = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetInputKeyTimeDown(LightAttackKey) >= ChargeAttackKeyDownTime;
+	if ((UKismetInputLibrary::Key_IsValid(LightAttackKey)) && bKeyDownTimeCheck) {
+		if (!bIsAttacking) {
+			PlayRandomChargeAnimationByCombatState();
+			UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), ChargeAttackTimer);
+		}
+		else {
+			UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), ChargeAttackTimer);
+		}
+
+	
+	}
+}
+
+void ACPP_DarkLifeCharacter::AttackFunction()
+{
+	if (bIsAttacking) {
+		bSaveAttack = true;
+	}
+	else {
+		bIsAttacking = true;
+		bAttackKeyPressed = true;
+		bool bAttackSuccess;
+		PlayAnimationByCharacterState(ComboCounter, bAttackSuccess);
+		SetCharacterMovement(ECharacterMovement::Jog);
+		GetWorldTimerManager().SetTimer(ChargeAttackTimer, this, &ACPP_DarkLifeCharacter::CheckChargeAttackKey, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), true,-1.0f);
+	}
+}
+
 void ACPP_DarkLifeCharacter::SetRunSpeed()
 {
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;

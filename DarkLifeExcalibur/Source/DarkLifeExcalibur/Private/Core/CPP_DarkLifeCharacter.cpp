@@ -145,16 +145,21 @@ void ACPP_DarkLifeCharacter::CheckChargeAttackKey()
 
 void ACPP_DarkLifeCharacter::AttackFunction()
 {
-	if (bIsAttacking) {
-		bSaveAttack = true;
-	}
-	else {
-		bIsAttacking = true;
-		bAttackKeyPressed = true;
-		bool bAttackSuccess;
-		PlayAnimationByCharacterState(ComboCounter, bAttackSuccess);
-		SetCharacterMovement(ECharacterMovement::Jog);
-		GetWorldTimerManager().SetTimer(ChargeAttackTimer, this, &ACPP_DarkLifeCharacter::CheckChargeAttackKey, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), true,-1.0f);
+	if (Stamina >= 20.0f) {
+
+		UKismetSystemLibrary::K2_PauseTimer(this, "StaminaIncrease");
+
+		if (bIsAttacking) {
+			bSaveAttack = true;
+		}
+		else {
+			bIsAttacking = true;
+			bAttackKeyPressed = true;
+			bool bAttackSuccess;
+			PlayAnimationByCharacterState(ComboCounter, bAttackSuccess);
+			SetCharacterMovement(ECharacterMovement::Jog);
+			GetWorldTimerManager().SetTimer(ChargeAttackTimer, this, &ACPP_DarkLifeCharacter::CheckChargeAttackKey, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), true, -1.0f);
+		}
 	}
 }
 
@@ -565,6 +570,13 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 	UpdateStaminaByCharacterCombatState();
 	//StopSprint();
 
+}
+
+void ACPP_DarkLifeCharacter::SaveComboAttack()
+{
+	if (bSaveAttack) {
+		bIsAttacking = true;
+	}
 }
 
 void ACPP_DarkLifeCharacter::SetVariablesByCombatState()

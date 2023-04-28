@@ -357,7 +357,8 @@ public:
 		void HandWeaponsVisibility(bool hide);
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void PlayAnimationByCharacterState(int32 animationIndex, bool& Success);
-	
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+		void SaveComboAttack();
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void SetVariablesByCombatState();
 	UFUNCTION(BlueprintCallable, Category = "Attack")

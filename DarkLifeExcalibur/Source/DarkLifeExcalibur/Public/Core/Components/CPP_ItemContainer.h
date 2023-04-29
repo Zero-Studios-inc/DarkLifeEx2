@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "../../Data/Items/CPP_DA_Item.h"
+#include "../../Data/Items/Runes/CPP_DA_Item_Rune_Attack.h"
+#include "../../Data/Items/Runes/CPP_DA_Item_Rune_Pasive.h"
 #include "CPP_ItemContainer.generated.h"
 
 
@@ -23,6 +26,15 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<UCPP_DA_Item_Rune*> RunesSlots;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TMap<UCPP_DA_Item*, int> MainInventory;
+
+
+
+
+public:
 
 		
 };

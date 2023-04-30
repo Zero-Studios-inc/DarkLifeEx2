@@ -32,3 +32,56 @@ void UCPP_ItemContainer::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	// ...
 }
 
+UCPP_DA_Item_Rune* UCPP_ItemContainer::GetRuneBySlotIndex(int index)
+{
+	if ((index >= 0) && (index < 4))
+	{
+		if (RunesSlots.IsValidIndex(index)) {
+			return RunesSlots[index];
+		}
+		else return nullptr;
+	}
+	else return nullptr;
+}
+
+void UCPP_ItemContainer::SetRuneBySlotIndex(int index, UCPP_DA_Item_Rune* Rune)
+{
+	if ((index >= 0) && (index < 4))
+	{
+		if (RunesSlots.IsValidIndex(index)) {
+			RunesSlots[index] = Rune;
+		}
+
+
+	}
+}
+
+void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item)
+{
+	int Value = 0;
+	if (MainInventory.Contains(Item))
+	{
+		
+		MainInventory[Item]++;
+		Value = MainInventory[Item];
+	}
+	else
+	{
+		
+		MainInventory.Add(Item, 1);
+		Value = 1;
+	}
+}
+
+
+int UCPP_ItemContainer::GetInventoryItemAmount(UCPP_DA_Item* Item)
+{
+	if ((MainInventory.Contains(Item)))
+	{
+		int Amount = 0;
+			Amount = MainInventory[Item];
+			return Amount;
+	}
+	else return -1;
+}
+

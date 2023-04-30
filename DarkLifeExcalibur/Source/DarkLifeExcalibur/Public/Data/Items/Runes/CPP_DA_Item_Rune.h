@@ -19,8 +19,9 @@ enum class ERuneType : uint8 {
 
 UENUM(BlueprintType)
 enum class ERuneMagicEffect :uint8 {
-	Fire = 0 UMETA(DisplayName = "Fire"),
-	Ice = 1 UMETA(DisplayName = "Ice"),
+	None = 0 UMETA(DisplayName = "None"),
+	Fire = 1 UMETA(DisplayName = "Fire"),
+	Ice = 2 UMETA(DisplayName = "Ice")
 
 };
 

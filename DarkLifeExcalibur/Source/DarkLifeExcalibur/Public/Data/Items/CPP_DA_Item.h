@@ -42,15 +42,15 @@ UPROPERTY(BlueprintReadOnly)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FColor LightColor;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UParticleSystem* ItemParticles;
+		TSoftObjectPtr<UParticleSystem> ItemParticles;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UTexture2D* ItemPicture;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UTexture2D* ItemIcon;
+		TSoftObjectPtr<UTexture2D> ItemIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UStaticMesh* DropMesh;
+		TSoftObjectPtr<UStaticMesh> DropMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UStaticMesh* EquipMesh;
+		TSoftObjectPtr<UStaticMesh> EquipMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USoundBase* Sound;
 

@@ -41,4 +41,12 @@ public:
 		void SetInventoryItem(UCPP_DA_Item* Item);
 	UFUNCTION(BlueprintCallable)
 		int GetInventoryItemAmount(UCPP_DA_Item* Item);
+
+	UFUNCTION(BlueprintCallable)
+		void DeleteItemFromInventory(UCPP_DA_Item* Item, bool& Success);
+
+	UFUNCTION(BlueprintCallable)
+		bool CheckItemsExitenceInInventory(TArray<UCPP_DA_Item*> ItemsList);
+	UFUNCTION(BlueprintCallable)
+		void DeleteItemsListFromInventory(TArray<UCPP_DA_Item*> ItemsList);
 };

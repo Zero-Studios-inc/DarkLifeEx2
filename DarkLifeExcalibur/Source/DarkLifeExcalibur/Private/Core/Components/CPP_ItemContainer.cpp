@@ -85,3 +85,43 @@ int UCPP_ItemContainer::GetInventoryItemAmount(UCPP_DA_Item* Item)
 	else return -1;
 }
 
+void UCPP_ItemContainer::DeleteItemFromInventory(UCPP_DA_Item* Item, bool& Success)
+{
+	if ((MainInventory.Contains(Item))) {
+		MainInventory[Item]--;
+		Success = true;
+		if ((MainInventory[Item] == 0)) {
+			MainInventory.Remove(Item);
+		}
+	}
+	else {
+		Success = false;
+	}
+}
+
+bool UCPP_ItemContainer::CheckItemsExitenceInInventory(TArray<UCPP_DA_Item*> ItemsList)
+{
+	if ((!ItemsList.IsEmpty()) && (!MainInventory.IsEmpty())) {
+		for (size_t i = 0; i < ItemsList.Num(); i++)
+		{
+			if (GetInventoryItemAmount(ItemsList[i]) < 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+	else return false;
+	
+}
+
+void UCPP_ItemContainer::DeleteItemsListFromInventory(TArray<UCPP_DA_Item*> ItemsList)
+{
+	bool Success;
+	if ((!ItemsList.IsEmpty()) && (!MainInventory.IsEmpty())) {
+		for (size_t i = 0; i < ItemsList.Num(); i++)
+		{
+			DeleteItemFromInventory(ItemsList[i],Success);
+		}
+	}
+}
+

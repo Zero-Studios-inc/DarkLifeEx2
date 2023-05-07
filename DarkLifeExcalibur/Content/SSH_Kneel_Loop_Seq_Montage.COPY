@@ -1,0 +1,20 @@
+Begin Object Class=/Script/Engine.AnimMontage Name="SSH_Kneel_Loop_Seq_Montage"
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfo Name="SceneThumbnailInfo_0"
+   End Object
+   Begin Object Class=/Script/Engine.AnimDataModel Name="AnimationDataModel"
+   End Object
+   Begin Object Name="SceneThumbnailInfo_0"
+   End Object
+   Begin Object Name="AnimationDataModel"
+      PlayLength=7.333333
+      NumberOfFrames=440000
+      NumberOfKeys=440001
+   End Object
+   CompositeSections(0)=(SectionName="Default")
+   SlotAnimTracks(0)=(AnimTrack=(AnimSegments=((AnimReference=AnimSequence'"/Game/EssentialSwordShieldAnimationPack/Animation/Sequence/SSH/Guard/SSH_Guard_Break_Seq.SSH_Guard_Break_Seq"',AnimEndTime=2.000000),(AnimReference=AnimSequence'"/Game/EssentialSwordShieldAnimationPack/Animation/Sequence/SSH/Kneel/SSH_Kneel_Begin_Seq.SSH_Kneel_Begin_Seq"',StartPos=2.000000,AnimEndTime=1.166667),(AnimReference=AnimSequence'"/Game/EssentialSwordShieldAnimationPack/Animation/Sequence/SSH/Kneel/SSH_Kneel_Loop_Seq.SSH_Kneel_Loop_Seq"',StartPos=3.166667,AnimEndTime=2.500000),(AnimReference=AnimSequence'"/Game/EssentialSwordShieldAnimationPack/Animation/Sequence/SSH/Kneel/SSH_Kneel_End_Seq.SSH_Kneel_End_Seq"',StartPos=5.666667,AnimEndTime=1.666667))))
+   SequenceLength=7.333333
+   AnimNotifyTracks(0)=(TrackName="1",TrackColor=(R=0.500000,G=0.500000,B=0.500000,A=1.000000))
+   DataModel=AnimDataModel'"AnimationDataModel"'
+   Skeleton=Skeleton'"/Game/EssentialSwordShieldAnimationPack/Demo/Mannequin/Character/Mesh/UE4_Mannequin_Skeleton.UE4_Mannequin_Skeleton"'
+   ThumbnailInfo=SceneThumbnailInfo'"SceneThumbnailInfo_0"'
+End Object

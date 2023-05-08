@@ -101,6 +101,8 @@ public:
 		bool bParryExecution = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		bool bExecutionActive = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+		double HealthPercentExecution = 0.5;
 
 
     

@@ -125,3 +125,71 @@ void UCPP_ItemContainer::DeleteItemsListFromInventory(TArray<UCPP_DA_Item*> Item
 	}
 }
 
+bool UCPP_ItemContainer::IsItemEquipped(UCPP_DA_Item* Item)
+{
+	EItemCategory ItemCategory = Item->ItemType;
+	UCPP_DA_Item_ExcaliburModule* ExcaliburModuleType = Cast<UCPP_DA_Item_ExcaliburModule>(Item);
+	switch (ItemCategory)
+	{
+	case EItemCategory::ExcaliburModule:
+		
+		if (IsValid(ExcaliburModuleType)) {
+			EExcaliburPart ExcaliburPart = ExcaliburModuleType->ExcaliburPart;
+			switch (ExcaliburPart)
+			{
+			case EExcaliburPart::Pommel:
+				if (ExcaliburPommel == Cast<UCPP_DA_Item_ExcaliburPommel>(Item))
+				{
+					return true;
+				}
+				break;
+			case EExcaliburPart::Grip:
+				if (ExcaliburGrip == Cast<UCPP_DA_Item_ExcaliburGrip>(Item)) {
+					return true;
+				}
+				break;
+			case EExcaliburPart::Crossguard:
+				if (ExcaliburCrossguard == Cast<UCPP_DA_Item_ExcaliburCrossguard>(Item)) {
+					return true;
+				}
+				break;
+			case EExcaliburPart::Blade:
+				if (ExcaliburBlade == Cast<UCPP_DA_Item_ExcaliburBlade>(Item)) {
+				return true;
+			}
+				break;
+			default:
+				break;
+			}
+		}
+		break;
+	case EItemCategory::Shield:
+		break;
+	case EItemCategory::Consumable:
+		break;
+	case EItemCategory::Rune:
+		if (RunesSlots.Find(Cast<UCPP_DA_Item_Rune>(Item)) > -1)
+		{
+			return true;
+		}
+		break;
+	case EItemCategory::Ability:
+		break;
+	default:
+		break;
+	}
+	return false;
+}
+
+void UCPP_ItemContainer::LoadSavedInfo(UCPP_DarkLifeSaveGame* SaveGame)
+{
+	if (IsValid(SaveGame)) {
+		SavedGame = SaveGame;
+		ExcaliburPommel = SavedGame->ExcaliburPommel;
+		ExcaliburGrip = SavedGame->ExcaliburGrip;
+		ExcaliburCrossguard = SavedGame->ExcaliburCrossguard;
+		ExcaliburBlade = SavedGame->ExcaliburBlade;
+	}
+		
+}
+

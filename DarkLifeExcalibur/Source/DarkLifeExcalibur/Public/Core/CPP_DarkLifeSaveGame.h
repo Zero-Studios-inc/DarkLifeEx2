@@ -4,6 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "Data/Items/CPP_DA_Item.h"
+#include "Data/Items/Runes/CPP_DA_Item_Rune_Attack.h"
+#include "Data/Items/Runes/CPP_DA_Item_Rune_Pasive.h"
+#include "Data/Items/CPP_DA_Item_ExcaliburPommel.h"
+#include "Data/Items/CPP_DA_Item_ExcaliburGrip.h"
+#include "Data/Items/CPP_DA_Item_ExcaliburCrossguard.h"
+#include "Data/Items/CPP_DA_Item_ExcaliburBlade.h"
+#include "Containers/Map.h"
 #include "CPP_DarkLifeSaveGame.generated.h"
 
 /**
@@ -61,7 +69,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
 		int32 ProjectileAmount;
 
-
+	//Excalibur Equipped Parts
+	UPROPERTY(BlueprintReadWrite, Category = "Inventory|Excalibur")
+	UCPP_DA_Item_ExcaliburPommel* ExcaliburPommel;
+	UPROPERTY(BlueprintReadWrite, Category = "Inventory|Excalibur")
+	UCPP_DA_Item_ExcaliburGrip* ExcaliburGrip;
+	UPROPERTY(BlueprintReadWrite, Category = "Inventory|Excalibur")
+	UCPP_DA_Item_ExcaliburCrossguard* ExcaliburCrossguard;
+	UPROPERTY(BlueprintReadWrite, Category = "Inventory|Excalibur")
+	UCPP_DA_Item_ExcaliburBlade* ExcaliburBlade;
 
 	
 };

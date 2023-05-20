@@ -53,5 +53,7 @@ UPROPERTY(BlueprintReadOnly)
 		TSoftObjectPtr<UStaticMesh> EquipMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USoundBase* Sound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSoftObjectPtr<USkeletalMesh> SK_Mesh;
 
 };

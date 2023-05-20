@@ -45,6 +45,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 		FName StreamingLevelName;
 
+	
+
+
 	//Character
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
 		int32 CharacterLevel = 1;
@@ -70,14 +73,32 @@ public:
 		int32 ProjectileAmount;
 
 	//Excalibur Equipped Parts
-	UPROPERTY(BlueprintReadWrite, Category = "Inventory|Excalibur")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory|Excalibur")
 	UCPP_DA_Item_ExcaliburPommel* ExcaliburPommel;
-	UPROPERTY(BlueprintReadWrite, Category = "Inventory|Excalibur")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory|Excalibur")
 	UCPP_DA_Item_ExcaliburGrip* ExcaliburGrip;
-	UPROPERTY(BlueprintReadWrite, Category = "Inventory|Excalibur")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Inventory|Excalibur")
 	UCPP_DA_Item_ExcaliburCrossguard* ExcaliburCrossguard;
-	UPROPERTY(BlueprintReadWrite, Category = "Inventory|Excalibur")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory|Excalibur")
 	UCPP_DA_Item_ExcaliburBlade* ExcaliburBlade;
 
+public:
+	UFUNCTION(BlueprintCallable)
+		void ParametersCalculation();
+
+
+private:
+	UFUNCTION()
+		void CalculateHealth();
+	UFUNCTION()
+		void CalculateStamina();
+	UFUNCTION()
+		void CalculateDefense();
+	UFUNCTION()
+		void CalculateBeast();
+	UFUNCTION()
+		void CalculateFracture();
+	UFUNCTION()
+		void CalculateRecharge();
 	
 };

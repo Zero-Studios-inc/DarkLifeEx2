@@ -81,5 +81,6 @@ public:
 		bool IsItemEquipped(UCPP_DA_Item* Item);
 
 	//Load Saved Info
+	UFUNCTION(BlueprintCallable)
 	void LoadSavedInfo(UCPP_DarkLifeSaveGame* SaveGame);
 };

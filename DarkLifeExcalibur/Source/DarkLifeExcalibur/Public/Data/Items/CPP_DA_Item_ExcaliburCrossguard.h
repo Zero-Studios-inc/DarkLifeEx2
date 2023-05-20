@@ -19,5 +19,6 @@ public:
 	UCPP_DA_Item_ExcaliburCrossguard() {
 		ExcaliburPart = EExcaliburPart::Crossguard;
 	}
+
 	
 };

@@ -19,6 +19,7 @@ void UCPP_ItemContainer::BeginPlay()
 {
 	Super::BeginPlay();
 
+
 	// ...
 	
 }
@@ -183,6 +184,7 @@ bool UCPP_ItemContainer::IsItemEquipped(UCPP_DA_Item* Item)
 
 void UCPP_ItemContainer::LoadSavedInfo(UCPP_DarkLifeSaveGame* SaveGame)
 {
+	
 	if (IsValid(SaveGame)) {
 		SavedGame = SaveGame;
 		ExcaliburPommel = SavedGame->ExcaliburPommel;

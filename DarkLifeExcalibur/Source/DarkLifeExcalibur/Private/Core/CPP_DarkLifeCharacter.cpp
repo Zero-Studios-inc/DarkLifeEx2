@@ -731,12 +731,13 @@ void ACPP_DarkLifeCharacter::PlayFromTheBackFinisherAnimation(int backFinishInde
 	 }
 }
 
-void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType FinishMovementType, double& AnimationLength)
+void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType FinishMovementType, double& AnimationLength, bool& Success)
 {
+	Success = true;
 	if (IsValid(CurrentEnemy)) {
 		ACPP_Enemy* EnemyRef = Cast<ACPP_Enemy>(CurrentEnemy);
 		if (IsValid(EnemyRef)) {
-			if ((EnemyRef->bCanBeExecuted)&&(EnemyRef->bExecutionActive)) {
+			if ((EnemyRef->bCanBeExecuted) && (EnemyRef->bExecutionActive)) {
 
 				int randomIndex = 0;
 				UAnimMontage* ParryMontage = nullptr;
@@ -746,35 +747,45 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 				switch (FinishMovementType)
 				{
 				case ECharacterFinishMoveType::AfterParry:
-					
+
 					if (CombatState == ECharacterCombatState::TwoHandSword) {
 						LocalParryFinisherAnimation = TwoHandsParryFinisher;
 					}
 					else LocalParryFinisherAnimation = OneHandParryFinisher;
 
-					randomIndex = UKismetMathLibrary::RandomInteger(LocalParryFinisherAnimation.Num());
-					PlayParryFinisherAnimation(randomIndex, ParryMontage, LocalParryFinisherAnimation);
-					EnemyRef->PlayParryFinisherAnimation(randomIndex, CombatState);
-					AnimationLength = ParryMontage->GetPlayLength();
-					break;
+					if (!LocalParryFinisherAnimation.IsEmpty()) {
+
+						randomIndex = UKismetMathLibrary::RandomInteger(LocalParryFinisherAnimation.Num());
+						PlayParryFinisherAnimation(randomIndex, ParryMontage, LocalParryFinisherAnimation);
+						EnemyRef->PlayParryFinisherAnimation(randomIndex, CombatState);
+						AnimationLength = ParryMontage->GetPlayLength();
+						break;
+					}
+
+					else {
+						Success = false;
+						break;
+					}
 				case ECharacterFinishMoveType::FromTheBack:
-					
+
 					randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num());
 					PlayFromTheBackFinisherAnimation(randomIndex, BackMontage);
 					EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
 					AnimationLength = BackMontage->GetPlayLength();
 					break;
 				default:
-					
+
 					randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num());
 					PlayFromTheBackFinisherAnimation(randomIndex, BackMontage);
 					EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
 					AnimationLength = BackMontage->GetPlayLength();
 					break;
 				}
-		  }
+			}
 		}
 	}
+
+	else Success = false;
 }
 
 void ACPP_DarkLifeCharacter::PlayRandomChargeAnimationByCombatState()

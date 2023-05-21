@@ -378,7 +378,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Animations")
 		void PlayFromTheBackFinisherAnimation(int backFinishIndex, UAnimMontage*& FromTheBackMontage);
 	UFUNCTION(BlueprintCallable, Category = "Animations")
-		void PlayRandomFinishAnimation(ECharacterFinishMoveType FinishMovementType, double& AnimationLenght);
+		void PlayRandomFinishAnimation(ECharacterFinishMoveType FinishMovementType, double& AnimationLenght, bool& Success);
 	UFUNCTION(BlueprintCallable, Category = "Animations")
 		void PlayRandomChargeAnimationByCombatState();
 

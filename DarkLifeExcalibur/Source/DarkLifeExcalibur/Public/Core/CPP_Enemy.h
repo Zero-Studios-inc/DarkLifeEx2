@@ -150,7 +150,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray <UAnimMontage*> DistanceAnim;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
-		TArray <UAnimMontage*> ParryFinisher;
+		TArray <UAnimMontage*> OneHandParryFinisher;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray <UAnimMontage*> TwoHandsParryFinisher;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> BackFinisher;
 
@@ -208,7 +210,7 @@ public:
 	void HitAnimation(FHitResult HitInfo, ECharacterDamageType DamageType, int32 ComboCounter);
 
 	UFUNCTION(BlueprintCallable, Category = "Animation")
-		void PlayParryFinisherAnimation(int parryFinishAnimation);
+		void PlayParryFinisherAnimation(int parryFinishAnimation, ECharacterCombatState CharacterCombatState);
 	UFUNCTION(BlueprintCallable, Category = "Animation")
 		void PlayFromTheBackFinisherAnimation(int backFinishIndex);
 

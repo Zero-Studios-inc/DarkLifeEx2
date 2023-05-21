@@ -710,12 +710,12 @@ void ACPP_DarkLifeCharacter::SetCharacterNegativeStatus(ECharacterNegativeStatus
 	CurrentCharacterNegativeStatus = NewNegativeStatus;
 }
 
-void ACPP_DarkLifeCharacter::PlayParryFinisherAnimation(int parryIndex, UAnimMontage*& ParryMontage)
+void ACPP_DarkLifeCharacter::PlayParryFinisherAnimation(int parryIndex, UAnimMontage*& ParryMontage, TArray<UAnimMontage*>& ParryAnimList)
 {
-	if (ParryFinisher.IsValidIndex(parryIndex)) {
-		if (IsValid(ParryFinisher[parryIndex])) {
-			PlayAnimMontage(ParryFinisher[parryIndex]);
-			ParryMontage = ParryFinisher[parryIndex];
+	if (OneHandParryFinisher.IsValidIndex(parryIndex)) {
+		if (IsValid(ParryAnimList[parryIndex])) {
+			PlayAnimMontage(ParryAnimList[parryIndex]);
+			ParryMontage = ParryAnimList[parryIndex];
 			
 		}
 	}
@@ -741,14 +741,20 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 				int randomIndex = 0;
 				UAnimMontage* ParryMontage = nullptr;
 				UAnimMontage* BackMontage = nullptr;
+				TArray<UAnimMontage*> LocalParryFinisherAnimation;
 
 				switch (FinishMovementType)
 				{
 				case ECharacterFinishMoveType::AfterParry:
 					
-					randomIndex = UKismetMathLibrary::RandomInteger(ParryFinisher.Num());
-					PlayParryFinisherAnimation(randomIndex, ParryMontage);
-					EnemyRef->PlayParryFinisherAnimation(randomIndex);
+					if (CombatState == ECharacterCombatState::TwoHandSword) {
+						LocalParryFinisherAnimation = TwoHandsParryFinisher;
+					}
+					else LocalParryFinisherAnimation = OneHandParryFinisher;
+
+					randomIndex = UKismetMathLibrary::RandomInteger(LocalParryFinisherAnimation.Num());
+					PlayParryFinisherAnimation(randomIndex, ParryMontage, LocalParryFinisherAnimation);
+					EnemyRef->PlayParryFinisherAnimation(randomIndex, CombatState);
 					AnimationLength = ParryMontage->GetPlayLength();
 					break;
 				case ECharacterFinishMoveType::FromTheBack:

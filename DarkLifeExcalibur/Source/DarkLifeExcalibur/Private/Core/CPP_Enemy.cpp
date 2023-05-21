@@ -252,12 +252,19 @@ void ACPP_Enemy::HitAnimation(FHitResult HitInfo, ECharacterDamageType DamageTyp
 	}
 }
 
-void ACPP_Enemy::PlayParryFinisherAnimation(int parryFinishAnimation)
+void ACPP_Enemy::PlayParryFinisherAnimation(int parryFinishAnimation, ECharacterCombatState CharacterCombatState)
 {
+	TArray<UAnimMontage*> LocalParryFinisherAnimations;
 
-		if (ParryFinisher.IsValidIndex(parryFinishAnimation)) {
-			if (IsValid(ParryFinisher[parryFinishAnimation])) {
-				PlayAnimMontage(ParryFinisher[parryFinishAnimation]);
+	if (CharacterCombatState == ECharacterCombatState::TwoHandSword) {
+		LocalParryFinisherAnimations = TwoHandsParryFinisher;
+	}
+
+	else LocalParryFinisherAnimations = OneHandParryFinisher;
+
+		if (LocalParryFinisherAnimations.IsValidIndex(parryFinishAnimation)) {
+			if (IsValid(LocalParryFinisherAnimations[parryFinishAnimation])) {
+				PlayAnimMontage(LocalParryFinisherAnimations[parryFinishAnimation]);
 				
 			}
 		}

@@ -165,7 +165,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> StuntAnimations;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
-		TArray<UAnimMontage*> ParryFinisher;
+		TArray<UAnimMontage*> OneHandParryFinisher;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+		TArray<UAnimMontage*> TwoHandsParryFinisher;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> BackFinisher;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
@@ -372,7 +374,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character Status")
 	void SetCharacterNegativeStatus(ECharacterNegativeStatus NewNegativeStatus);
 	UFUNCTION(BlueprintCallable, Category = "Animations")
-		void PlayParryFinisherAnimation(int parryIndex, UAnimMontage*& ParryMontage);
+		void PlayParryFinisherAnimation(int parryIndex, UAnimMontage*& ParryMontage, TArray<UAnimMontage*>& ParryAnimList);
 	UFUNCTION(BlueprintCallable, Category = "Animations")
 		void PlayFromTheBackFinisherAnimation(int backFinishIndex, UAnimMontage*& FromTheBackMontage);
 	UFUNCTION(BlueprintCallable, Category = "Animations")

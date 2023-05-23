@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "../../Core/CPP_DarkLifeCharacter.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "CPP_DA_Item.generated.h"
 
 /**
@@ -56,7 +57,9 @@ UPROPERTY(BlueprintReadOnly)
 		USoundBase* Sound;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSoftObjectPtr<USkeletalMesh> SK_Mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UAnimMontage* UseItemActionAnimation;
 
 	UFUNCTION(BlueprintCallable)
-		void UseItem();
+		virtual void UseItem(ACPP_DarkLifeCharacter* CharacterRef);
 };

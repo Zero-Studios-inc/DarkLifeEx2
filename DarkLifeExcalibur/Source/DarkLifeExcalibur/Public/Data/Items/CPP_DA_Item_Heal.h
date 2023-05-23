@@ -18,5 +18,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		double HealPercent = 3.0f;
 	
-	
+	void UseItem(ACPP_DarkLifeCharacter* CharacterRef) override;
 };

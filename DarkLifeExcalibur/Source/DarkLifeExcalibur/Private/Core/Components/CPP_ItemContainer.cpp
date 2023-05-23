@@ -84,6 +84,7 @@ int UCPP_ItemContainer::GetInventoryItemAmount(UCPP_DA_Item* Item)
 			return Amount;
 	}
 	else return -1;
+
 }
 
 void UCPP_ItemContainer::DeleteItemFromInventory(UCPP_DA_Item* Item, bool& Success)
@@ -181,6 +182,12 @@ bool UCPP_ItemContainer::IsItemEquipped(UCPP_DA_Item* Item)
 	}
 	return false;
 }
+
+void UCPP_ItemContainer::GetItemInfo(UCPP_DA_Item* Item, UCPP_DA_Item*& ItemInfo)
+{
+	ItemInfo = Item;
+}
+
 
 void UCPP_ItemContainer::LoadSavedInfo(UCPP_DarkLifeSaveGame* SaveGame)
 {

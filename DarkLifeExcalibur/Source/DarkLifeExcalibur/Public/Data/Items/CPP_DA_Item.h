@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "../../Core/CPP_DarkLifeCharacter.h"
 #include "CPP_DA_Item.generated.h"
 
 /**
@@ -56,4 +57,6 @@ UPROPERTY(BlueprintReadOnly)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSoftObjectPtr<USkeletalMesh> SK_Mesh;
 
+	UFUNCTION(BlueprintCallable)
+		void UseItem();
 };

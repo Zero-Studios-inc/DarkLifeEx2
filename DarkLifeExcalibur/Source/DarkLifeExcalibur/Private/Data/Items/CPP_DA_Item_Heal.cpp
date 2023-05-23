@@ -9,5 +9,7 @@ void UCPP_DA_Item_Heal::UseItem(ACPP_DarkLifeCharacter* CharacterRef) {
 		if (IsValid(UseItemActionAnimation)) {
 			CharacterRef->PlayAnimMontage(UseItemActionAnimation);
 		}
+		
+		CharacterRef->SetCharacterNegativeStatus(ECharacterNegativeStatus::None);
 	}
 }

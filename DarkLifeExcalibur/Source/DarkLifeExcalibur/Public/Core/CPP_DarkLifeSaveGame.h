@@ -11,6 +11,7 @@
 #include "Data/Items/CPP_DA_Item_ExcaliburGrip.h"
 #include "Data/Items/CPP_DA_Item_ExcaliburCrossguard.h"
 #include "Data/Items/CPP_DA_Item_ExcaliburBlade.h"
+#include "../Data/Items/CPP_DA_Item_Shield.h"
 #include "Containers/Map.h"
 #include "CPP_DarkLifeSaveGame.generated.h"
 
@@ -81,6 +82,15 @@ public:
 	UCPP_DA_Item_ExcaliburCrossguard* ExcaliburCrossguard;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory|Excalibur")
 	UCPP_DA_Item_ExcaliburBlade* ExcaliburBlade;
+
+   //Equipped Shield
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	UCPP_DA_Item_Shield* Shield;
+
+   //Inventory
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	TMap<UCPP_DA_Item*, int> Inventory;
+
 
 public:
 	UFUNCTION(BlueprintCallable)

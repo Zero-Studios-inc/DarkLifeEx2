@@ -12,6 +12,7 @@
 #include "../../Data/Items/CPP_DA_Item_ExcaliburGrip.h"
 #include "../../Data/Items/CPP_DA_Item_ExcaliburCrossguard.h"
 #include "../../Data/Items/CPP_DA_Item_ExcaliburBlade.h"
+#include "../../Data/Items/CPP_DA_Item_Shield.h"
 #include "Containers/Map.h"
 #include "CPP_ItemContainer.generated.h"
 
@@ -50,6 +51,8 @@ public:
 	UCPP_DA_Item_ExcaliburCrossguard* ExcaliburCrossguard;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCPP_DA_Item_ExcaliburBlade* ExcaliburBlade;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UCPP_DA_Item_Shield* Shield;
 
 
 public:

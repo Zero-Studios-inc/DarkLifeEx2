@@ -198,6 +198,8 @@ void UCPP_ItemContainer::LoadSavedInfo(UCPP_DarkLifeSaveGame* SaveGame)
 		ExcaliburGrip = SavedGame->ExcaliburGrip;
 		ExcaliburCrossguard = SavedGame->ExcaliburCrossguard;
 		ExcaliburBlade = SavedGame->ExcaliburBlade;
+		Shield = SavedGame->Shield;
+		MainInventory = SavedGame->Inventory;
 	}
 		
 }

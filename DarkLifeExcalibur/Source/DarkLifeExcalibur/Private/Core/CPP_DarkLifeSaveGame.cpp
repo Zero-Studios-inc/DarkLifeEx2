@@ -26,7 +26,11 @@ void UCPP_DarkLifeSaveGame::CalculateStamina()
 
 void UCPP_DarkLifeSaveGame::CalculateDefense()
 {
+
 	CurrentDefense = CharacterDefenseBase;
+	if (IsValid(Shield)) {
+		CurrentDefense += Shield->Defense;
+	}
 }
 
 void UCPP_DarkLifeSaveGame::CalculateBeast()

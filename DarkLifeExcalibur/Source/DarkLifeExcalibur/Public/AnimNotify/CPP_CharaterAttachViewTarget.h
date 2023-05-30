@@ -22,6 +22,8 @@ public:
 		FName BoneName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool bAttachToSelfBone = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool bReturnToCameraLocation = true;
     	
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Anim, float TotalDuration) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Anim) override;

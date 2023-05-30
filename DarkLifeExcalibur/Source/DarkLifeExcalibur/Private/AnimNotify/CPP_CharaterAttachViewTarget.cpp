@@ -41,7 +41,12 @@ void UCPP_CharaterAttachViewTarget::NotifyEnd(USkeletalMeshComponent* MeshComp, 
 			UCameraComponent* Camera = Cast<UCameraComponent>(CharacterRef->FindComponentByClass(UCameraComponent::StaticClass()));
 			USpringArmComponent* SpringArm = Cast<USpringArmComponent>(CharacterRef->FindComponentByClass(USpringArmComponent::StaticClass()));
 			Camera->AttachToComponent(SpringArm,AttachmentRules,"None");
-			Camera->ResetRelativeTransform();
+			//Camera->ResetRelativeTransform();
+
+			if (bReturnToCameraLocation) {
+				CharacterRef->SetCharacterMovement(ECharacterMovement::Jog);
+
+			}
 		}
 	}
 }

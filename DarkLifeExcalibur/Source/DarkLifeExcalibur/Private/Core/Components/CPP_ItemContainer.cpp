@@ -101,7 +101,7 @@ void UCPP_ItemContainer::DeleteItemFromInventory(UCPP_DA_Item* Item, bool& Succe
 	}
 }
 
-bool UCPP_ItemContainer::CheckItemsExitenceInInventory(TArray<UCPP_DA_Item*> ItemsList)
+bool UCPP_ItemContainer::CheckItemsExistenceInInventory(TArray<UCPP_DA_Item*> ItemsList)
 {
 	if ((!ItemsList.IsEmpty()) && (!MainInventory.IsEmpty())) {
 		for (size_t i = 0; i < ItemsList.Num(); i++)
@@ -166,6 +166,8 @@ bool UCPP_ItemContainer::IsItemEquipped(UCPP_DA_Item* Item)
 		}
 		break;
 	case EItemCategory::Shield:
+		if (Shield == Item)
+			return true;
 		break;
 	case EItemCategory::Consumable:
 		break;

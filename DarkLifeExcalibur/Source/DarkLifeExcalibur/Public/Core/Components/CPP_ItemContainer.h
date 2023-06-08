@@ -77,13 +77,14 @@ public:
 		void DeleteItemFromInventory(UCPP_DA_Item* Item, bool& Success);
 
 	UFUNCTION(BlueprintCallable)
-		bool CheckItemsExitenceInInventory(TArray<UCPP_DA_Item*> ItemsList);
+		bool CheckItemsExistenceInInventory(TArray<UCPP_DA_Item*> ItemsList);
 	UFUNCTION(BlueprintCallable)
 		void DeleteItemsListFromInventory(TArray<UCPP_DA_Item*> ItemsList);
 	UFUNCTION(BlueprintCallable)
 		bool IsItemEquipped(UCPP_DA_Item* Item);
 	UFUNCTION(BlueprintCallable)
 		void GetItemInfo(UCPP_DA_Item* Item, UCPP_DA_Item*& ItemInfo);
+	
 
 	//Load Saved Info
 	UFUNCTION(BlueprintCallable)

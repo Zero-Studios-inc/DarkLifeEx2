@@ -712,7 +712,7 @@ void ACPP_DarkLifeCharacter::SetCharacterNegativeStatus(ECharacterNegativeStatus
 
 void ACPP_DarkLifeCharacter::PlayParryFinisherAnimation(int parryIndex, UAnimMontage*& ParryMontage, TArray<UAnimMontage*>& ParryAnimList)
 {
-	if (OneHandParryFinisher.IsValidIndex(parryIndex)) {
+	if (ParryAnimList.IsValidIndex(parryIndex)) {
 		if (IsValid(ParryAnimList[parryIndex])) {
 			PlayAnimMontage(ParryAnimList[parryIndex]);
 			ParryMontage = ParryAnimList[parryIndex];

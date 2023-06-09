@@ -10,6 +10,7 @@ void UCPP_CharaterAttachViewTarget::NotifyBegin(USkeletalMeshComponent* MeshComp
 	if (PlayerController)
 	{
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
+		USpringArmComponent* SpringArm = nullptr;
 		UCameraComponent* Camera;
 
 		if (!bAttachToSelfBone)
@@ -23,6 +24,8 @@ void UCPP_CharaterAttachViewTarget::NotifyBegin(USkeletalMeshComponent* MeshComp
 			ACPP_DarkLifeCharacter* CharacterRef = Cast<ACPP_DarkLifeCharacter>(MeshComp->GetOwner());
 			Camera = Cast<UCameraComponent>(CharacterRef->FindComponentByClass(UCameraComponent::StaticClass()));
 			Camera->AttachToComponent(MeshComp, AttachmentRules, BoneName);
+			//SpringArm = Cast<USpringArmComponent>(CharacterRef->FindComponentByClass(USpringArmComponent::StaticClass()));
+			//SpringArm->AttachToComponent(MeshComp, AttachmentRules, BoneName);
 			
 
 		}
@@ -41,7 +44,7 @@ void UCPP_CharaterAttachViewTarget::NotifyEnd(USkeletalMeshComponent* MeshComp, 
 			UCameraComponent* Camera = Cast<UCameraComponent>(CharacterRef->FindComponentByClass(UCameraComponent::StaticClass()));
 			USpringArmComponent* SpringArm = Cast<USpringArmComponent>(CharacterRef->FindComponentByClass(USpringArmComponent::StaticClass()));
 			Camera->AttachToComponent(SpringArm,AttachmentRules,"None");
-			//Camera->ResetRelativeTransform();
+			Camera->ResetRelativeTransform();
 
 			if (bReturnToCameraLocation) {
 				CharacterRef->SetCharacterMovement(ECharacterMovement::Jog);

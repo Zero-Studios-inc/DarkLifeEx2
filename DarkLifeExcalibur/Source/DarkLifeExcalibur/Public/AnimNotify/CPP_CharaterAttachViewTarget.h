@@ -6,6 +6,7 @@
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "../Core/CPP_DarkLifeCharacter.h"
 #include "CPP_CharaterAttachViewTarget.generated.h"
 

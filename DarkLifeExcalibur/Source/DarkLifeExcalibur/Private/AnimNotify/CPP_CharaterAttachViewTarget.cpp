@@ -9,7 +9,7 @@ void UCPP_CharaterAttachViewTarget::NotifyBegin(USkeletalMeshComponent* MeshComp
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(MeshComp->GetWorld(), 0);
 	if (PlayerController)
 	{
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepRelative, true);
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 		UCameraComponent* Camera;
 
 		if (!bAttachToSelfBone)
@@ -34,7 +34,7 @@ void UCPP_CharaterAttachViewTarget::NotifyEnd(USkeletalMeshComponent* MeshComp, 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(MeshComp->GetWorld(), 0);
 	if (PlayerController)
 	{
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepRelative, true);
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
 		
 		if (bAttachToSelfBone) {
 			ACPP_DarkLifeCharacter* CharacterRef = Cast<ACPP_DarkLifeCharacter>(MeshComp->GetOwner());

@@ -712,7 +712,7 @@ void ACPP_DarkLifeCharacter::SetCharacterNegativeStatus(ECharacterNegativeStatus
 
 void ACPP_DarkLifeCharacter::PlayParryFinisherAnimation(int parryIndex, UAnimMontage*& ParryMontage, TArray<UAnimMontage*>& ParryAnimList)
 {
-	if (OneHandParryFinisher.IsValidIndex(parryIndex)) {
+	if (ParryAnimList.IsValidIndex(parryIndex)) {
 		if (IsValid(ParryAnimList[parryIndex])) {
 			PlayAnimMontage(ParryAnimList[parryIndex]);
 			ParryMontage = ParryAnimList[parryIndex];
@@ -759,6 +759,7 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 						PlayParryFinisherAnimation(randomIndex, ParryMontage, LocalParryFinisherAnimation);
 						EnemyRef->PlayParryFinisherAnimation(randomIndex, CombatState);
 						AnimationLength = ParryMontage->GetPlayLength();
+						Success = true;
 						break;
 					}
 
@@ -768,21 +769,33 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 					}
 				case ECharacterFinishMoveType::FromTheBack:
 
-					randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num());
-					PlayFromTheBackFinisherAnimation(randomIndex, BackMontage);
-					EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
-					AnimationLength = BackMontage->GetPlayLength();
-					break;
+					if (!BackFinisher.IsEmpty()) {
+
+						randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num());
+						PlayFromTheBackFinisherAnimation(randomIndex, BackMontage);
+						EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
+						AnimationLength = BackMontage->GetPlayLength();
+						Success = true;
+						break;
+					}
+					else {
+						Success = false;
+						break;
+					}
+
 				default:
 
 					randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num());
 					PlayFromTheBackFinisherAnimation(randomIndex, BackMontage);
 					EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
 					AnimationLength = BackMontage->GetPlayLength();
+					Success = true;
 					break;
 				}
 			}
 		}
+
+		else Success = false;
 	}
 
 	else Success = false;

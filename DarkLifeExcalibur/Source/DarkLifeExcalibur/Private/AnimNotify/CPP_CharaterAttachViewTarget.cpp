@@ -23,6 +23,7 @@ void UCPP_CharaterAttachViewTarget::NotifyBegin(USkeletalMeshComponent* MeshComp
 		{
 			ACPP_DarkLifeCharacter* CharacterRef = Cast<ACPP_DarkLifeCharacter>(MeshComp->GetOwner());
 			Camera = Cast<UCameraComponent>(CharacterRef->FindComponentByClass(UCameraComponent::StaticClass()));
+			Camera->bUsePawnControlRotation = false;
 			Camera->AttachToComponent(MeshComp, AttachmentRules, BoneName);
 			//SpringArm = Cast<USpringArmComponent>(CharacterRef->FindComponentByClass(USpringArmComponent::StaticClass()));
 			//SpringArm->AttachToComponent(MeshComp, AttachmentRules, BoneName);

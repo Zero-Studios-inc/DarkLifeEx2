@@ -9,7 +9,7 @@ void UCPP_CharaterAttachViewTarget::NotifyBegin(USkeletalMeshComponent* MeshComp
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(MeshComp->GetWorld(), 0);
 	if (PlayerController)
 	{
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld,false);
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, false);
 		USpringArmComponent* SpringArm = nullptr;
 		UCameraComponent* Camera;
 
@@ -22,12 +22,11 @@ void UCPP_CharaterAttachViewTarget::NotifyBegin(USkeletalMeshComponent* MeshComp
 		else 
 		{
 			ACPP_DarkLifeCharacter* CharacterRef = Cast<ACPP_DarkLifeCharacter>(MeshComp->GetOwner());
-			//Camera = Cast<UCameraComponent>(CharacterRef->FindComponentByClass(UCameraComponent::StaticClass()));
-			//Camera->bUsePawnControlRotation = false;
-			//Camera->AttachToComponent(MeshComp, AttachmentRules, BoneName);
-			SpringArm = Cast<USpringArmComponent>(CharacterRef->FindComponentByClass(USpringArmComponent::StaticClass()));
-			SpringArm->bDoCollisionTest = false;
-			SpringArm->AttachToComponent(MeshComp, AttachmentRules, BoneName);
+			Camera = Cast<UCameraComponent>(CharacterRef->FindComponentByClass(UCameraComponent::StaticClass()));
+			Camera->bUsePawnControlRotation = false;
+			Camera->AttachToComponent(MeshComp, AttachmentRules, BoneName);
+			//SpringArm = Cast<USpringArmComponent>(CharacterRef->FindComponentByClass(USpringArmComponent::StaticClass()));
+			//SpringArm->AttachToComponent(MeshComp, AttachmentRules, BoneName);
 			
 
 		}
@@ -45,10 +44,7 @@ void UCPP_CharaterAttachViewTarget::NotifyEnd(USkeletalMeshComponent* MeshComp, 
 			ACPP_DarkLifeCharacter* CharacterRef = Cast<ACPP_DarkLifeCharacter>(MeshComp->GetOwner());
 			UCameraComponent* Camera = Cast<UCameraComponent>(CharacterRef->FindComponentByClass(UCameraComponent::StaticClass()));
 			USpringArmComponent* SpringArm = Cast<USpringArmComponent>(CharacterRef->FindComponentByClass(USpringArmComponent::StaticClass()));
-			SpringArm->AttachToComponent(MeshComp,AttachmentRules,"None");
-			SpringArm->SetRelativeLocation(FVector(-12.0f, 0.0f, 188.0f));
-			SpringArm->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
-			SpringArm->bDoCollisionTest = true;
+			Camera->AttachToComponent(SpringArm,AttachmentRules,"None");
 			//Camera->ResetRelativeTransform();
 
 			if (bReturnToCameraLocation) {

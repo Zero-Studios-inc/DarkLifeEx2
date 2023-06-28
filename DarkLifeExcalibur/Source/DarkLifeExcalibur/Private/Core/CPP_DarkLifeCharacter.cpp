@@ -760,6 +760,7 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 						EnemyRef->PlayParryFinisherAnimation(randomIndex, CombatState);
 						AnimationLength = ParryMontage->GetPlayLength();
 						Success = true;
+						ResetCombo();
 						break;
 					}
 
@@ -776,6 +777,7 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 						EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
 						AnimationLength = BackMontage->GetPlayLength();
 						Success = true;
+						ResetCombo();
 						break;
 					}
 					else {
@@ -790,6 +792,7 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 					EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
 					AnimationLength = BackMontage->GetPlayLength();
 					Success = true;
+					ResetCombo();
 					break;
 				}
 			}

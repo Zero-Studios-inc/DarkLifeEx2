@@ -91,6 +91,7 @@ class DARKLIFEEXCALIBUR_API ACPP_DarkLifeCharacter : public ACharacter
 //Event Dispatchers
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttacking);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterMovementChange, ECharacterMovement, NewCharacterMovement);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCharacterEngaged, bool, bEngagedByEnemy, AActor*, Enemy);
 
 public:
 	// Sets default values for this character's properties
@@ -102,6 +103,8 @@ public:
 		FOnAttacking Attacking;
 	UPROPERTY(BlueprintAssignable, Category = "Camera")
 		FOnCharacterMovementChange CharacterMovementChange;
+	UPROPERTY(BlueprintAssignable, Category = "Combat")
+		FOnCharacterEngaged CharacterEngaged;
 
 	//Character Parameters
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
@@ -263,6 +266,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Attack")
 		FKey LightAttackKey;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+		bool bPlayerIsEngaged;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+		ACPP_Enemy* EnemyAttackingRef;
+
 	UPROPERTY(BlueprintReadWrite, Category = "Camera Transitions")
 		AActor* CurrentViewActor;
 	UPROPERTY(BlueprintReadWrite)
@@ -381,6 +389,8 @@ public:
 		void PlayRandomFinishAnimation(ECharacterFinishMoveType FinishMovementType, double& AnimationLenght, bool& Success);
 	UFUNCTION(BlueprintCallable, Category = "Animations")
 		void PlayRandomChargeAnimationByCombatState();
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+		void EnemyAttacking(ACPP_Enemy* Enemy);
 
 
 

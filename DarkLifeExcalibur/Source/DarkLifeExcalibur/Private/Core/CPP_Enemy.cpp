@@ -140,6 +140,11 @@ void ACPP_Enemy::DeathFunction()
 			PlayerCharacterRef->UnlockTarget();
 				bLockable = false;
 		}
+		PlayerCharacterRef->bPlayerIsEngaged = false;
+		if (PlayerCharacterRef->EnemyAttackingRef == this)
+		{
+			PlayerCharacterRef = nullptr;
+		}
 	}
 
 	GetCharacterMovement()->StopMovementImmediately();
@@ -222,6 +227,10 @@ void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 			if ((AIPreviousState != EAIGeneralState::Stunt) && (AIState == EAIGeneralState::Stunt)) {
 				bForceState = true;
 			}
+			if ((AIState == EAIGeneralState::Wait)) {
+				StopAnimMontage(GetCurrentMontage());
+				
+			}
 			
 		}
 	}
@@ -283,6 +292,7 @@ EAIGeneralState ACPP_Enemy::GetAIPreviousState()
 {
 	return AIPreviousState;
 }
+
 
 void ACPP_Enemy::HitStopEffect(double TimeDilationValue){
 	CustomTimeDilation = TimeDilationValue;

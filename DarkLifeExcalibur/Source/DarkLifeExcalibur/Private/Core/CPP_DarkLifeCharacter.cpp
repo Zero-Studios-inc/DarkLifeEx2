@@ -840,6 +840,14 @@ void ACPP_DarkLifeCharacter::PlayRandomChargeAnimationByCombatState()
 
 }
 
+void ACPP_DarkLifeCharacter::EnemyAttacking(ACPP_Enemy* Enemy)
+{
+	bPlayerIsEngaged = true;
+	EnemyAttackingRef = Enemy;
+	CharacterEngaged.Broadcast(true, Enemy);
+	
+}
+
 
 
 // Called every frame

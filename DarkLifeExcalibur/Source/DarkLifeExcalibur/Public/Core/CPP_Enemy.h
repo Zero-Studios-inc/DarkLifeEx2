@@ -197,7 +197,7 @@ protected:
 	
 		
 public:	
-
+	
     UFUNCTION(BlueprintCallable, Category = "Combat|Effects")
 	void HitStopEffect(double TimeDilationValue); 
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")

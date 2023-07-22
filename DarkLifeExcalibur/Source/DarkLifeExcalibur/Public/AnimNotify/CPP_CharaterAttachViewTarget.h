@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "../Core/CPP_DarkLifeCharacter.h"
 #include "CPP_CharaterAttachViewTarget.generated.h"
 
@@ -25,6 +26,8 @@ public:
 		bool bAttachToSelfBone = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool bReturnToCameraLocation = true;
+
+
     	
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Anim, float TotalDuration) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Anim) override;

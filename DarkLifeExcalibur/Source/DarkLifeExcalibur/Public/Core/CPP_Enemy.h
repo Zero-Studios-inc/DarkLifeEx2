@@ -59,6 +59,7 @@ public:
 	double GiveXP;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	double GiveBeastPower;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double PatrolSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
@@ -69,12 +70,25 @@ public:
 	double SearchingSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double MovementSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double Evasion = 0.2f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double DistanceToAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double DistanceToStrafe;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double DistanceToEngage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double MinDistanceToThrow;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double MaxDistanceToThrow;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	bool bCanBeExecuted;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+		bool bCanEvade;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+		bool bCanStrafe;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	bool bForceState;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
@@ -192,6 +206,8 @@ protected:
 		void PlaySwordHitAnimation(FVector ImpactNormal);
 	UFUNCTION()
 		void PlayPunchHitAnimation(int32 ComboCounter);
+	UFUNCTION(BlueprintCallable)
+		void CheckIfCanEvade();
 
 	
 	
@@ -213,6 +229,7 @@ public:
 		void PlayParryFinisherAnimation(int parryFinishAnimation, ECharacterCombatState CharacterCombatState);
 	UFUNCTION(BlueprintCallable, Category = "Animation")
 		void PlayFromTheBackFinisherAnimation(int backFinishIndex);
+
 
 
 	UFUNCTION()

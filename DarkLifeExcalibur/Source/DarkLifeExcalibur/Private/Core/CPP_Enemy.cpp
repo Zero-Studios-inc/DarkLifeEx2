@@ -196,6 +196,14 @@ void ACPP_Enemy::PlayPunchHitAnimation(int32 ComboCounter)
 	}
 }
 
+void ACPP_Enemy::CheckIfCanEvade()
+{
+	if (UKismetMathLibrary::InRange_FloatFloat(Evasion, 0.0f, 1.0f, true, true))
+	{
+		bCanEvade = UKismetMathLibrary::RandomBoolWithWeight(Evasion);
+	}
+}
+
 double ACPP_Enemy::HealthDecrease(double value)
 {
 	return Health-=value;

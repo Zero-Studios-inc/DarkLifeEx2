@@ -9,7 +9,7 @@ void UCPP_CharaterAttachViewTarget::NotifyBegin(USkeletalMeshComponent* MeshComp
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(MeshComp->GetWorld(), 0);
 	if (PlayerController)
 	{
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative,false);
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepWorld,EAttachmentRule::KeepWorld,EAttachmentRule::KeepWorld,false);
 		USpringArmComponent* SpringArm = nullptr;
 		UCameraComponent* Camera;
 

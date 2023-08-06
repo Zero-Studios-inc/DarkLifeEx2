@@ -78,6 +78,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double DistanceToStrafe;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+		double MinStrafeSideDistance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+		double MaxStrafeSideDistance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double DistanceToEngage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double MinDistanceToThrow;

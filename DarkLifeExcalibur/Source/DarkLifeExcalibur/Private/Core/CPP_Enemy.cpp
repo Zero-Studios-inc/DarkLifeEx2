@@ -226,11 +226,11 @@ void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 		UAIBlueprintHelperLibrary::GetAIController(this)->RunBehaviorTree(NewBT);
 		if (IsValid(Blackboard)) {
 			Blackboard->SetValueAsEnum(State, (uint8)NewState);
-			if (AIState == EAIGeneralState::Attack)
+			/*if (AIState == EAIGeneralState::Attack)
 			{
 				GetCharacterMovement()->RotationRate = FRotator(0.0f, 90.0f, 0.0f);
 			}
-			else GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 0.0f);
+			else GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 0.0f);*/
 
 			if ((AIPreviousState != EAIGeneralState::Stunt) && (AIState == EAIGeneralState::Stunt)) {
 				bForceState = true;

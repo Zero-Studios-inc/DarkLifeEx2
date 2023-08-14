@@ -31,6 +31,7 @@ void ACPP_Enemy::BeginPlay()
 	}
 	ChangeAIState(AIDefaultState);
 	PlayerCharacterRef = Cast<ACPP_DarkLifeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	TargetSpeed = WalkSpeed;
 	
 	
 }
@@ -47,6 +48,9 @@ void ACPP_Enemy::GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotati
 void ACPP_Enemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	//GetCharacterMovement()->MaxWalkSpeed = UKismetMathLibrary::FInterpTo(GetCharacterMovement()->MaxWalkSpeed, TargetSpeed,DeltaTime,0.5f);
+		
 
 }
 
@@ -198,10 +202,29 @@ void ACPP_Enemy::PlayPunchHitAnimation(int32 ComboCounter)
 
 void ACPP_Enemy::CheckIfCanEvade()
 {
-	if (UKismetMathLibrary::InRange_FloatFloat(Evasion, 0.0f, 1.0f, true, true))
-	{
-		bCanEvade = UKismetMathLibrary::RandomBoolWithWeight(Evasion);
+	ACPP_DarkLifeCharacter* PlayerReference = Cast<ACPP_DarkLifeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+	double DistanceToPlayer = UKismetMathLibrary::Vector_Distance(GetActorLocation(), PlayerReference->GetActorLocation());
+	
+	if (IsValid(PlayerReference)) {
+
+		if (UKismetMathLibrary::InRange_FloatFloat(Evasion, 0.0f, 1.0f, true, true) && (DistanceToPlayer <= DistanceToEvade))
+		{
+			bCanEvade = UKismetMathLibrary::RandomBoolWithWeight(Evasion);
+		}
+		else {
+			bCanEvade = false;
+		}
 	}
+}
+
+void ACPP_Enemy::TargetSpeedInterp()
+{
+	GetCharacterMovement()->MaxWalkSpeed = UKismetMathLibrary::FInterpTo(GetCharacterMovement()->MaxWalkSpeed, TargetSpeed, GetWorld()->GetDeltaSeconds(), 0.5f);
+	if (GetCharacterMovement()->MaxWalkSpeed >= TargetSpeed) {
+		UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), TargetSpeedInterpTimeHandle);
+		GetCharacterMovement()->MaxWalkSpeed = TargetSpeed;
+	}
+
 }
 
 double ACPP_Enemy::HealthDecrease(double value)
@@ -212,6 +235,79 @@ double ACPP_Enemy::HealthDecrease(double value)
 double ACPP_Enemy::StaminaDecrease(double value)
 {
 	return Stamina -= value;
+}
+
+void ACPP_Enemy::SetTargetMovementSpeedByAIState(bool bForceRun)
+
+{
+	ACPP_DarkLifeCharacter* PlayerReference = Cast<ACPP_DarkLifeCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
+	double DistanceToPlayer = 0.0f;
+	if (IsValid(PlayerReference)) {
+		DistanceToPlayer = UKismetMathLibrary::Vector_Distance(GetActorLocation(), PlayerReference->GetActorLocation());
+	}
+	switch (AIState)
+	{
+	case EAIGeneralState::Idle:
+		TargetSpeed = 0.0f;
+		break;
+	case EAIGeneralState::Patrol:
+		TargetSpeed = WalkSpeed;
+		break;
+	case EAIGeneralState::Attack:
+		if (!bForceRun) {
+			if ((bCanStrafe) && (IsValid(PlayerReference)) && (DistanceToPlayer > DistanceToStrafe)) {
+				TargetSpeed = WalkSpeed;
+			}
+			else if ((bCanStrafe) && (IsValid(PlayerReference)) && (DistanceToPlayer <= DistanceToStrafe)) {
+				TargetSpeed = RunSpeed;
+			}
+			else {
+				TargetSpeed = RunSpeed;
+			}
+		}
+		else {
+			TargetSpeed = RunSpeed;
+		}
+		
+		break;
+	case EAIGeneralState::Rest:
+		TargetSpeed = 0.0f;
+		break;
+	case EAIGeneralState::Move:
+		TargetSpeed = 0.0f;
+		break;
+	case EAIGeneralState::Wait:
+		TargetSpeed = 0.0f;
+		break;
+	case EAIGeneralState::Searching:
+		TargetSpeed = SearchingSpeed;
+		break;
+	case EAIGeneralState::Stunt:
+		TargetSpeed = 0.0f;
+		break;
+	case EAIGeneralState::ReceivingExecution:
+		TargetSpeed = 0.0f;
+		break;
+	case EAIGeneralState::QuestStart:
+		TargetSpeed = 0.0f;
+		break;
+	case EAIGeneralState::QuestEnd:
+		TargetSpeed = 0.0f;
+		break;
+	case EAIGeneralState::Teleport:
+		TargetSpeed = 0.0f;
+		break;
+	case EAIGeneralState::Defeated:
+		TargetSpeed = 0.0f;
+		break;
+	default:
+		TargetSpeed = 0.0f;
+		break;
+	}
+
+	
+	GetWorld()->GetTimerManager().SetTimer(TargetSpeedInterpTimeHandle, this, &ACPP_Enemy::TargetSpeedInterp, GetWorld()->GetDeltaSeconds(), true);
+
 }
 
 
@@ -239,6 +335,8 @@ void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 				StopAnimMontage(GetCurrentMontage());
 				
 			}
+
+			SetTargetMovementSpeedByAIState(false);
 			
 		}
 	}

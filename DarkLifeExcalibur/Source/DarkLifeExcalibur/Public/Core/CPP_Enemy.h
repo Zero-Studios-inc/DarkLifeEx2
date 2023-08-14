@@ -30,6 +30,7 @@ enum class EAIGeneralState : uint8 {
 	QuestEnd = 10 UMETA(DisplayName = "QuestEnd"),
 	Teleport = 11 UMETA(DisplayName = "Teleport"),
 	Defeated = 12 UMETA(DisplayName = "Defeated")
+	
 
 };
 
@@ -70,11 +71,13 @@ public:
 	double SearchingSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double MovementSpeed;
+	UPROPERTY(BlueprintReadWrite, Category = "Parameters")
+	double TargetSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double Evasion = 0.2f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
-	double DistanceToAttack;
+	double DistanceToEvade;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double DistanceToStrafe;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
@@ -89,6 +92,8 @@ public:
 	double MaxDistanceToThrow;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	bool bCanBeExecuted;
+	UPROPERTY(BlueprintReadWrite, Category = "Parameters")
+		bool bIsAttacking;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		bool bCanEvade;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
@@ -190,6 +195,8 @@ protected:
 		double InitHealth;
 	UPROPERTY()
 	ACPP_DarkLifeCharacter* PlayerCharacterRef;
+	UPROPERTY()
+	FTimerHandle TargetSpeedInterpTimeHandle;
 	
 			
 	
@@ -212,6 +219,8 @@ protected:
 		void PlayPunchHitAnimation(int32 ComboCounter);
 	UFUNCTION(BlueprintCallable)
 		void CheckIfCanEvade();
+	UFUNCTION()
+		void TargetSpeedInterp();
 
 	
 	
@@ -224,6 +233,8 @@ public:
 	double HealthDecrease(double value);
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
 	double StaminaDecrease(double value);
+	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
+	void SetTargetMovementSpeedByAIState(bool bForceRunSpeed);
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
 	void ChangeAIState(EAIGeneralState NewState);
 	UFUNCTION(BlueprintCallable, Category = "Animation")

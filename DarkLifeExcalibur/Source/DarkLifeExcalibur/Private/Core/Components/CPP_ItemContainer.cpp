@@ -57,20 +57,20 @@ void UCPP_ItemContainer::SetRuneBySlotIndex(int index, UCPP_DA_Item_Rune* Rune)
 	}
 }
 
-void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item)
+void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount = 1)
 {
-	int Value = 0;
+	
 	if (MainInventory.Contains(Item))
 	{
 		
-		MainInventory[Item]++;
-		Value = MainInventory[Item];
+		MainInventory[Item] += ItemAmount ;
+		
 	}
 	else
 	{
 		
-		MainInventory.Add(Item, 1);
-		Value = 1;
+		MainInventory.Add(Item, ItemAmount);
+		
 	}
 }
 

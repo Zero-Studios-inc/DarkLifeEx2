@@ -82,7 +82,7 @@ void ACPP_Enemy::SetParameters()
 
 void ACPP_Enemy::ChangeStateBySight()
 {
-	if (AIState != EAIGeneralState::Attack) {
+	if ((AIState != EAIGeneralState::Attack) && (AIState != EAIGeneralState::Stunt)) {
 		ChangeAIState(EAIGeneralState::Attack);
 	}
 }

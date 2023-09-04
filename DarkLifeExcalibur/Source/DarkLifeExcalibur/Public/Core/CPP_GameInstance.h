@@ -20,7 +20,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 		FString SlotName = "DLSaveGame";
 	UPROPERTY(BlueprintReadWrite)
-		bool bNewGame;
+		bool bNewGame = true;
 	UPROPERTY(BlueprintReadWrite)
 		int32 SavePointAnimationIndex;
 	UPROPERTY(BlueprintReadWrite)

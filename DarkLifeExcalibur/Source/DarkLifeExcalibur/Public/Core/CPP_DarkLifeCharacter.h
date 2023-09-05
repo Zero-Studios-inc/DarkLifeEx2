@@ -17,6 +17,7 @@
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/ChildActorComponent.h"
+#include "Components/CPP_ItemContainer.h"
 
 class ACPP_Enemy;
 
@@ -139,6 +140,8 @@ public:
 		USkeletalMeshComponent* IgnisBomb;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 		UPointLightComponent* CharacterLight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+		UCPP_ItemContainer* InventoryManager;
 
 	//Character Animations
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")

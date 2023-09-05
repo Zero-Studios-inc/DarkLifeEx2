@@ -51,6 +51,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	CharacterLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("CharacterLight"));
 	CharacterLight->SetupAttachment(RootComponent);
 	
+	InventoryManager = CreateDefaultSubobject<UCPP_ItemContainer>(TEXT("InventoryManager"));
 
 	//Variables Default Values
 	EvasionSpeedValue = 1.5;

@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "../../Core/CPP_DarkLifeCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
+
+class ACPP_DarkLifeCharacter;
+
 #include "CPP_DA_Item.generated.h"
 
 /**

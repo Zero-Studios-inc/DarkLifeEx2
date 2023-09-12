@@ -394,6 +394,8 @@ public:
 		void PlayRandomChargeAnimationByCombatState();
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 		void EnemyAttacking(ACPP_Enemy* Enemy);
+	UFUNCTION(BlueprintCallable)
+		void HideWepons(bool bHide);
 
 
 

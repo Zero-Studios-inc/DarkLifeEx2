@@ -221,30 +221,45 @@ void ACPP_DarkLifeCharacter::BeginPlay()
 
 void ACPP_DarkLifeCharacter::EvasionStepAnimations()
 {
+
+	ECharacterInputDirection DodgeDirection = ECharacterInputDirection::None;
+	if ((GetInputAxisValue("MoveForward") > 0) && (GetInputAxisValue("MoveRight") == 0)) {
+		DodgeDirection = ECharacterInputDirection::Forward;
+	}
+	else if ((GetInputAxisValue("MoveForward") > 0) && (GetInputAxisValue("MoveRight") > 0)) {
+		DodgeDirection = ECharacterInputDirection::ForwardRight;
+	}
+	else if ((GetInputAxisValue("MoveForward") == 0) && (GetInputAxisValue("MoveRight") > 0)) {
+		DodgeDirection = ECharacterInputDirection::Right;
+	}
+	else if ((GetInputAxisValue("MoveForward") < 0) && (GetInputAxisValue("MoveRight") > 0)) {
+		DodgeDirection = ECharacterInputDirection::BackwardRight;
+	}
+	else if ((GetInputAxisValue("MoveForward") < 0) && (GetInputAxisValue("MoveRight") == 0)) {
+		DodgeDirection = ECharacterInputDirection::Backward;
+	}
+	else if ((GetInputAxisValue("MoveForward") < 0) && (GetInputAxisValue("MoveRight") < 0)) {
+		DodgeDirection = ECharacterInputDirection::BackwardLeft;
+	}
+	else if ((GetInputAxisValue("MoveForward") == 0) && (GetInputAxisValue("MoveRight") < 0)) {
+		DodgeDirection = ECharacterInputDirection::Left;
+	}
+	else if ((GetInputAxisValue("MoveForward") > 0) && (GetInputAxisValue("MoveRight") < 0)) {
+		DodgeDirection = ECharacterInputDirection::ForwardLeft;
+	}
+	else if ((GetInputAxisValue("MoveForward") == 0) && (GetInputAxisValue("MoveRight") == 0)) {
+		DodgeDirection = ECharacterInputDirection::None;
+	}
+
+
+
 	if (Stamina >= 30.0) {
-		if (GetInputAxisValue("MoveRight") > 0) {
-			PlayAnimMontage(EvasionAnimations[0], EvasionSpeedValue);
-	  }
-		else {
-			if (GetInputAxisValue("MoveRight") < 0) {
-				PlayAnimMontage(EvasionAnimations[1], EvasionSpeedValue);
-			}
-			else {
-				if (GetInputAxisValue("MoveForward") > 0) {
-					PlayAnimMontage(EvasionAnimations[2], EvasionSpeedValue);
-				}
-				else if (GetInputAxisValue("MoveForward") < 0) {
-					SpringArm->bEnableCameraLag = false;
-					PlayAnimMontage(EvasionAnimations[3], EvasionSpeedValue);
-					//SpringArm->bEnableCameraLag = true;
-				}
-			}
-		}
+		PlayAnimMontage(EvasionAnimations[(int8)DodgeDirection], EvasionSpeedValue);
 	}
 
 	if (!bBeastPowerMovement) {
 
-		Stamina = UKismetMathLibrary::FClamp(Stamina - (StaminaSubstraction * 4.0), MaxStamina / StaminaDividerMinLimit, MaxStamina);
+		Stamina = UKismetMathLibrary::FClamp(Stamina - 10.0, MaxStamina / StaminaDividerMinLimit, MaxStamina);
 	}
 
 }

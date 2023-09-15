@@ -83,6 +83,19 @@ enum class ECharacterNegativeStatus : uint8 {
 	
 };
 
+UENUM(BlueprintType)
+enum class ECharacterInputDirection : uint8 {
+	None = 0 UMETA(DisplayName = "None"),
+	Forward = 1 UMETA(DisplayName = "Forward"),
+	ForwardRight = 2 UMETA(DisplayName = "ForwardRight"),
+	Right = 3 UMETA(DisplayName = "Right"),
+	BackwardRight = 4 UMETA(DisplayName = "BackwardRight"),
+	Backward = 5 UMETA(DisplayName = "Backward"),
+	BackwardLeft = 6 UMETA(DisplayName = "BackwardLeft"),
+	Left = 7 UMETA(DisplayName = "Left"),
+	ForwardLeft = 8 UMETA(DisplayName = "ForwardLeft")
+};
+
 
 UCLASS()
 class DARKLIFEEXCALIBUR_API ACPP_DarkLifeCharacter : public ACharacter

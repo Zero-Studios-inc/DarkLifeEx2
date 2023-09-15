@@ -5,10 +5,14 @@
 
 void UCPP_TimeDilation::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float Duration)
 {
-	MeshComp->GetOwner()->CustomTimeDilation = TimeDilationValue;
+	if (IsValid(MeshComp->GetOwner())) {
+		MeshComp->GetOwner()->CustomTimeDilation = TimeDilationValue;
+	}
 }
 
 void UCPP_TimeDilation::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
-	MeshComp->GetOwner()->CustomTimeDilation = 1.0f;
+	if (IsValid(MeshComp->GetOwner())) {
+		MeshComp->GetOwner()->CustomTimeDilation = 1.0f;
+	}
 }

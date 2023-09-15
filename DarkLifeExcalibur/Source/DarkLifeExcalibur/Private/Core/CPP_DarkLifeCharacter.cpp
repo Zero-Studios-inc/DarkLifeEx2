@@ -15,7 +15,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	//Parameters Default Values
 	Health = 100;
 	MaxHealth = 100;
-	Stamina = 100;
+	Stamina = 300;
 	MaxStamina = 100;
 	Fracture = 10;
 	Recharge = 10;
@@ -68,7 +68,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bWalk = false;
 	WalkSpeed = 120.0;
 	//RunSlowSpeed = 100;
-	RunSpeed = 312.0;
+	RunSpeed = 300.0;
 	BeastPowerSpeed = 5000.0;
 	bSprint = false;
 	bLockedEnemy = false;
@@ -94,17 +94,17 @@ void ACPP_DarkLifeCharacter::UpdateStaminaByCharacterCombatState()
 	switch (CombatState)
 	{
 	case ECharacterCombatState::OneHandSword:
-		Stamina = UKismetMathLibrary::FClamp(Stamina - (MaxStamina / 6.0), 0.0, MaxStamina);
+		Stamina = UKismetMathLibrary::FClamp(Stamina - 10.0, 0.0, MaxStamina);
 		break;
 	case ECharacterCombatState::TwoHandSword:
-		Stamina = UKismetMathLibrary::FClamp(Stamina - (MaxStamina / 3.0), 0.0, MaxStamina);
+		Stamina = UKismetMathLibrary::FClamp(Stamina - 10.0, 0.0, MaxStamina);
 		break;
 	case ECharacterCombatState::OneHandShield:
 		break;
 	case ECharacterCombatState::OneHandTorch:
 		break;
 	case ECharacterCombatState::TwoBareHand:
-		Stamina = UKismetMathLibrary::FClamp(Stamina - (MaxStamina / 12.0), 0.0, MaxStamina);
+		Stamina = UKismetMathLibrary::FClamp(Stamina -  12.0, 0.0, MaxStamina);
 		break;
 	default:
 		break;

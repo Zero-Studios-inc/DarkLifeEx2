@@ -311,6 +311,8 @@ protected:
 	UPROPERTY()
 		FTimerHandle StaminaDecreaseHandle;
 	UPROPERTY()
+		FTimerHandle ResetComboCounterHandle;
+	UPROPERTY()
 		bool bDrawSwordPreviousState = false;
 	UFUNCTION()
 		void UpdateStaminaByCharacterCombatState();
@@ -326,6 +328,8 @@ protected:
 		void CheckChargeAttackKey();
 	UFUNCTION(BlueprintCallable)
 		void AttackFunction();
+	UFUNCTION()
+	void ResetComboCounter();
 
 	//Input
 
@@ -408,7 +412,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 		void EnemyAttacking(ACPP_Enemy* Enemy);
 	UFUNCTION(BlueprintCallable)
-		void HideWepons(bool bHide);
+		void HideWeapons(bool bHide);
 
 
 

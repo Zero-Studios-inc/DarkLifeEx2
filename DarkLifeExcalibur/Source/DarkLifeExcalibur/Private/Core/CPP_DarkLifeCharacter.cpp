@@ -149,6 +149,8 @@ void ACPP_DarkLifeCharacter::AttackFunction()
 	if (Stamina >= 20.0f) {
 
 		UKismetSystemLibrary::K2_PauseTimer(this, "StaminaIncrease");
+		UKismetSystemLibrary::K2_PauseTimer(this, "ResetComboCounter");
+		UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(this, ResetComboCounterHandle);
 
 		if (bIsAttacking) {
 			bSaveAttack = true;
@@ -162,6 +164,11 @@ void ACPP_DarkLifeCharacter::AttackFunction()
 			GetWorldTimerManager().SetTimer(ChargeAttackTimer, this, &ACPP_DarkLifeCharacter::CheckChargeAttackKey, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), true, -1.0f);
 		}
 	}
+}
+
+void ACPP_DarkLifeCharacter::ResetComboCounter()
+{
+	ComboCounter = 0;
 }
 
 void ACPP_DarkLifeCharacter::SetRunSpeed()
@@ -300,6 +307,8 @@ void ACPP_DarkLifeCharacter::ResetCombo()
 	bIsAttacking = false;
 	GetWorldTimerManager().SetTimer(StaminaIncreaseHandle,this,&ACPP_DarkLifeCharacter::StaminaIncrease, StaminaIncreaseTime, true, StaminaIncreaseDelay);
 	
+	//Reset Combo Counter after 1.5 sec no loop
+	GetWorldTimerManager().SetTimer(ResetComboCounterHandle, this, &ACPP_DarkLifeCharacter::ResetComboCounter, 1.5f, false , 1.5f);
 }
 
 void ACPP_DarkLifeCharacter::StopSprint()
@@ -864,7 +873,7 @@ void ACPP_DarkLifeCharacter::EnemyAttacking(ACPP_Enemy* Enemy)
 	
 }
 
-void ACPP_DarkLifeCharacter::HideWepons(bool bHide)
+void ACPP_DarkLifeCharacter::HideWeapons(bool bHide)
 {
 	//Excalibur->bHiddenInGame = bHide;
 	ShieldMesh->bHiddenInGame = bHide;

@@ -14,6 +14,19 @@ void UCPP_DarkLifeSaveGame::ParametersCalculation()
 	
 }
 
+FTransform UCPP_DarkLifeSaveGame::GetLevelLastSavePoint(FName CurrentLevel, bool& LevelVisited)
+{
+	LevelVisited = false;
+
+	if (LastSavePoint.Contains(CurrentLevel)) {
+		LevelVisited = true;
+		return *LastSavePoint.Find(CurrentLevel);
+		//return LastSavePoint.Find(CurrentLevel);
+	}
+
+	return FTransform();
+}
+
 void UCPP_DarkLifeSaveGame::CalculateHealth()
 {
 	CurrentHealth = CharacterHealthBase;

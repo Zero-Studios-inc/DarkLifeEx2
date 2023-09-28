@@ -67,7 +67,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
 		double CharacterFractureBase = 0.5f;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
-		FTransform LastSavePoint;
+	TMap<FName,FTransform> LastSavePoint;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
 		double CharacterXPBase = 100.0f;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
@@ -95,6 +95,8 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 		void ParametersCalculation();
+	UFUNCTION(BlueprintCallable)
+	FTransform GetLevelLastSavePoint(FName CurrentLevel, bool &LevelVisited);
 
 
 private:

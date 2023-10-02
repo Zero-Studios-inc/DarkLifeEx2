@@ -190,6 +190,8 @@ void ACPP_Enemy::PlaySwordHitAnimation(FVector ImpactNormal)
 			PlayAnimMontage(HitAnim[0]);
 		}
 	}
+
+	
 }
 
 void ACPP_Enemy::PlayPunchHitAnimation(int32 ComboCounter)
@@ -225,6 +227,24 @@ void ACPP_Enemy::TargetSpeedInterp()
 		GetCharacterMovement()->MaxWalkSpeed = TargetSpeed;
 	}
 
+}
+
+void ACPP_Enemy::StartHitStop(double Duration, bool bStopPlayerCharacter)
+{
+	CustomTimeDilation = 0;
+	if ((IsValid(PlayerCharacterRef)) && (bStopPlayerCharacter)) {
+		PlayerCharacterRef->CustomTimeDilation = 0;
+	}
+	FTimerHandle HitStopTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(HitStopTimerHandle, this, &ACPP_Enemy::StopHitStop, Duration, false);
+}
+
+void ACPP_Enemy::StopHitStop()
+{
+	CustomTimeDilation = 1.0;
+	if (IsValid(PlayerCharacterRef)) {
+		PlayerCharacterRef->CustomTimeDilation = 1.0;
+	}
 }
 
 double ACPP_Enemy::HealthDecrease(double value)

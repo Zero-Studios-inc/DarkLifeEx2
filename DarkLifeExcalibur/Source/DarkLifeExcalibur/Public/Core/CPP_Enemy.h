@@ -221,6 +221,10 @@ protected:
 		void CheckIfCanEvade();
 	UFUNCTION()
 		void TargetSpeedInterp();
+	UFUNCTION(BlueprintCallable)
+		void StartHitStop(double Duration, bool bStopPlayerCharacter);
+	UFUNCTION()
+		void StopHitStop();
 
 	
 	

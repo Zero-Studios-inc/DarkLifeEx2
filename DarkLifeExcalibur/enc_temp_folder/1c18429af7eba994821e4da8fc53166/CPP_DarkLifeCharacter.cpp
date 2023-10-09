@@ -900,7 +900,7 @@ void ACPP_DarkLifeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACPP_DarkLifeCharacter::PerformJump);
 	PlayerInputComponent->BindAxis("LookUp", this, &ACPP_DarkLifeCharacter::LookUp);
 	PlayerInputComponent->BindAxis("Turn", this, &ACPP_DarkLifeCharacter::Turn);
-	//PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, & ACPP_DarkLifeCharacter::Sprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, & ACPP_DarkLifeCharacter::Sprint);
 
 }
 

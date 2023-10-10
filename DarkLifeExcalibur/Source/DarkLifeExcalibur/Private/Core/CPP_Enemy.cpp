@@ -162,14 +162,16 @@ void ACPP_Enemy::PlaySwordHitAnimation(FVector ImpactNormal)
 {
 	
 	if (HitAnim.Num() > 1) {
-		if (HitAnim.IsValidIndex(0) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true))) {
+		if (HitAnim.IsValidIndex(3) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true))) {
 			//Back Hit Animation
 			PlayAnimMontage(HitAnim[3]);
+			
 		}
 		else if (HitAnim.IsValidIndex(1) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 54.0f, 90.0f, true, true))) {
 
 			if (HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f, true, false)) {
 				//Right Hit Animation
+				if (HitAnim.IsValidIndex(2))
 				PlayAnimMontage(HitAnim[2]);
 			}
 			else {
@@ -177,7 +179,7 @@ void ACPP_Enemy::PlaySwordHitAnimation(FVector ImpactNormal)
 				PlayAnimMontage(HitAnim[1]);
 			}
 		}
-		else if (HitAnim.IsValidIndex(2) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 0.0f, 44.0f, true, true)))
+		else if (HitAnim.IsValidIndex(0) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 0.0f, 44.0f, true, true)))
 		{
 			//Front Hit Animation
 			PlayAnimMontage(HitAnim[0]);

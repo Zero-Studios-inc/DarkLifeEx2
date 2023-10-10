@@ -335,7 +335,7 @@ protected:
 
 	UFUNCTION()
 		void LookUp(float value);
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void Turn(float value);
 
 	UFUNCTION()

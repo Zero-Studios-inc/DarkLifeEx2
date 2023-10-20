@@ -209,7 +209,7 @@ protected:
 		void ChangeStateBySight();
 	UFUNCTION(BlueprintCallable)
 		void ChangeStateBySightLost();
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		bool HitAngleInRange(FVector ImpactNormal, FVector Vector,double minAngle, double maxAngle, bool inclusiveMin, bool inclusiveMax);
 	UFUNCTION(BlueprintCallable)
 		void DeathFunction();

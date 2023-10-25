@@ -178,12 +178,13 @@ void ACPP_DarkLifeCharacter::SetRunSpeed()
 
 void ACPP_DarkLifeCharacter::LookUp(float value)
 {
-	if (!bLockedEnemy) {
+	
 		if (bDrawingBow) {
 			AddControllerPitchInput(value * 0.2f);
 		}
+	
 		else AddControllerPitchInput(value);
-	}
+	
 }
 
 void ACPP_DarkLifeCharacter::Turn(float value)

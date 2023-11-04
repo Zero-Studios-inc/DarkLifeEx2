@@ -6,11 +6,17 @@
 void UCPP_EnemyAnimHitDisable::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float Duration)
 {
 	ACPP_Enemy* EnemyRef = Cast<ACPP_Enemy>(MeshComp->GetOwner());
-	if (EnemyRef) { EnemyRef->bPlayHitAnimation = false; }
+	if (EnemyRef) { 
+		EnemyRef->bPlayHitAnimation = false; 
+		EnemyRef->SetHeavyAttackOverlayMaterial(true);
+	}
 }
 
 void UCPP_EnemyAnimHitDisable::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Anim)
 {
 	ACPP_Enemy* EnemyRef = Cast<ACPP_Enemy>(MeshComp->GetOwner());
-	if (EnemyRef) { EnemyRef->bPlayHitAnimation = true; }
+	if (EnemyRef) { 
+		EnemyRef->bPlayHitAnimation = true;
+		EnemyRef->SetHeavyAttackOverlayMaterial(false);
+	}
 }

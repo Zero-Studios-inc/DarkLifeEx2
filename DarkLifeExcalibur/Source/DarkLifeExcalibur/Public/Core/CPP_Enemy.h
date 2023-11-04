@@ -126,6 +126,8 @@ public:
 		bool bExecutionActive = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double HealthPercentExecution = 0.5;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	bool bSelfLocked = false;
 
 
     
@@ -253,6 +255,10 @@ public:
 
 	UFUNCTION()
 		EAIGeneralState GetAIPreviousState();
+	UFUNCTION()
+	    void SetParryOverlayMaterial(bool bSetOverlayMaterial);
+	UFUNCTION()
+	    void SetHeavyAttackOverlayMaterial(bool bSetOverlayMaterial);
 
 	//UFUNCTION(BlueprintCallable, Category = "Parameters")
    //void SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower);

@@ -8,6 +8,7 @@ void UCPP_ParryWindow::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequen
 	ACPP_Enemy* EnemyRef = Cast<ACPP_Enemy>(MeshComp->GetOwner());
 	if (IsValid(EnemyRef)) {
 		EnemyRef->bParry = true;
+		EnemyRef->SetParryOverlayMaterial(true);
 	}
 }
 
@@ -16,5 +17,6 @@ void UCPP_ParryWindow::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequence
 	ACPP_Enemy* EnemyRef = Cast<ACPP_Enemy>(MeshComp->GetOwner());
 	if (IsValid(EnemyRef)) {
 		EnemyRef->bParry = false;
+		EnemyRef->SetParryOverlayMaterial(false);
 	}
 }

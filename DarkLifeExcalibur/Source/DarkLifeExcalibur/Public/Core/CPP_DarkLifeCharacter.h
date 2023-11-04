@@ -212,6 +212,7 @@ public:
 		bool bDrawShield;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
 		bool bDrawingShield;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		double EvasionSpeedValue;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")

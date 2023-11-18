@@ -421,11 +421,11 @@ EAIGeneralState ACPP_Enemy::GetAIPreviousState()
 	return AIPreviousState;
 }
 
-void ACPP_Enemy::SetParryOverlayMaterial(bool bSetOverlayMaterial)
+void ACPP_Enemy::SetParryOverlayMaterial(bool bSetOverlayMaterial, UMaterialInterface* ParryOverlayMaterial)
 {
 	if (bSelfLocked) {
 		if (bSetOverlayMaterial) {
-			UMaterialInterface* ParryOverlayMaterial = LoadObject<UMaterialInterface>(NULL, TEXT("/Game/TESTING/Materials/MI_ParryOverlay"));
+			
 			if (ParryOverlayMaterial) {
 				GetMesh()->SetOverlayMaterial(ParryOverlayMaterial);
 				CustomTimeDilation = 0.5;
@@ -438,19 +438,19 @@ void ACPP_Enemy::SetParryOverlayMaterial(bool bSetOverlayMaterial)
 	}
 }
 
-void ACPP_Enemy::SetHeavyAttackOverlayMaterial(bool bSetOverlayMaterial)
+void ACPP_Enemy::SetHeavyAttackOverlayMaterial(bool bSetOverlayMaterial, UMaterialInterface* HeavyAttackOverlayMaterial)
 {
 	if (bSelfLocked) {
 		if (bSetOverlayMaterial) {
-			UMaterialInterface* ParryOverlayMaterial = LoadObject<UMaterialInterface>(NULL, TEXT("/Game/TESTING/Materials/MI_HeavyAttackOverlay"));
-			if (ParryOverlayMaterial) {
-				GetMesh()->SetOverlayMaterial(ParryOverlayMaterial);
-				CustomTimeDilation = 0.5;
+			
+			if (HeavyAttackOverlayMaterial) {
+				GetMesh()->SetOverlayMaterial(HeavyAttackOverlayMaterial);
+				
 			}
 		}
 		else {
 			GetMesh()->SetOverlayMaterial(nullptr);
-			CustomTimeDilation = 1.0;
+			
 		}
 	}
 }

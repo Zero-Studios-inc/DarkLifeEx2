@@ -256,9 +256,9 @@ public:
 	UFUNCTION()
 		EAIGeneralState GetAIPreviousState();
 	UFUNCTION()
-	    void SetParryOverlayMaterial(bool bSetOverlayMaterial);
+	    void SetParryOverlayMaterial(bool bSetOverlayMaterial, UMaterialInterface* ParryOverlayMaterial);
 	UFUNCTION()
-	    void SetHeavyAttackOverlayMaterial(bool bSetOverlayMaterial);
+	    void SetHeavyAttackOverlayMaterial(bool bSetOverlayMaterial, UMaterialInterface* HeavyAttackOverlayMaterial);
 
 	//UFUNCTION(BlueprintCallable, Category = "Parameters")
    //void SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower);

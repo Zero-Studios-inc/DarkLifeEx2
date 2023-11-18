@@ -18,5 +18,8 @@ class DARKLIFEEXCALIBUR_API UCPP_ParryWindow : public UAnimNotifyState
 public:
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float Duration) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
+
+	UPROPERTY(EditAnywhere)
+	UMaterialInterface* ParryOverlayMaterial;
 	
 };

@@ -335,34 +335,37 @@ void ACPP_Enemy::SetTargetMovementSpeedByAIState(bool bForceRun)
 
 void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 {
-	if ((BTStateRelation.Find(NewState))){
+	if ((BTStateRelation.Find(NewState))) {
 
 		AIPreviousState = AIState;
 		AIState = NewState;
-		
+
 		UBehaviorTree* NewBT = BTStateRelation.FindRef(NewState);
-		UAIBlueprintHelperLibrary::GetAIController(this)->RunBehaviorTree(NewBT);
-		if (IsValid(Blackboard)) {
-			Blackboard->SetValueAsEnum(State, (uint8)NewState);
-			/*if (AIState == EAIGeneralState::Attack)
-			{
-				GetCharacterMovement()->RotationRate = FRotator(0.0f, 90.0f, 0.0f);
-			}
-			else GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 0.0f);*/
+		if (IsValid(UAIBlueprintHelperLibrary::GetAIController(this))) {
+			UAIBlueprintHelperLibrary::GetAIController(this)->RunBehaviorTree(NewBT);
+				if (IsValid(Blackboard)) {
+					Blackboard->SetValueAsEnum(State, (uint8)NewState);
+						/*if (AIState == EAIGeneralState::Attack)
+						{
+							GetCharacterMovement()->RotationRate = FRotator(0.0f, 90.0f, 0.0f);
+						}
+						else GetCharacterMovement()->RotationRate = FRotator(0.0f, 180.0f, 0.0f);*/
 
-			if ((AIPreviousState != EAIGeneralState::Stunt) && (AIState == EAIGeneralState::Stunt)) {
-				bForceState = true;
-			}
-			if ((AIState == EAIGeneralState::Wait)) {
-				StopAnimMontage(GetCurrentMontage());
-				
-			}
+						if ((AIPreviousState != EAIGeneralState::Stunt) && (AIState == EAIGeneralState::Stunt)) {
+							bForceState = true;
+						}
+					if ((AIState == EAIGeneralState::Wait)) {
+						StopAnimMontage(GetCurrentMontage());
 
-			SetTargetMovementSpeedByAIState(false);
-			
+					}
+
+					SetTargetMovementSpeedByAIState(false);
+
+				}
+
 		}
+
 	}
-	
 }
 
 void ACPP_Enemy::HitAnimation(FHitResult HitInfo, ECharacterDamageType DamageType, int32 ComboCounter)

@@ -84,7 +84,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bTorchUp = false;
 	bInvulnerability = false;
 	bCrouched = false;
-	CrouchSpeed = 150.0;
+	CrouchSpeed = 180.0;
 	
 	
 }

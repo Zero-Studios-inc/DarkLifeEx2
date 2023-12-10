@@ -370,6 +370,7 @@ void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 
 void ACPP_Enemy::HitAnimation(FHitResult HitInfo, ECharacterDamageType DamageType, int32 ComboCounter)
 {
+	SetIsInAttackAnimation(false);
 	FVector ImpactNormal = HitInfo.ImpactNormal;
 	if (bPlayHitAnimation) {
 		switch (DamageType)
@@ -417,6 +418,11 @@ void ACPP_Enemy::PlayFromTheBackFinisherAnimation(int backFinishIndex)
 			PlayAnimMontage(BackFinisher[backFinishIndex]);
 		}
 	}
+}
+
+void ACPP_Enemy::SetIsInAttackAnimation(bool IsAttacking)
+{
+	bIsInAttackAnimation = IsAttacking;
 }
 
 EAIGeneralState ACPP_Enemy::GetAIPreviousState()

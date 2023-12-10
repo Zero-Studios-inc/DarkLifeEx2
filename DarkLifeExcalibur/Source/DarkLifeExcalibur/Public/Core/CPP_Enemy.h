@@ -93,6 +93,8 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	bool bCanBeExecuted;
 	UPROPERTY(BlueprintReadWrite, Category = "Parameters")
+		bool bIsInAttackAnimation;
+		UPROPERTY(BlueprintReadWrite, Category = "Parameters")
 		bool bIsAttacking;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		bool bCanEvade;
@@ -112,6 +114,8 @@ public:
  	bool bCollisionActivate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		bool bCanBlock;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double BlockRate = 0.5f;
 	UPROPERTY()
 		bool bPlayHitAnimation = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
@@ -180,6 +184,7 @@ public:
 		TArray <UAnimMontage*> TwoHandsParryFinisher;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> BackFinisher;
+	
 
 	
 protected:
@@ -250,6 +255,8 @@ public:
 		void PlayParryFinisherAnimation(int parryFinishAnimation, ECharacterCombatState CharacterCombatState);
 	UFUNCTION(BlueprintCallable, Category = "Animation")
 		void PlayFromTheBackFinisherAnimation(int backFinishIndex);
+	UFUNCTION(BlueprintCallable)
+	void SetIsInAttackAnimation(bool IsAttacking);
 
 
 

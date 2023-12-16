@@ -35,11 +35,12 @@ enum class EAIGeneralState : uint8 {
 };
 
 
-
 UCLASS()
 class DARKLIFEEXCALIBUR_API ACPP_Enemy : public ACharacter
 {
 	GENERATED_BODY()
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReceivingDamage);
 
 public:
 	// Sets default values for this character's properties
@@ -133,7 +134,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	bool bSelfLocked = false;
 
-
+	//Event Dispatchers
+	UPROPERTY(BlueprintAssignable)
+	FOnReceivingDamage ReceivingDamage;
     
 	//AI Key Names
 	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
@@ -232,6 +235,8 @@ protected:
 		void StartHitStop(double Duration, bool bStopPlayerCharacter);
 	UFUNCTION()
 		void StopHitStop();
+	UFUNCTION()
+	    void SetBlackboard();
 
 	
 	
@@ -257,6 +262,10 @@ public:
 		void PlayFromTheBackFinisherAnimation(int backFinishIndex);
 	UFUNCTION(BlueprintCallable)
 	void SetIsInAttackAnimation(bool IsAttacking);
+	UFUNCTION(BlueprintCallable)
+	void ChangeToSearchingState(ECharacterDamageType DamageType, ACPP_DarkLifeCharacter* CharacterRef, bool& Success);
+	UFUNCTION(BlueprintCallable)
+	void ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* CharacterRef, ECharacterDamageType DamageType, double DamageReceived, int32 ComboCounter, bool &bIsInStunt,bool &bBlockSuccess ,double &HealthDecreased, USceneComponent* ExecutionIndicator);
 
 
 

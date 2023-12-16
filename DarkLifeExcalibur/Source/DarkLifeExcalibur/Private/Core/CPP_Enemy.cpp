@@ -259,6 +259,11 @@ void ACPP_Enemy::SetBlackboard()
 	Blackboard = EnemyAIController->GetBlackboardComponent();
 }
 
+void ACPP_Enemy::DisableBlock()
+{
+	AICurrentAction = EActionType::None;
+}
+
 
 double ACPP_Enemy::HealthDecrease(double value)
 {
@@ -469,7 +474,11 @@ void ACPP_Enemy::ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* Chara
 			if ((IsForwardHit) && bCanBlock && (AIState != EAIGeneralState::Stunt) && (!bIsInAttackAnimation)) {
 				if (UKismetMathLibrary::RandomBoolWithWeight(BlockRate)) {
 			if (IsValid(BlockAnim)) {
+				        AICurrentAction = EActionType::Blocking;
 						PlayAnimMontage(BlockAnim);
+						double BlockAnimationDuration = BlockAnim->RateScale * BlockAnim->GetPlayLength();
+						FTimerHandle BlockHandle;
+						GetWorld()->GetTimerManager().SetTimer(BlockHandle, this, &ACPP_Enemy::DisableBlock, BlockAnimationDuration, false);
 						bBlockSuccess = true;
 						ChangeToSearchingState(DamageType, CharacterRef, bSearchingSuccess);
 						if (bSearchingSuccess) {

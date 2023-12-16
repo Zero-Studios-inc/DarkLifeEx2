@@ -34,6 +34,13 @@ enum class EAIGeneralState : uint8 {
 
 };
 
+UENUM(BlueprintType)
+enum class EActionType : uint8 {
+	None = 0 UMETA(DisplayName = "None"),
+	Attacking = 1 UMETA(DisplayName = "Attacking"),
+	Blocking = 2 UMETA(DisplayName = "Blocking")
+};
+
 
 UCLASS()
 class DARKLIFEEXCALIBUR_API ACPP_Enemy : public ACharacter
@@ -159,6 +166,8 @@ public:
 		AAIController* EnemyAIController;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "AI")
 		TMap<EAIGeneralState, UBehaviorTree*> BTStateRelation;
+	UPROPERTY(BlueprintReadWrite,BlueprintReadWrite ,Category = "Actions")
+	EActionType AICurrentAction;
 
 	//Animations
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Animations")
@@ -237,7 +246,8 @@ protected:
 		void StopHitStop();
 	UFUNCTION()
 	    void SetBlackboard();
-
+    UFUNCTION()
+	void DisableBlock();
 	
 	
 		

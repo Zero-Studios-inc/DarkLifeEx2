@@ -27,6 +27,28 @@ FTransform UCPP_DarkLifeSaveGame::GetLevelLastSavePoint(FName CurrentLevel, bool
 	return FTransform();
 }
 
+void UCPP_DarkLifeSaveGame::SetNewSavedLevelTransform(FName LevelName, FTransform NewTransform)
+{
+	if (LevelLastSavePointLocation.Contains(LevelName)) {
+		LevelLastSavePointLocation[LevelName] = NewTransform;
+	}
+	else {
+		LevelLastSavePointLocation.Add(LevelName, NewTransform);
+	}
+	
+}
+
+FTransform UCPP_DarkLifeSaveGame::GetSavedLevelTransform(FName LevelName, bool& ValidLevel)
+{
+	ValidLevel = false;
+	if (LevelLastSavePointLocation.Contains(LevelName)) {
+		ValidLevel = true;
+		return LevelLastSavePointLocation[LevelName];
+	}
+
+	return FTransform();
+}
+
 void UCPP_DarkLifeSaveGame::CalculateHealth()
 {
 	CurrentHealth = CharacterHealthBase;

@@ -34,12 +34,20 @@ enum class EAIGeneralState : uint8 {
 
 };
 
+UENUM(BlueprintType)
+enum class EActionType : uint8 {
+	None = 0 UMETA(DisplayName = "None"),
+	Attacking = 1 UMETA(DisplayName = "Attacking"),
+	Blocking = 2 UMETA(DisplayName = "Blocking")
+};
 
 
 UCLASS()
 class DARKLIFEEXCALIBUR_API ACPP_Enemy : public ACharacter
 {
 	GENERATED_BODY()
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReceivingDamage);
 
 public:
 	// Sets default values for this character's properties
@@ -93,6 +101,8 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	bool bCanBeExecuted;
 	UPROPERTY(BlueprintReadWrite, Category = "Parameters")
+		bool bIsInAttackAnimation;
+		UPROPERTY(BlueprintReadWrite, Category = "Parameters")
 		bool bIsAttacking;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		bool bCanEvade;
@@ -112,6 +122,8 @@ public:
  	bool bCollisionActivate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		bool bCanBlock;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double BlockRate = 0.5f;
 	UPROPERTY()
 		bool bPlayHitAnimation = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
@@ -129,7 +141,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	bool bSelfLocked = false;
 
-
+	//Event Dispatchers
+	UPROPERTY(BlueprintAssignable)
+	FOnReceivingDamage ReceivingDamage;
     
 	//AI Key Names
 	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
@@ -152,6 +166,8 @@ public:
 		AAIController* EnemyAIController;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "AI")
 		TMap<EAIGeneralState, UBehaviorTree*> BTStateRelation;
+	UPROPERTY(BlueprintReadWrite,BlueprintReadWrite ,Category = "Actions")
+	EActionType AICurrentAction;
 
 	//Animations
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Animations")
@@ -180,6 +196,7 @@ public:
 		TArray <UAnimMontage*> TwoHandsParryFinisher;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> BackFinisher;
+	
 
 	
 protected:
@@ -227,7 +244,10 @@ protected:
 		void StartHitStop(double Duration, bool bStopPlayerCharacter);
 	UFUNCTION()
 		void StopHitStop();
-
+	UFUNCTION()
+	    void SetBlackboard();
+    UFUNCTION()
+	void DisableBlock();
 	
 	
 		
@@ -250,6 +270,12 @@ public:
 		void PlayParryFinisherAnimation(int parryFinishAnimation, ECharacterCombatState CharacterCombatState);
 	UFUNCTION(BlueprintCallable, Category = "Animation")
 		void PlayFromTheBackFinisherAnimation(int backFinishIndex);
+	UFUNCTION(BlueprintCallable)
+	void SetIsInAttackAnimation(bool IsAttacking);
+	UFUNCTION(BlueprintCallable)
+	void ChangeToSearchingState(ECharacterDamageType DamageType, ACPP_DarkLifeCharacter* CharacterRef, bool& Success);
+	UFUNCTION(BlueprintCallable)
+	void ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* CharacterRef, ECharacterDamageType DamageType, double DamageReceived, int32 ComboCounter, bool &bIsInStunt,bool &bBlockSuccess ,double &HealthDecreased, USceneComponent* ExecutionIndicator);
 
 
 

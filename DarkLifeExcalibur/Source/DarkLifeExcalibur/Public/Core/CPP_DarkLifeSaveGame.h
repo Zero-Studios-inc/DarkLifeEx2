@@ -91,12 +91,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	TMap<UCPP_DA_Item*, int> Inventory;
 
-
+protected:
+	//Level Locations
+UPROPERTY(EditAnywhere,Category = "Level")
+	TMap<FName, FTransform> LevelLastSavePointLocation;
+    
 public:
 	UFUNCTION(BlueprintCallable)
 		void ParametersCalculation();
 	UFUNCTION(BlueprintCallable)
 	FTransform GetLevelLastSavePoint(FName CurrentLevel, bool &LevelVisited);
+	UFUNCTION(BlueprintCallable)
+	void SetNewSavedLevelTransform(FName LevelName, FTransform NewTransform);
+	UFUNCTION(BlueprintCallable)
+	FTransform GetSavedLevelTransform(FName LevelName, bool &ValidLevel);
 
 
 private:

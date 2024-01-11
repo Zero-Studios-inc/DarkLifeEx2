@@ -8,6 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "CPP_DarkLifeCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 class ACPP_DarkLifeCharacter;
@@ -69,6 +70,11 @@ public:
 	double GiveXP;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	double GiveBeastPower;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	TArray<ECharacterDamageType> DamageVulnerability = { ECharacterDamageType::Arrow, ECharacterDamageType::Punch, ECharacterDamageType::Shield, ECharacterDamageType::Sword, ECharacterDamageType::Torch };
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	TArray<ECharacterCombatState> SwordStanceVulnerability = {ECharacterCombatState::OneHandSword, ECharacterCombatState::TwoHandSword};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double PatrolSpeed;
@@ -277,6 +283,8 @@ public:
 	void ChangeToSearchingState(ECharacterDamageType DamageType, ACPP_DarkLifeCharacter* CharacterRef, bool& Success);
 	UFUNCTION(BlueprintCallable)
 	void ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* CharacterRef, ECharacterDamageType DamageType, double DamageReceived, int32 ComboCounter, bool &bIsInStunt,bool &bBlockSuccess ,double &HealthDecreased, USceneComponent* ExecutionIndicator);
+
+	void ApplyDamage(bool& IsForwardHit, FHitResult& HitInfo, bool& bBlockSuccess, ECharacterDamageType DamageType, ACPP_DarkLifeCharacter* CharacterRef, bool& bSearchingSuccess, double& HealthDecreased, double DamageReceived, USceneComponent* ExecutionIndicator, double& StaminaDecreased, bool& retFlag);
 
 
 

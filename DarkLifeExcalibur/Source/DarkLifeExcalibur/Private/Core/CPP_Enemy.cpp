@@ -13,6 +13,8 @@ ACPP_Enemy::ACPP_Enemy()
 	AIState = AIDefaultState;
 	bCollisionActivate = true;
 	MovementSpeed = 500.0;
+
+	
 	
 
 }
@@ -464,65 +466,98 @@ void ACPP_Enemy::ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* Chara
 
 	if (IsValid(Blackboard)) {
 
-		if ((DamageType == ECharacterDamageType::Shield) && (bParry) && (AIState != EAIGeneralState::Stunt))
-		{
-			ChangeAIState(EAIGeneralState::Stunt);
-			bIsInStunt = true;
-			return;
-		}
+				
+			if (DamageVulnerability.Contains(DamageType)) {
 
-		else {
+				if ((DamageType == ECharacterDamageType::Shield) && (bParry) && (AIState != EAIGeneralState::Stunt))
+				{
+					ChangeAIState(EAIGeneralState::Stunt);
+					bIsInStunt = true;
+					return;
+				}
 
-			IsForwardHit = HitAngleInRange(HitInfo.ImpactNormal, GetActorForwardVector(), -90.0f, 90.0f, true, true);
+				if ((DamageType == ECharacterDamageType::Sword) && (SwordStanceVulnerability.Contains(CharacterRef->CombatState))) {
 
-			if ((IsForwardHit) && bCanBlock && (AIState != EAIGeneralState::Stunt) && (!bIsInAttackAnimation)) {
-				if (UKismetMathLibrary::RandomBoolWithWeight(BlockRate)) {
-			if (IsValid(BlockAnim)) {
-				        AICurrentAction = EActionType::Blocking;
-						PlayAnimMontage(BlockAnim);
-						double BlockAnimationDuration = BlockAnim->RateScale * BlockAnim->GetPlayLength();
-						FTimerHandle BlockHandle;
-						GetWorld()->GetTimerManager().SetTimer(BlockHandle, this, &ACPP_Enemy::DisableBlock, BlockAnimationDuration, false);
-						bBlockSuccess = true;
-						ChangeToSearchingState(DamageType, CharacterRef, bSearchingSuccess);
-						if (bSearchingSuccess) {
-							return;
-						
-						}
+					bool retFlag;
+					ApplyDamage(IsForwardHit, HitInfo, bBlockSuccess, DamageType, CharacterRef, bSearchingSuccess, HealthDecreased, DamageReceived, ExecutionIndicator, StaminaDecreased, retFlag);
+					if (retFlag) return;
+
+				}
+				else if ((DamageType == ECharacterDamageType::Sword) && (!SwordStanceVulnerability.Contains(CharacterRef->CombatState))) {
+					if (IsValid(CharacterRef))
+					{
+						CharacterRef->PlayDeflectedAnimation(0);
 					}
-
 				}
 				else {
-					IsForwardHit = HitAngleInRange(HitInfo.ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true);
-					if (!IsForwardHit) {
-						return;
-					}
+					bool retFlag;
+					ApplyDamage(IsForwardHit, HitInfo, bBlockSuccess, DamageType, CharacterRef, bSearchingSuccess, HealthDecreased, DamageReceived, ExecutionIndicator, StaminaDecreased, retFlag);
+					if (retFlag) return;
 				}
 			}
-			Blackboard->SetValueAsObject(TargetActor, PlayerCharacterRef);
-			if (AIState == EAIGeneralState::Stunt) {
-				HealthDecreased = HealthDecrease(DamageReceived);
-				ReceivingDamage.Broadcast();
+
+			
+			else{
+				if (IsValid(CharacterRef))
+				{
+					CharacterRef->PlayDeflectedAnimation(0);
+				}
 			}
-			else {
-				ChangeAIState(EAIGeneralState::Attack);
-				HealthDecreased = HealthDecrease(DamageReceived);
-				ReceivingDamage.Broadcast();
-			}
-
-			bExecutionActive = (HealthDecreased / InitHealth) <= HealthPercentExecution;
-
-			if (bExecutionActive && bSelfLocked) {
-				ExecutionIndicator->SetVisibility(true, true);
-			}
-
-
-			StaminaDecreased = StaminaDecrease(10.0f);
-			Blackboard->SetValueAsFloat(StaminaKey, StaminaDecreased);
-			Blackboard->SetValueAsFloat(HealthKey, HealthDecreased);
-
 		}
 	}
+
+
+void ACPP_Enemy::ApplyDamage(bool& IsForwardHit, FHitResult& HitInfo, bool& bBlockSuccess, ECharacterDamageType DamageType, ACPP_DarkLifeCharacter* CharacterRef, bool& bSearchingSuccess, double& HealthDecreased, double DamageReceived, USceneComponent* ExecutionIndicator, double& StaminaDecreased, bool& retFlag)
+{
+	retFlag = true;
+	IsForwardHit = HitAngleInRange(HitInfo.ImpactNormal, GetActorForwardVector(), -90.0f, 90.0f, true, true);
+
+	if ((IsForwardHit) && bCanBlock && (AIState != EAIGeneralState::Stunt) && (!bIsInAttackAnimation)) {
+		if (UKismetMathLibrary::RandomBoolWithWeight(BlockRate)) {
+			if (IsValid(BlockAnim)) {
+				AICurrentAction = EActionType::Blocking;
+				PlayAnimMontage(BlockAnim);
+				double BlockAnimationDuration = BlockAnim->RateScale * BlockAnim->GetPlayLength();
+				FTimerHandle BlockHandle;
+				GetWorld()->GetTimerManager().SetTimer(BlockHandle, this, &ACPP_Enemy::DisableBlock, BlockAnimationDuration, false);
+				bBlockSuccess = true;
+				ChangeToSearchingState(DamageType, CharacterRef, bSearchingSuccess);
+				if (bSearchingSuccess) {
+					return;
+
+				}
+			}
+
+		}
+		else {
+			IsForwardHit = HitAngleInRange(HitInfo.ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true);
+			if (!IsForwardHit) {
+				return;
+			}
+		}
+	}
+	Blackboard->SetValueAsObject(TargetActor, PlayerCharacterRef);
+	if (AIState == EAIGeneralState::Stunt) {
+		HealthDecreased = HealthDecrease(DamageReceived);
+		ReceivingDamage.Broadcast();
+	}
+	else {
+		ChangeAIState(EAIGeneralState::Attack);
+		HealthDecreased = HealthDecrease(DamageReceived);
+		ReceivingDamage.Broadcast();
+	}
+
+	bExecutionActive = (HealthDecreased / InitHealth) <= HealthPercentExecution;
+
+	if (bExecutionActive && bSelfLocked) {
+		ExecutionIndicator->SetVisibility(true, true);
+	}
+
+
+	StaminaDecreased = StaminaDecrease(10.0f);
+	Blackboard->SetValueAsFloat(StaminaKey, StaminaDecreased);
+	Blackboard->SetValueAsFloat(HealthKey, HealthDecreased);
+	retFlag = false;
 }
 
 EAIGeneralState ACPP_Enemy::GetAIPreviousState()

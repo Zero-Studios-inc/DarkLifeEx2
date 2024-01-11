@@ -885,6 +885,20 @@ void ACPP_DarkLifeCharacter::HideWeapons(bool bHide)
 	Torch->SetVisibility(!bHide, true);
 }
 
+void ACPP_DarkLifeCharacter::PlayDeflectedAnimation(int CustomComboIndex)
+{
+	if (CombatState == ECharacterCombatState::OneHandSword) {
+		if (OneHandDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(OneHandDeflectedAnimations[CustomComboIndex]))) {
+			PlayAnimMontage(OneHandDeflectedAnimations[CustomComboIndex]);
+		}
+	}
+	else if (CombatState == ECharacterCombatState::TwoHandSword) {
+		if (TwoHandsDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(TwoHandsDeflectedAnimations[CustomComboIndex]))) {
+			PlayAnimMontage(TwoHandsDeflectedAnimations[CustomComboIndex]);
+		}
+	}
+}
+
 
 
 // Called every frame

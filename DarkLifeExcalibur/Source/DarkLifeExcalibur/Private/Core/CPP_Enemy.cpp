@@ -93,7 +93,10 @@ void ACPP_Enemy::ChangeStateBySight()
 
 void ACPP_Enemy::ChangeStateBySightLost()
 {
-	
+	if (IsValid(PlayerCharacterRef)) {
+		PlayerCharacterRef->bPlayerIsEngaged = false;
+	}
+
 	if (IsValid(Blackboard)) {
 		Blackboard->SetValueAsObject(TargetActor, NULL);
 		switch (AIState)
@@ -471,6 +474,7 @@ void ACPP_Enemy::ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* Chara
 		else {
 
 			IsForwardHit = HitAngleInRange(HitInfo.ImpactNormal, GetActorForwardVector(), -90.0f, 90.0f, true, true);
+
 			if ((IsForwardHit) && bCanBlock && (AIState != EAIGeneralState::Stunt) && (!bIsInAttackAnimation)) {
 				if (UKismetMathLibrary::RandomBoolWithWeight(BlockRate)) {
 			if (IsValid(BlockAnim)) {
@@ -483,6 +487,7 @@ void ACPP_Enemy::ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* Chara
 						ChangeToSearchingState(DamageType, CharacterRef, bSearchingSuccess);
 						if (bSearchingSuccess) {
 							return;
+						
 						}
 					}
 

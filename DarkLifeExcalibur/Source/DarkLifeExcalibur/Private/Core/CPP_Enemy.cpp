@@ -486,7 +486,7 @@ void ACPP_Enemy::ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* Chara
 				else if ((DamageType == ECharacterDamageType::Sword) && (!SwordStanceVulnerability.Contains(CharacterRef->CombatState))) {
 					if (IsValid(CharacterRef))
 					{
-						CharacterRef->PlayDeflectedAnimation(0);
+						CharacterRef->PlayDeflectedAnimation(0, DamageType);
 					}
 				}
 				else {
@@ -500,7 +500,7 @@ void ACPP_Enemy::ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* Chara
 			else{
 				if (IsValid(CharacterRef))
 				{
-					CharacterRef->PlayDeflectedAnimation(0);
+					CharacterRef->PlayDeflectedAnimation(0, DamageType);
 				}
 			}
 		}

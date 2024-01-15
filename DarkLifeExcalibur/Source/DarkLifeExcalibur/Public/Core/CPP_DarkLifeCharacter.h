@@ -193,6 +193,14 @@ public:
 		TArray<UAnimMontage*> OneHandChargeAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> TwoHandsChargeAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	TArray<UAnimMontage*> OneHandDeflectedAnimations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	TArray<UAnimMontage*> TwoHandsDeflectedAnimations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	TArray<UAnimMontage*> ShieldDeflectedAnimations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	TArray<UAnimMontage*> PunchDeflectedAnimations;
 	
 
 	//Character Variables
@@ -414,6 +422,8 @@ public:
 		void EnemyAttacking(ACPP_Enemy* Enemy);
 	UFUNCTION(BlueprintCallable)
 		void HideWeapons(bool bHide);
+	UFUNCTION(Category = "Animations")
+	void PlayDeflectedAnimation(int CustomComboIndex,ECharacterDamageType DamageType);
 
 
 

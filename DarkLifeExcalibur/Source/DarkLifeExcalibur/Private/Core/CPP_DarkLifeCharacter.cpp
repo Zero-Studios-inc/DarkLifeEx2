@@ -885,6 +885,45 @@ void ACPP_DarkLifeCharacter::HideWeapons(bool bHide)
 	Torch->SetVisibility(!bHide, true);
 }
 
+void ACPP_DarkLifeCharacter::PlayDeflectedAnimation(int CustomComboIndex, ECharacterDamageType DamageType)
+{
+	switch (DamageType)
+	{
+	case ECharacterDamageType::Sword:
+		if (CombatState == ECharacterCombatState::OneHandSword) {
+			if (OneHandDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(OneHandDeflectedAnimations[CustomComboIndex]))) {
+				PlayAnimMontage(OneHandDeflectedAnimations[CustomComboIndex]);
+			}
+		}
+		else if (CombatState == ECharacterCombatState::TwoHandSword) {
+			if (TwoHandsDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(TwoHandsDeflectedAnimations[CustomComboIndex]))) {
+				PlayAnimMontage(TwoHandsDeflectedAnimations[CustomComboIndex]);
+			}
+		}
+		break;
+	case ECharacterDamageType::Shield:
+		if (ShieldDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(ShieldDeflectedAnimations[CustomComboIndex])))
+		{
+			PlayAnimMontage(ShieldDeflectedAnimations[CustomComboIndex]);
+     	}
+		break;
+	case ECharacterDamageType::Torch:
+		break;
+	case ECharacterDamageType::Punch:
+		if (PunchDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(PunchDeflectedAnimations[CustomComboIndex])))
+		{
+			PlayAnimMontage(PunchDeflectedAnimations[CustomComboIndex]);
+		}
+		break;
+	case ECharacterDamageType::Arrow:
+		break;
+	default:
+		break;
+	}
+
+	
+}
+
 
 
 // Called every frame

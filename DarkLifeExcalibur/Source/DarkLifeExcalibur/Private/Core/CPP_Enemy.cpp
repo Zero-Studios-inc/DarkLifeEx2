@@ -521,6 +521,7 @@ void ACPP_Enemy::ApplyDamage(bool& IsForwardHit, FHitResult& HitInfo, bool& bBlo
 				double BlockAnimationDuration = BlockAnim->RateScale * BlockAnim->GetPlayLength();
 				FTimerHandle BlockHandle;
 				GetWorld()->GetTimerManager().SetTimer(BlockHandle, this, &ACPP_Enemy::DisableBlock, BlockAnimationDuration, false);
+				CharacterRef->PlayDeflectedAnimation(0, DamageType);
 				bBlockSuccess = true;
 				ChangeToSearchingState(DamageType, CharacterRef, bSearchingSuccess);
 				if (bSearchingSuccess) {

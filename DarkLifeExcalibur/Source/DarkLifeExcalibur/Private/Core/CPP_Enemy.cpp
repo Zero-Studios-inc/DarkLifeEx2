@@ -109,6 +109,7 @@ void ACPP_Enemy::ChangeStateBySightLost()
 			break;
 		case EAIGeneralState::Attack:
 			Blackboard->SetValueAsVector(TargetLocation, UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
+			ChangeAIState(EAIGeneralState::Searching);
 			break;
 		case EAIGeneralState::Rest:
 			break;

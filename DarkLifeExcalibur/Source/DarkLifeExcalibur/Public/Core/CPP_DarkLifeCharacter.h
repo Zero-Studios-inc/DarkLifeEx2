@@ -201,7 +201,10 @@ public:
 	TArray<UAnimMontage*> ShieldDeflectedAnimations;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	TArray<UAnimMontage*> PunchDeflectedAnimations;
-	
+	UPROPERTY(EditAnywhere, BlueprintreadWrite, Category = "Animations")
+		TMap<ECharacterCombatState, UAnimMontage*> BlockAnimations;
+	UPROPERTY(EditAnywhere, BlueprintreadWrite, Category = "Animations")
+		TMap<ECharacterCombatState, UAnimMontage*> BlockHitAnimations;
 
 	//Character Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
@@ -424,6 +427,10 @@ public:
 		void HideWeapons(bool bHide);
 	UFUNCTION(Category = "Animations")
 	void PlayDeflectedAnimation(int CustomComboIndex,ECharacterDamageType DamageType);
+	UFUNCTION(BlueprintCallable, Category = "Animations")
+		void PlayBlockingAnimations();
+	UFUNCTION(Blueprintcallable, Category = "Animations")
+		void PlayBlockingHitAnimations();
 
 
 

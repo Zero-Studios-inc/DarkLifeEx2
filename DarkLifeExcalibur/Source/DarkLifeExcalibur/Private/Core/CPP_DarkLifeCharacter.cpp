@@ -924,6 +924,20 @@ void ACPP_DarkLifeCharacter::PlayDeflectedAnimation(int CustomComboIndex, EChara
 	
 }
 
+void ACPP_DarkLifeCharacter::PlayBlockingAnimations()
+{
+	if (BlockAnimations.Find(CombatState)&&(IsValid(BlockAnimations[CombatState]))) {
+		PlayAnimMontage(BlockAnimations[CombatState]);
+	}
+}
+
+void ACPP_DarkLifeCharacter::PlayBlockingHitAnimations()
+{
+	if (BlockHitAnimations.Find(CombatState) && (IsValid(BlockHitAnimations[CombatState]))) {
+		PlayAnimMontage(BlockHitAnimations[CombatState]);
+	}
+}
+
 
 
 // Called every frame

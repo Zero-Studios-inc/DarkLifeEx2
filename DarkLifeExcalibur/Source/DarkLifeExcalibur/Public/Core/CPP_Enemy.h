@@ -223,6 +223,9 @@ protected:
 	ACPP_DarkLifeCharacter* PlayerCharacterRef;
 	UPROPERTY()
 	FTimerHandle TargetSpeedInterpTimeHandle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UAIPerceptionComponent* AIPerception;
 	
 			
 	

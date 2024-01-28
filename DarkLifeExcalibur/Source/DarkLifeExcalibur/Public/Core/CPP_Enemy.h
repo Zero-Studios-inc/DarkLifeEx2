@@ -224,10 +224,6 @@ protected:
 	UPROPERTY()
 	FTimerHandle TargetSpeedInterpTimeHandle;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UAIPerceptionComponent* AIPerception;
-	
-			
 	
 	UFUNCTION()
 		void RestoringCustomTimeDilation();

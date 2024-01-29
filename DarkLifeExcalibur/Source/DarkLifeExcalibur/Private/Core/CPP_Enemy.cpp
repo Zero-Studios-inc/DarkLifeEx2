@@ -14,9 +14,6 @@ ACPP_Enemy::ACPP_Enemy()
 	bCollisionActivate = true;
 	MovementSpeed = 500.0;
 
-	
-	
-
 }
 
 // Called when the game starts or when spawned

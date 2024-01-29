@@ -223,8 +223,7 @@ protected:
 	ACPP_DarkLifeCharacter* PlayerCharacterRef;
 	UPROPERTY()
 	FTimerHandle TargetSpeedInterpTimeHandle;
-	
-			
+
 	
 	UFUNCTION()
 		void RestoringCustomTimeDilation();

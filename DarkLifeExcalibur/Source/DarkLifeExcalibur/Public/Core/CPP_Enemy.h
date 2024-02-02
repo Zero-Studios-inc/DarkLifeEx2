@@ -105,6 +105,9 @@ public:
 	double MinDistanceToThrow;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	double MaxDistanceToThrow;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	double DistanceToMelee = 300.0f;
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Parameters")
 	bool bCanBeExecuted;
 	UPROPERTY(BlueprintReadWrite, Category = "Parameters")

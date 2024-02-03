@@ -50,6 +50,8 @@ class DARKLIFEEXCALIBUR_API ACPP_Enemy : public ACharacter
 	GENERATED_BODY()
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReceivingDamage);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttacking);
+	
 
 public:
 	// Sets default values for this character's properties
@@ -154,6 +156,8 @@ public:
 	//Event Dispatchers
 	UPROPERTY(BlueprintAssignable)
 	FOnReceivingDamage ReceivingDamage;
+	UPROPERTY(BlueprintAssignable)
+	FOnAttacking OnAttacking;
     
 	//AI Key Names
 	UPROPERTY(BlueprintReadWrite, Category = "AI|AI Key Names")
@@ -234,7 +238,7 @@ protected:
 	UFUNCTION()
 		void SetParameters();
 	UFUNCTION(BlueprintCallable)
-		void ChangeStateBySight();
+		void ChangeStateBySight(FVector TargetDetectedLocation);
 	UFUNCTION(BlueprintCallable)
 		void ChangeStateBySightLost();
 	UFUNCTION(BlueprintCallable)

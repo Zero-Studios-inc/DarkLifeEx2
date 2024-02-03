@@ -83,10 +83,25 @@ void ACPP_Enemy::SetParameters()
 
 }
 
-void ACPP_Enemy::ChangeStateBySight()
+void ACPP_Enemy::ChangeStateBySight(FVector TargetDetectedLocation)
 {
 	if ((AIState != EAIGeneralState::Attack) && (AIState != EAIGeneralState::Stunt)) {
-		ChangeAIState(EAIGeneralState::Attack);
+		
+		if (IsValid(Blackboard)) {
+
+			if (!IsValid(Blackboard->GetValueAsObject(TargetActor))){
+				ChangeAIState(EAIGeneralState::Attack);
+				Blackboard->SetValueAsObject(TargetActor, UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+				PlayerCharacterRef->EnemyAttacking(this);
+		}
+			else {
+				OnAttacking.Broadcast();
+			}
+
+			Blackboard->SetValueAsVector(TargetLocation, TargetDetectedLocation);
+
+		}
+
 	}
 }
 

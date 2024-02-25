@@ -8,6 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "BrainComponent.h"
 #include "CPP_DarkLifeCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -213,6 +214,7 @@ public:
 	
 
 	
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -230,8 +232,10 @@ protected:
 	ACPP_DarkLifeCharacter* PlayerCharacterRef;
 	UPROPERTY()
 	FTimerHandle TargetSpeedInterpTimeHandle;
+	UPROPERTY(BlueprintReadWrite)
+	double DistancetoTick = 5000.0f;
 
-	
+
 	UFUNCTION()
 		void RestoringCustomTimeDilation();
 
@@ -261,6 +265,8 @@ protected:
 	    void SetBlackboard();
     UFUNCTION()
 	void DisableBlock();
+	UFUNCTION()
+	void EnableTickByPlayerDistance();
 	
 	
 		
@@ -300,6 +306,7 @@ public:
 	    void SetParryOverlayMaterial(bool bSetOverlayMaterial, UMaterialInterface* ParryOverlayMaterial);
 	UFUNCTION()
 	    void SetHeavyAttackOverlayMaterial(bool bSetOverlayMaterial, UMaterialInterface* HeavyAttackOverlayMaterial);
+	
 
 	//UFUNCTION(BlueprintCallable, Category = "Parameters")
    //void SetParameters(double InHealth, double InDamage, double InStamina, double InStaminaDamage, double InMagic, double InGiveXP, double InGiveBeastPower);

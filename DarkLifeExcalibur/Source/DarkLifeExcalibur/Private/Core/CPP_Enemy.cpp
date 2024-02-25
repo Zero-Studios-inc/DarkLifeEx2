@@ -34,6 +34,9 @@ void ACPP_Enemy::BeginPlay()
 
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ACPP_Enemy::SetBlackboard, 1.0f, false);
+
+	FTimerHandle TickTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TickTimerHandle, this, &ACPP_Enemy::EnableTickByPlayerDistance, 2.0f, true);
 }
 	
 	
@@ -608,6 +611,30 @@ void ACPP_Enemy::SetHeavyAttackOverlayMaterial(bool bSetOverlayMaterial, UMateri
 		}
 		else {
 			GetMesh()->SetOverlayMaterial(nullptr);
+			
+		}
+	}
+}
+
+void ACPP_Enemy::EnableTickByPlayerDistance()
+{
+	
+	if (IsValid(PlayerCharacterRef)) {
+		double DistanceToPlayer = UKismetMathLibrary::Vector_Distance(GetActorLocation(), PlayerCharacterRef->GetActorLocation());
+		if ((DistanceToPlayer < DistancetoTick) && !IsActorTickEnabled() && (EnemyAIController) ) {
+			SetActorTickEnabled(true);
+			EnemyAIController->Possess(this);
+			GetMesh()->SetComponentTickEnabled(true);
+			ChangeAIState(AIDefaultState);
+			SetActorHiddenInGame(false);
+
+		}
+		else if ((DistanceToPlayer >= DistancetoTick) && IsActorTickEnabled()){
+			SetActorTickEnabled(false);
+			GetMesh()->Stop();
+			GetMesh()->SetComponentTickEnabled(false);
+			GetController()->UnPossess();
+			SetActorHiddenInGame(true);
 			
 		}
 	}

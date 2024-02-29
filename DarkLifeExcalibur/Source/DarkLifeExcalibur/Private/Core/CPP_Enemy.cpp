@@ -626,6 +626,7 @@ void ACPP_Enemy::EnableTickByPlayerDistance()
 			EnemyAIController->Possess(this);
 			GetMesh()->SetComponentTickEnabled(true);
 			ChangeAIState(AIDefaultState);
+			//UAIBlueprintHelperLibrary::GetAIController(this)->GetBrainComponent()->StartLogic();
 			SetActorHiddenInGame(false);
 
 		}
@@ -634,6 +635,7 @@ void ACPP_Enemy::EnableTickByPlayerDistance()
 			GetMesh()->Stop();
 			GetMesh()->SetComponentTickEnabled(false);
 			GetController()->UnPossess();
+			//UAIBlueprintHelperLibrary::GetAIController(this)->GetBrainComponent()->StopLogic("Not In Tick Distance");
 			SetActorHiddenInGame(true);
 			
 		}

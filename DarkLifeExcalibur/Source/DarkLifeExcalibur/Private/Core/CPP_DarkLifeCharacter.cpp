@@ -782,6 +782,8 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 					if (!LocalParryFinisherAnimation.IsEmpty()) {
 
 						randomIndex = UKismetMathLibrary::RandomInteger(LocalParryFinisherAnimation.Num());
+						UAIBlueprintHelperLibrary::GetAIController(EnemyRef)->GetBrainComponent()->PauseLogic("Finisher Received");
+						EnemyRef->GetMesh()->Stop();
 						PlayParryFinisherAnimation(randomIndex, ParryMontage, LocalParryFinisherAnimation);
 						EnemyRef->PlayParryFinisherAnimation(randomIndex, CombatState);
 						AnimationLength = ParryMontage->GetPlayLength();
@@ -799,6 +801,8 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 					if (!BackFinisher.IsEmpty()) {
 
 						randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num());
+						EnemyRef->GetMesh()->Stop();
+						UAIBlueprintHelperLibrary::GetAIController(EnemyRef)->GetBrainComponent()->PauseLogic("Finisher Received");
 						PlayFromTheBackFinisherAnimation(randomIndex, BackMontage);
 						EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
 						AnimationLength = BackMontage->GetPlayLength();

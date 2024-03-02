@@ -35,8 +35,8 @@ void ACPP_Enemy::BeginPlay()
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ACPP_Enemy::SetBlackboard, 1.0f, false);
 
-	FTimerHandle TickTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TickTimerHandle, this, &ACPP_Enemy::EnableTickByPlayerDistance, 2.0f, true);
+	//FTimerHandle TickTimerHandle;
+	//GetWorld()->GetTimerManager().SetTimer(TickTimerHandle, this, &ACPP_Enemy::EnableTickByPlayerDistance, 2.0f, true);
 }
 	
 	

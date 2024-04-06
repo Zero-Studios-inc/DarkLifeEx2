@@ -403,8 +403,12 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 	case ECharacterMovement::Sprint:
 		StopAnimMontage(GetCurrentMontage());
 		ResetCombo();
+		if (GetCharacterMovement()->IsCrouching()) {
+			UnCrouch();
+		}
 		StartSprint();
 		bWalk = false;
+		bCrouched = false;
 		break;
 	case ECharacterMovement::Crouch:
 		bCrouched = true;

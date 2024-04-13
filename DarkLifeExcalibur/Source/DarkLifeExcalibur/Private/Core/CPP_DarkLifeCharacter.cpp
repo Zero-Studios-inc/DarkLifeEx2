@@ -531,8 +531,10 @@ void ACPP_DarkLifeCharacter::JumpActivation(bool ActivationValue)
 void ACPP_DarkLifeCharacter::PerformJump()
 {
 	if (bJump) {
+		bJump = false;
 		StopSprint();
 		Jump(); 
+		
 	}
 }
 

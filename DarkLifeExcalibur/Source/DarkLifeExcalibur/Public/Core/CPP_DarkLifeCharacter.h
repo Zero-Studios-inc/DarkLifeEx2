@@ -43,6 +43,12 @@ enum class ECharacterFinishMoveType : uint8 {
 
 };
 
+UENUM(BlueprintType)
+enum class ECharacterState : uint8 {
+	Normal = 0 UMETA(DisplayName = "Normal"),
+	Helping = 1 UMETA(DisplayName = "Helping")
+};
+
 
 UENUM(BlueprintType)
 enum class ECharacterDamageType : uint8 {
@@ -70,7 +76,8 @@ enum class ECharacterMovement : uint8 {
 	Sprint = 2 UMETA(DisplayName = "Sprint"),
 	Crouch = 3 UMETA(DisplayName = "Crouch"),
 	Dodge  = 4 UMETA (DisplayName = "Dodge"),
-	Ladder = 5 UMETA(DisplayName = "Ladder")
+	Ladder = 5 UMETA(DisplayName = "Ladder"),
+	Helping = 6 UMETA(DisplayName = "Helping")
 
 
 };
@@ -309,7 +316,8 @@ public:
 		ECharacterCombatState PreviousCombatState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Status")
 		ECharacterNegativeStatus CurrentCharacterNegativeStatus = ECharacterNegativeStatus::None;
-
+		UPROPERTY(BlueprintReadWrite)
+		ECharacterState CurrentCharacterState = ECharacterState::Normal;
 
 
 	
@@ -326,6 +334,10 @@ protected:
 		FTimerHandle ResetComboCounterHandle;
 	UPROPERTY()
 		bool bDrawSwordPreviousState = false;
+   
+
+
+
 	UFUNCTION()
 		void UpdateStaminaByCharacterCombatState();
 	UFUNCTION()
@@ -342,6 +354,7 @@ protected:
 		void AttackFunction();
 	UFUNCTION()
 	void ResetComboCounter();
+	
 
 	//Input
 
@@ -431,6 +444,8 @@ public:
 		void PlayBlockingAnimations();
 	UFUNCTION(Blueprintcallable, Category = "Animations")
 		void PlayBlockingHitAnimations();
+	UFUNCTION(BlueprintCallable, Category = "Character Status")
+		void SetCharacterState(ECharacterState NewCharacterState);
 
 
 

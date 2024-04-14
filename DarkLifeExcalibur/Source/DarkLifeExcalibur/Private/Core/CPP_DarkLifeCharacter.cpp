@@ -422,6 +422,15 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 	case ECharacterMovement::Ladder:
 		StopSprint();
 		break;
+	case ECharacterMovement::Helping:
+		SetWalkSpeed();
+		bWalk = true;
+		StopSprint();
+		ResetCombo();
+		if (GetCharacterMovement()->IsCrouching()) {
+			UnCrouch();
+		}
+		break;
 	default:
 		break;
 	}
@@ -946,6 +955,21 @@ void ACPP_DarkLifeCharacter::PlayBlockingHitAnimations()
 {
 	if (BlockHitAnimations.Find(CombatState) && (IsValid(BlockHitAnimations[CombatState]))) {
 		PlayAnimMontage(BlockHitAnimations[CombatState]);
+	}
+}
+
+void ACPP_DarkLifeCharacter::SetCharacterState(ECharacterState NewCharacterstate)
+{
+	CurrentCharacterState = NewCharacterstate;
+
+	switch (CurrentCharacterState) {
+	case ECharacterState::Normal:
+		SetCharacterMovement(ECharacterMovement::Jog);
+		break;
+	case ECharacterState::Helping:
+		SetCharacterMovement(ECharacterMovement::Walk);
+	default:
+		break;
 	}
 }
 

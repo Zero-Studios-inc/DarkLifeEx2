@@ -199,7 +199,7 @@ void ACPP_DarkLifeCharacter::Turn(float value)
 
 void ACPP_DarkLifeCharacter::Sprint()
 {
-	if (CurrentCharacterMovement != ECharacterMovement::Ladder) {
+	if ((CurrentCharacterMovement != ECharacterMovement::Ladder) && (CurrentCharacterState == ECharacterState::Normal)) {
 		if (!bBeastPowerMovement) {
 			if (!bSprintKeyPress) {
 				if (bCanThrowProjectile) {
@@ -539,7 +539,7 @@ void ACPP_DarkLifeCharacter::JumpActivation(bool ActivationValue)
 
 void ACPP_DarkLifeCharacter::PerformJump()
 {
-	if (bJump) {
+	if ((bJump)&&(CurrentCharacterState == ECharacterState::Normal)) {
 		bJump = false;
 		StopSprint();
 		Jump(); 

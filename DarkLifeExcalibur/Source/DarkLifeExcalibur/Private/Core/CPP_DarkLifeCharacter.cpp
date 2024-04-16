@@ -973,6 +973,69 @@ void ACPP_DarkLifeCharacter::SetCharacterState(ECharacterState NewCharacterstate
 	}
 }
 
+void ACPP_DarkLifeCharacter::CharacterDrawSword(bool bOnlyToBack)
+{
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, true);
+	if ((bDrawSword)||(bOnlyToBack)) {
+
+		Excalibur->AttachToComponent(GetMesh(), AttachmentRules, "Sword_Back");
+
+		if (bDrawShield) {
+			SetCombatState(ECharacterCombatState::OneHandShield);
+		}
+		else if (bTorchActive) {
+			SetCombatState(ECharacterCombatState::OneHandTorch);
+		}
+		else {
+			SetCombatState(ECharacterCombatState::TwoBareHand);
+		}
+	}
+
+	else {
+		Excalibur->AttachToComponent(GetMesh(), AttachmentRules, "Sword");
+		if ((bDrawShield) || (bTorchActive)) {
+
+			SetCombatState(ECharacterCombatState::OneHandSword);
+		}
+		else {
+			SetCombatState(ECharacterCombatState::TwoHandSword);
+		}
+
+
+		ResetCombo();
+		//PlayerCharacter->StopSprint();
+	}
+}
+
+void ACPP_DarkLifeCharacter::CharacterDrawShield(bool bOnlyToBack)
+{
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, true);
+	if ((bDrawShield) || (bOnlyToBack)) {
+		ShieldMesh->AttachToComponent(GetMesh(), AttachmentRules, "Shield_Back");
+		if (bDrawSword) {
+
+			SetCombatState(ECharacterCombatState::TwoHandSword);
+		}
+
+		else {
+			SetCombatState(ECharacterCombatState::TwoBareHand);
+		}
+	}
+	else {
+		ShieldMesh->AttachToComponent(GetMesh(), AttachmentRules, "Shield");
+		if (bDrawSword) {
+			bDrawShield = true;
+			SetCombatState(ECharacterCombatState::OneHandSword);
+		}
+		else {
+			SetCombatState(ECharacterCombatState::OneHandShield);
+		}
+	}
+
+	ResetCombo();
+	//PlayerCharacter->StopSprint();
+}
+
 
 
 // Called every frame

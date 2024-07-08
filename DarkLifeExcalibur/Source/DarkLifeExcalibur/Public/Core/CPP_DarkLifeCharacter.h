@@ -46,7 +46,8 @@ enum class ECharacterFinishMoveType : uint8 {
 UENUM(BlueprintType)
 enum class ECharacterState : uint8 {
 	Normal = 0 UMETA(DisplayName = "Normal"),
-	Helping = 1 UMETA(DisplayName = "Helping")
+	Helping = 1 UMETA(DisplayName = "Helping"),
+	Injuried = 2 UMETA(DisplayName = "Injuried")
 };
 
 
@@ -77,7 +78,8 @@ enum class ECharacterMovement : uint8 {
 	Crouch = 3 UMETA(DisplayName = "Crouch"),
 	Dodge  = 4 UMETA (DisplayName = "Dodge"),
 	Ladder = 5 UMETA(DisplayName = "Ladder"),
-	Helping = 6 UMETA(DisplayName = "Helping")
+	Helping = 6 UMETA(DisplayName = "Helping"),
+	Injuried = 7 UMETA(DisplayName = "Injuried")
 
 
 };

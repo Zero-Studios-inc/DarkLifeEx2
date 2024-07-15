@@ -29,11 +29,11 @@ FTransform UCPP_DarkLifeSaveGame::GetLevelLastSavePoint(FName CurrentLevel, bool
 
 void UCPP_DarkLifeSaveGame::SetNewSavedLevelTransform(FName LevelName, FTransform NewTransform)
 {
-	if (LevelLastSavePointLocation.Contains(LevelName)) {
-		LevelLastSavePointLocation[LevelName] = NewTransform;
+	if (LastSavePoint.Contains(LevelName)) {
+		LastSavePoint[LevelName] = NewTransform;
 	}
 	else {
-		LevelLastSavePointLocation.Add(LevelName, NewTransform);
+		LastSavePoint.Add(LevelName, NewTransform);
 	}
 	
 }

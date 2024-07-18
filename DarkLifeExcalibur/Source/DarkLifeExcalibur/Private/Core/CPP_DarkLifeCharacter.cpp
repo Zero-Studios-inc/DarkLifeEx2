@@ -903,7 +903,8 @@ void ACPP_DarkLifeCharacter::EnemyAttacking(ACPP_Enemy* Enemy)
 
 void ACPP_DarkLifeCharacter::HideWeapons(bool bHide)
 {
-	//Excalibur->bHiddenInGame = bHide;
+	Excalibur->bHiddenInGame = bHide;
+	Excalibur->SetVisibility(!bHide, true);
 	ShieldMesh->bHiddenInGame = bHide;
 	ShieldMesh->SetVisibility(!bHide, true);
 	LongBow->bHiddenInGame = bHide;

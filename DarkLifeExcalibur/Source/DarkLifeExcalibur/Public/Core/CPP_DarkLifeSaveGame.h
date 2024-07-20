@@ -90,7 +90,7 @@ public:
 
 	//Equipped Bow
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	UCPP_DA_Item_Shield* Bow;
+	UCPP_DA_Item_Bow* Bow;
 
    //Inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")

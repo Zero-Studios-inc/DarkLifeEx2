@@ -179,6 +179,9 @@ bool UCPP_ItemContainer::IsItemEquipped(UCPP_DA_Item* Item)
 		break;
 	case EItemCategory::Ability:
 		break;
+	case EItemCategory::Bow:
+		if (Bow == Item)
+			return true;
 	default:
 		break;
 	}
@@ -201,6 +204,7 @@ void UCPP_ItemContainer::LoadSavedInfo(UCPP_DarkLifeSaveGame* SaveGame)
 		ExcaliburCrossguard = SavedGame->ExcaliburCrossguard;
 		ExcaliburBlade = SavedGame->ExcaliburBlade;
 		Shield = SavedGame->Shield;
+		Bow = SavedGame->Bow;
 		MainInventory = SavedGame->Inventory;
 	}
 		

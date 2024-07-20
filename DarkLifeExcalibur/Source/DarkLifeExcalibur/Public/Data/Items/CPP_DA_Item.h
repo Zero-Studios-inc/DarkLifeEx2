@@ -19,7 +19,8 @@ enum class EItemCategory : uint8 {
 	Shield = 1 UMETA(DisplayName = "Shield"),
 	Consumable = 2 UMETA(DisplayName = "Consumable"),
 	Rune = 3 UMETA(DisplayName = "Rune"),
-	Ability = 4 UMETA(DisplayName = "Ability")
+	Ability = 4 UMETA(DisplayName = "Ability"),
+	Bow = 5 UMETA(DisplayName = "Bow")
 	
 
 

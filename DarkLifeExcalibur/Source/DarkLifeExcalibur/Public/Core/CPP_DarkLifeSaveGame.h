@@ -12,6 +12,7 @@
 #include "Data/Items/CPP_DA_Item_ExcaliburCrossguard.h"
 #include "Data/Items/CPP_DA_Item_ExcaliburBlade.h"
 #include "../Data/Items/CPP_DA_Item_Shield.h"
+#include "../Data/Items/CPP_DA_Item_Bow.h"
 #include "Containers/Map.h"
 #include "CPP_DarkLifeSaveGame.generated.h"
 
@@ -86,6 +87,10 @@ public:
    //Equipped Shield
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	UCPP_DA_Item_Shield* Shield;
+
+	//Equipped Bow
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	UCPP_DA_Item_Bow* Bow;
 
    //Inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")

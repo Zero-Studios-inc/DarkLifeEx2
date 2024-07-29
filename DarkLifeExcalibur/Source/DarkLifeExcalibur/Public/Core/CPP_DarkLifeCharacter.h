@@ -47,7 +47,8 @@ UENUM(BlueprintType)
 enum class ECharacterState : uint8 {
 	Normal = 0 UMETA(DisplayName = "Normal"),
 	Helping = 1 UMETA(DisplayName = "Helping"),
-	Injuried = 2 UMETA(DisplayName = "Injuried")
+	Injuried = 2 UMETA(DisplayName = "Injuried"),
+	Injuried_Sword = 3 UMETA(DisplayName = "Injuried_Sword")
 };
 
 
@@ -79,7 +80,8 @@ enum class ECharacterMovement : uint8 {
 	Dodge  = 4 UMETA (DisplayName = "Dodge"),
 	Ladder = 5 UMETA(DisplayName = "Ladder"),
 	Helping = 6 UMETA(DisplayName = "Helping"),
-	Injuried = 7 UMETA(DisplayName = "Injuried")
+	Injuried = 7 UMETA(DisplayName = "Injuried"),
+	Injuried_Sword = 8 UMETA(DisplayName = "Injuried_Sword")
 
 
 };

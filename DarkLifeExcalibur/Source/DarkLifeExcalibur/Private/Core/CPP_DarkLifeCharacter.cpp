@@ -439,6 +439,14 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 			UnCrouch();
 		}
 		break;
+	case ECharacterMovement::Injuried_Sword:
+		SetWalkSpeed();
+		bWalk = true;
+		StopSprint();
+		if (GetCharacterMovement()->IsCrouching()) {
+			UnCrouch();
+		}
+		break;
 	default:
 		break;
 	}
@@ -980,6 +988,9 @@ void ACPP_DarkLifeCharacter::SetCharacterState(ECharacterState NewCharacterstate
 		break;
 	case ECharacterState::Injuried:
 		SetCharacterMovement(ECharacterMovement::Injuried);
+		break;
+	case ECharacterState::Injuried_Sword:
+		SetCharacterMovement(ECharacterMovement::Injuried_Sword);
 		break;
 	default:
 		break;

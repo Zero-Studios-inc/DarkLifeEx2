@@ -549,6 +549,13 @@ void ACPP_Enemy::SetEnemyPhase(EEnemyPhase NewEnemyPhase)
 
 }
 
+void ACPP_Enemy::CheckHealthForPhaseChange(EEnemyPhase NewEnemyPhase)
+{
+	if (HealthPercentPerPhase.Find(NewEnemyPhase)) {
+		if (Health < InitHealth * HealthPercentPerPhase[NewEnemyPhase]) SetEnemyPhase(NewEnemyPhase);
+	}
+}
+
 
 void ACPP_Enemy::ApplyDamage(bool& IsForwardHit, FHitResult& HitInfo, bool& bBlockSuccess, ECharacterDamageType DamageType, ACPP_DarkLifeCharacter* CharacterRef, bool& bSearchingSuccess, double& HealthDecreased, double DamageReceived, USceneComponent* ExecutionIndicator, double& StaminaDecreased, bool& retFlag)
 {

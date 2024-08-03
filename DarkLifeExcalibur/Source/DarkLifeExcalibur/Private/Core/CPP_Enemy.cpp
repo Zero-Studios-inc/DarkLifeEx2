@@ -522,6 +522,33 @@ void ACPP_Enemy::ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* Chara
 		}
 	}
 
+void ACPP_Enemy::SetEnemyPhase(EEnemyPhase NewEnemyPhase)
+{
+	if (NewEnemyPhase == CurrentEnemyPhase) return;
+	UCPP_EnemyPhaseData* NewEnemyPhaseData = EnemyPhasesData[NewEnemyPhase];
+	if (NewEnemyPhaseData) {
+
+		//New Animations
+		if (!NewEnemyPhaseData->HitAnim.IsEmpty()) HitAnim = NewEnemyPhaseData->HitAnim;
+		if (!NewEnemyPhaseData->PunchDamageAnim.IsEmpty()) PunchDamageAnim = NewEnemyPhaseData->PunchDamageAnim;
+		if (!NewEnemyPhaseData->AttackAnim.IsEmpty()) AttackAnim = NewEnemyPhaseData->AttackAnim;
+		if (!NewEnemyPhaseData->EvadeAnim.IsEmpty()) EvadeAnim = NewEnemyPhaseData->EvadeAnim;
+		if (NewEnemyPhaseData->BlockAnim) BlockAnim = NewEnemyPhaseData->BlockAnim;
+		if (NewEnemyPhaseData->DeathAnim) DeathAnim = NewEnemyPhaseData->DeathAnim;
+		if (NewEnemyPhaseData->ThrowAnim) ThrowAnim = NewEnemyPhaseData->ThrowAnim;
+		if (NewEnemyPhaseData->StuntAnim) StuntAnim = NewEnemyPhaseData->StuntAnim;
+		if (NewEnemyPhaseData->ShieldImpactAnim) ShieldImpactAnim = NewEnemyPhaseData->ShieldImpactAnim;
+		if (!NewEnemyPhaseData->DistanceAnim.IsEmpty()) DistanceAnim = NewEnemyPhaseData->DistanceAnim;
+		if (!NewEnemyPhaseData->OneHandParryFinisher.IsEmpty()) OneHandParryFinisher = NewEnemyPhaseData->OneHandParryFinisher;
+		if (!NewEnemyPhaseData->TwoHandsParryFinisher.IsEmpty()) TwoHandsParryFinisher = NewEnemyPhaseData->TwoHandsParryFinisher;
+		if (!NewEnemyPhaseData->BackFinisher.IsEmpty()) BackFinisher = NewEnemyPhaseData->BackFinisher;
+
+		//Setting New Enemy Phase
+		CurrentEnemyPhase = NewEnemyPhase;
+	}
+
+}
+
 
 void ACPP_Enemy::ApplyDamage(bool& IsForwardHit, FHitResult& HitInfo, bool& bBlockSuccess, ECharacterDamageType DamageType, ACPP_DarkLifeCharacter* CharacterRef, bool& bSearchingSuccess, double& HealthDecreased, double DamageReceived, USceneComponent* ExecutionIndicator, double& StaminaDecreased, bool& retFlag)
 {

@@ -10,6 +10,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "BrainComponent.h"
 #include "CPP_DarkLifeCharacter.h"
+#include "Data/AI/CPP_EnemyPhaseData.h"
 #include "Kismet/GameplayStatics.h"
 
 class ACPP_DarkLifeCharacter;
@@ -211,6 +212,12 @@ public:
 		TArray <UAnimMontage*> TwoHandsParryFinisher;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 		TArray<UAnimMontage*> BackFinisher;
+
+	//Enemy Phases
+		UPROPERTY(BlueprintReadWrite, Category = "Enemy Phases")
+		EEnemyPhase CurrentEnemyPhase = EEnemyPhase::Phase_0;
+		UPROPERTY(BlueprintReadWrite, Category = "Enemy Phases")
+		TMap<EEnemyPhase, UCPP_EnemyPhaseData*> EnemyPhasesData;
 	
 
 	
@@ -295,6 +302,8 @@ public:
 	void ChangeToSearchingState(ECharacterDamageType DamageType, ACPP_DarkLifeCharacter* CharacterRef, bool& Success);
 	UFUNCTION(BlueprintCallable)
 	void ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* CharacterRef, ECharacterDamageType DamageType, double DamageReceived, int32 ComboCounter, bool &bIsInStunt,bool &bBlockSuccess ,double &HealthDecreased, USceneComponent* ExecutionIndicator);
+	UFUNCTION(BlueprintCallable)
+	void SetEnemyPhase(EEnemyPhase NewEnemyPhase);
 
 	void ApplyDamage(bool& IsForwardHit, FHitResult& HitInfo, bool& bBlockSuccess, ECharacterDamageType DamageType, ACPP_DarkLifeCharacter* CharacterRef, bool& bSearchingSuccess, double& HealthDecreased, double DamageReceived, USceneComponent* ExecutionIndicator, double& StaminaDecreased, bool& retFlag);
 

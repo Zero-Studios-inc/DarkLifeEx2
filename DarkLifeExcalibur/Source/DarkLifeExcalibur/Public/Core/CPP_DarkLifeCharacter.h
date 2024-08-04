@@ -18,8 +18,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/ChildActorComponent.h"
 #include "Components/CPP_ItemContainer.h"
+#include "UObject/ConstructorHelpers.h"
 
 class ACPP_Enemy;
+class UCPP_GameInstance;
+class UCPP_ItemContainer;
+
 
 #include "CPP_DarkLifeCharacter.generated.h"
 
@@ -323,7 +327,8 @@ public:
 		UPROPERTY(BlueprintReadWrite)
 		ECharacterState CurrentCharacterState = ECharacterState::Normal;
 
-
+		UPROPERTY(BlueprintReadWrite)
+		AActor* FakeExcaliburActorRef;
 	
 	
 		
@@ -339,8 +344,7 @@ protected:
 	UPROPERTY()
 		bool bDrawSwordPreviousState = false;
    
-
-
+	
 
 	UFUNCTION()
 		void UpdateStaminaByCharacterCombatState();
@@ -374,6 +378,21 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Parameters")
+	void InitializeCharacter();
+
+	void InitializeCharacter_Implementation();
+
+	UFUNCTION(BlueprintCallable, Category = "Parameters")
+	void LoadParameters();
+
+	UFUNCTION(BlueprintCallable, Category = "Parameters")
+	void SetExcalibur();
+	UFUNCTION(BlueprintCallable, Category = "Parameters")
+	void SetBow();
+	UFUNCTION(BlueprintCallable, Category = "Parameters")
+	void SetShield();
 
 	UFUNCTION(BlueprintCallable, Category = "Animations")
 		void EvasionStepAnimations();

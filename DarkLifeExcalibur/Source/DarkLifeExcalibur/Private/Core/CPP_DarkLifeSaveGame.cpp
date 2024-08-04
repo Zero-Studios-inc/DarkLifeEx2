@@ -2,6 +2,7 @@
 
 
 #include "Core/CPP_DarkLifeSaveGame.h"
+#include "Core/CPP_DarkLifeCharacter.h"
 
 void UCPP_DarkLifeSaveGame::ParametersCalculation()
 {

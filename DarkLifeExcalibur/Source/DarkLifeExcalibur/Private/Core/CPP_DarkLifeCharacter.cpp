@@ -2,6 +2,8 @@
 
 #include "Core/CPP_DarkLifeCharacter.h"
 #include "Core/CPP_Enemy.h"
+#include "Core/CPP_GameInstance.h"
+#include "Core/Components/CPP_ItemContainer.h"
 
 
 // Sets default values
@@ -86,7 +88,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bCrouched = false;
 	CrouchSpeed = 180.0;
 	
-	
+		
 }
 
 void ACPP_DarkLifeCharacter::UpdateStaminaByCharacterCombatState()
@@ -224,6 +226,142 @@ void ACPP_DarkLifeCharacter::BeginPlay()
 	bDrawShieldPreviousState = bDrawShield;
 	bTorchPreviousState = false;
 	SetCombatState(ECharacterCombatState::TwoBareHand);
+	
+}
+
+
+void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
+{
+	UCPP_GameInstance* DLGameInstance = Cast<UCPP_GameInstance>(GetGameInstance());
+	if (DLGameInstance) {
+		UCPP_DarkLifeSaveGame* SaveGame = DLGameInstance->SaveGameObject;
+		if (SaveGame) {
+			SetCharacterState(SaveGame->CharacterState);
+			InventoryManager->LoadSavedInfo(SaveGame);
+			SetExcalibur();
+			SetBow();
+			SetShield();
+
+			if (CurrentCharacterState == ECharacterState::Injuried_Sword) {
+				
+				
+				UClass* FakeExcaliburClass = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/TESTING/Character/Excalibur/Modular_Fantasy_Sword/Blueprints/BP_FakeExcalibur.BP_FakeExcalibur_C"));
+				if (FakeExcaliburClass) {
+
+
+					FActorSpawnParameters SpawnParameters;
+					FakeExcaliburActorRef = GetWorld()->SpawnActor<AActor>(FakeExcaliburClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+					FakeExcaliburActorRef->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "Sword");
+
+					FVector Location(0.0f, 0.0f, 10.0f);
+					FRotator Rotation(2.0f, 15.0f, 28.0f);
+					FVector Scale(1.0f, 1.0f, 1.0f);
+
+					FTransform FExcaliburTransform(Rotation, Location, Scale);
+
+					FakeExcaliburActorRef->SetActorRelativeTransform(FExcaliburTransform);
+				}
+			}
+			else {
+				if (FakeExcaliburActorRef) {
+					FakeExcaliburActorRef->Destroy();
+					FakeExcaliburActorRef = nullptr;
+				}
+			}
+
+		}
+	}
+}
+
+void ACPP_DarkLifeCharacter::LoadParameters()
+{
+	UCPP_GameInstance* DLGameInstance = Cast<UCPP_GameInstance>(GetGameInstance());
+	UCPP_DarkLifeSaveGame* SaveGame = DLGameInstance->SaveGameObject;
+	if (SaveGame) {
+		SaveGame->ParametersCalculation();
+		Health, MaxHealth = SaveGame->CurrentHealth;
+		Stamina, MaxStamina = SaveGame->CurrentStamina;
+		Fracture = SaveGame->CurrentFracture;
+		Defense = SaveGame->CurrentDefense;
+		Recharge = SaveGame->CurrentRecharge;
+		MaxBeast = SaveGame->CurrentBeast;
+		
+	}
+}
+
+void ACPP_DarkLifeCharacter::SetExcalibur()
+{
+	// Comprobación de puntero nulo para Excalibur
+	if (Excalibur)
+	{
+		// Si Excalibur tiene un ChildActor, destrúyelo
+		if (Excalibur->GetChildActor())
+		{
+			Excalibur->GetChildActor()->Destroy();
+		}
+
+		// Cargar la clase del Blueprint de Excalibur
+		UClass* ExcaliburClass = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/TESTING/Character/Excalibur/Modular_Fantasy_Sword/Blueprints/BP_DarkLifeModularSword.BP_DarkLifeModularSword_C"));
+		if (ExcaliburClass)
+		{
+			Excalibur->SetChildActorClass(ExcaliburClass);
+			LoadParameters();
+		}
+		
+	}
+	
+}
+
+void ACPP_DarkLifeCharacter::SetBow()
+{
+	// Comprobación de puntero nulo para LongBow
+	if (LongBow)
+	{
+		// Si LongBow tiene un ChildActor, destrúyelo
+		if (LongBow->GetChildActor())
+		{
+			LongBow->GetChildActor()->Destroy();
+		}
+
+		// Cargar la clase del Blueprint del Arco
+		UClass* BowClass = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/TESTING/Character/Bow/BP_Bow.BP_Bow_C"));
+		if (BowClass)
+		{
+			LongBow->SetChildActorClass(BowClass);
+		}
+		
+	}
+	
+}
+
+void ACPP_DarkLifeCharacter::SetShield()
+{
+	// Comprobar si InventoryManager y Shield existen
+	if (InventoryManager && InventoryManager->Shield)
+	{
+		TSoftObjectPtr<UStaticMesh> ShieldSoftReference = InventoryManager->Shield->EquipMesh;
+
+		// Comprobar si ShieldMesh existe
+		if (ShieldMesh)
+		{
+			// Comprobar si ShieldSoftReference es válido
+			if (ShieldSoftReference.IsValid())
+			{
+				ShieldMesh->SetStaticMesh(ShieldSoftReference.Get());
+			}
+			else
+			{
+				// Cargar sincrónicamente el recurso si no es válido
+				ShieldSoftReference.LoadSynchronous();
+				if (ShieldSoftReference.IsValid())
+				{
+					ShieldMesh->SetStaticMesh(ShieldSoftReference.Get());
+				}
+				
+			}
+		}
+		
+	}
 	
 }
 

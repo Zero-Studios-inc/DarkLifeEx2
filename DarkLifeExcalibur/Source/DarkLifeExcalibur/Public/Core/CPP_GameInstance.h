@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "CPP_DarkLifeCharacter.h"
-#include "CPP_DarkLifeSaveGame.h"
+#include "Kismet/GameplayStatics.h"
+#include "Core/CPP_DarkLifeSaveGame.h"
 #include "CPP_GameInstance.generated.h"
+
+class ACPP_DarkLifeCharacter;
+class UCPP_DarkLifeSaveGame;
 
 /**
  * 
@@ -27,7 +30,11 @@ public:
 		bool bCleanStart;
 	UPROPERTY(BlueprintReadOnly)
 		ACPP_DarkLifeCharacter* CharacterRef;
-/*UPROPERTY(BlueprintReadWrite)
-		UCPP_DarkLifeSaveGame* SaveGameRef;*/
+    UPROPERTY(BlueprintReadWrite)
+        UCPP_DarkLifeSaveGame* SaveGameObject;
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Save/Load")
+	void SaveGame();	
 
 };

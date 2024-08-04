@@ -14,8 +14,11 @@
 #include "../Data/Items/CPP_DA_Item_Shield.h"
 #include "../Data/Items/CPP_DA_Item_Bow.h"
 #include "Containers/Map.h"
+#include "Core/CPP_DarkLifeCharacter.h"
 #include "CPP_DarkLifeSaveGame.generated.h"
 
+
+class ACPP_DarkLifeCharacter;
 /**
  * 
  */
@@ -73,6 +76,8 @@ public:
 		double CharacterXPBase = 100.0f;
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
 		int32 ProjectileAmount;
+		UPROPERTY(BlueprintReadWrite, Category = "Character")
+		ECharacterState CharacterState;
 
 	//Excalibur Equipped Parts
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory|Excalibur")
@@ -95,6 +100,20 @@ public:
    //Inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	TMap<UCPP_DA_Item*, int> Inventory;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FName> ItemBoxRegister;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FTransform CheckPointTransform;
+
+	//Missions
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missions")
+	TMap<TSubclassOf<AActor>, bool> MissionActivation;
+
+	//Cinematics
+	
 
 protected:
 	//Level Locations

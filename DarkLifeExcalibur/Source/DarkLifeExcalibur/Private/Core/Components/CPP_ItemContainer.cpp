@@ -2,7 +2,8 @@
 
 
 #include "Core/Components/CPP_ItemContainer.h"
-
+#include "Core/CPP_DarkLifeCharacter.h"
+#include "Core/CPP_DarkLifeSaveGame.h"
 // Sets default values for this component's properties
 UCPP_ItemContainer::UCPP_ItemContainer()
 {

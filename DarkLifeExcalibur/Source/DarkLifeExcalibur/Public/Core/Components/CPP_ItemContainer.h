@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "../../Data/Items/CPP_DA_Item.h"
-#include "../../Core/CPP_DarkLifeSaveGame.h"
 #include "../../Data/Items/Runes/CPP_DA_Item_Rune_Attack.h"
 #include "../../Data/Items/Runes/CPP_DA_Item_Rune_Pasive.h"
 #include "../../Data/Items/CPP_DA_Item_ExcaliburPommel.h"
@@ -17,6 +16,8 @@
 #include "Containers/Map.h"
 #include "CPP_ItemContainer.generated.h"
 
+class ACPP_DarkLifeCharacter;
+class UCPP_DarkLifeSaveGame;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DARKLIFEEXCALIBUR_API UCPP_ItemContainer : public UActorComponent

@@ -243,24 +243,30 @@ void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 			SetShield();
 
 			if (CurrentCharacterState == ECharacterState::Injuried_Sword) {
-				TSubclassOf<AActor> FakeExcaliburRef;
-				static ConstructorHelpers::FClassFinder<AActor> MyBPActorClassFinder(TEXT("Game/TESTING/Character/Excalibur/Modular_Fantasy_Sword/Blueprints/BP_FakeExcalibur"));
-				FakeExcaliburRef = MyBPActorClassFinder.Class;
-				FActorSpawnParameters SpawnParameters;
-				FakeExcaliburActorRef = GetWorld()->SpawnActor<AActor>((FakeExcaliburRef,(0,0,0),(0,0,0), SpawnParameters));
-				FakeExcaliburActorRef->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "Sword");
-
-				FVector Location(0.0f, 0.0f, 10.0f);
-				FRotator Rotation(2.0f, 15.0f, 28.0f);
-				FVector Scale(1.0f, 1.0f, 1.0f);
-
-				FTransform FExcaliburTransform(Rotation, Location, Scale);
-
-				FakeExcaliburActorRef->SetActorRelativeTransform(FExcaliburTransform);
 				
+				
+				UClass* FakeExcaliburClass = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/TESTING/Character/Excalibur/Modular_Fantasy_Sword/Blueprints/BP_FakeExcalibur.BP_FakeExcalibur_C"));
+				if (FakeExcaliburClass) {
+
+
+					FActorSpawnParameters SpawnParameters;
+					FakeExcaliburActorRef = GetWorld()->SpawnActor<AActor>(FakeExcaliburClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+					FakeExcaliburActorRef->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "Sword");
+
+					FVector Location(0.0f, 0.0f, 10.0f);
+					FRotator Rotation(2.0f, 15.0f, 28.0f);
+					FVector Scale(1.0f, 1.0f, 1.0f);
+
+					FTransform FExcaliburTransform(Rotation, Location, Scale);
+
+					FakeExcaliburActorRef->SetActorRelativeTransform(FExcaliburTransform);
+				}
 			}
 			else {
-				if (FakeExcaliburActorRef) FakeExcaliburActorRef->Destroy();
+				if (FakeExcaliburActorRef) {
+					FakeExcaliburActorRef->Destroy();
+					FakeExcaliburActorRef = nullptr;
+				}
 			}
 
 		}

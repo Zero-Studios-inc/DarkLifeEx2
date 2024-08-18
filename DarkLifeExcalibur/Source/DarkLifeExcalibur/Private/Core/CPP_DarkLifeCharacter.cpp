@@ -2,6 +2,8 @@
 
 #include "Core/CPP_DarkLifeCharacter.h"
 #include "Core/CPP_Enemy.h"
+#include "UObject/UnrealType.h"
+#include "UObject/PropertyPortFlags.h"
 #include "Core/CPP_GameInstance.h"
 #include "Core/Components/CPP_ItemContainer.h"
 
@@ -232,46 +234,92 @@ void ACPP_DarkLifeCharacter::BeginPlay()
 
 void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 {
+	// Obtén la instancia de GameInstance
 	UCPP_GameInstance* DLGameInstance = Cast<UCPP_GameInstance>(GetGameInstance());
-	if (DLGameInstance) {
-		UCPP_DarkLifeSaveGame* SaveGame = DLGameInstance->SaveGameObject;
-		if (SaveGame) {
-			SetCharacterState(SaveGame->CharacterState);
-			InventoryManager->LoadSavedInfo(SaveGame);
-			SetExcalibur();
-			SetBow();
-			SetShield();
+	if (!DLGameInstance)
+	{
+		
+		return;
+	}
 
-			if (CurrentCharacterState == ECharacterState::Injuried_Sword) {
-				
-				
-				UClass* FakeExcaliburClass = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/TESTING/Character/Excalibur/Modular_Fantasy_Sword/Blueprints/BP_FakeExcalibur.BP_FakeExcalibur_C"));
-				if (FakeExcaliburClass) {
+	
+	FProperty* SaveGameProperty = DLGameInstance->GetClass()->FindPropertyByName(FName(TEXT("Save Game")));
+	if (!SaveGameProperty)
+	{
+		return;
+	}
+
+	void* SaveGamePropertyValue = SaveGameProperty->ContainerPtrToValuePtr<void>(DLGameInstance);
+	if (!SaveGamePropertyValue)
+	{	
+		return;
+	}
+
+	UCPP_DarkLifeSaveGame* SaveGame = *reinterpret_cast<UCPP_DarkLifeSaveGame**>(SaveGamePropertyValue);
+	if (!SaveGame)
+	{
+		return;
+	}
+
+	SetCharacterState(SaveGame->CharacterState);
+	if (InventoryManager)
+	{
+		InventoryManager->LoadSavedInfo(SaveGame);
+	}
 
 
-					FActorSpawnParameters SpawnParameters;
-					FakeExcaliburActorRef = GetWorld()->SpawnActor<AActor>(FakeExcaliburClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
-					FakeExcaliburActorRef->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "Sword");
+	if (CurrentCharacterState == ECharacterState::Injuried_Sword)
+	{
+		static const FString FakeExcaliburPath = TEXT("/Game/TESTING/Character/Excalibur/Modular_Fantasy_Sword/Blueprints/BP_FakeExcalibur.BP_FakeExcalibur_C");
+		UClass* FakeExcaliburClass = StaticLoadClass(AActor::StaticClass(), nullptr, *FakeExcaliburPath);
 
-					FVector Location(0.0f, 0.0f, 10.0f);
-					FRotator Rotation(2.0f, 15.0f, 28.0f);
+		if (!FakeExcaliburClass)
+		{
+			return;
+		}
+
+		FActorSpawnParameters SpawnParameters;
+		FakeExcaliburActorRef = GetWorld()->SpawnActor<AActor>(FakeExcaliburClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+
+		if (FakeExcaliburActorRef)
+		{
+			USkeletalMeshComponent* FakeExcaliburMesh = GetMesh();
+			if (FakeExcaliburMesh)
+			{
+				if (FakeExcaliburMesh->DoesSocketExist(TEXT("Sword")))
+				{
+					FakeExcaliburActorRef->AttachToComponent(FakeExcaliburMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("Sword"));
+
+					FVector Location(2.0f, 2.0f, 7.0f);
+					FRotator Rotation(-11.0f, 15.0f, 20.0f);
 					FVector Scale(1.0f, 1.0f, 1.0f);
 
 					FTransform FExcaliburTransform(Rotation, Location, Scale);
-
 					FakeExcaliburActorRef->SetActorRelativeTransform(FExcaliburTransform);
 				}
 			}
-			else {
-				if (FakeExcaliburActorRef) {
-					FakeExcaliburActorRef->Destroy();
-					FakeExcaliburActorRef = nullptr;
-				}
-			}
+		}
 
+	}
+	else if (CurrentCharacterState == ECharacterState::Normal) {
+		SetExcalibur();
+		SetBow();
+		SetShield();
+	}
+	else if (CurrentCharacterState == ECharacterState::Injuried) {
+		HideWeapons(true);
+	}
+	else
+	{
+		if (FakeExcaliburActorRef)
+		{
+			FakeExcaliburActorRef->Destroy();
+			FakeExcaliburActorRef = nullptr;
 		}
 	}
 }
+
+
 
 void ACPP_DarkLifeCharacter::LoadParameters()
 {
@@ -1133,6 +1181,12 @@ void ACPP_DarkLifeCharacter::SetCharacterState(ECharacterState NewCharacterstate
 	default:
 		break;
 	}
+
+	UCPP_GameInstance* DLGameInstance = Cast<UCPP_GameInstance>(GetGameInstance());
+	if (DLGameInstance) {
+		DLGameInstance->SaveGame();
+	}
+
 }
 
 void ACPP_DarkLifeCharacter::CharacterDrawSword(bool bOnlyToBack)

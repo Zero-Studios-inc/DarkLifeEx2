@@ -14,6 +14,7 @@
 #include "../Data/Items/CPP_DA_Item_Shield.h"
 #include "../Data/Items/CPP_DA_Item_Bow.h"
 #include "Containers/Map.h"
+#include "LevelSequence.h"
 #include "Core/CPP_DarkLifeCharacter.h"
 #include "CPP_DarkLifeSaveGame.generated.h"
 
@@ -77,7 +78,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Character")
 		int32 ProjectileAmount;
 		UPROPERTY(BlueprintReadWrite, Category = "Character")
-		ECharacterState CharacterState;
+		ECharacterState CharacterState = ECharacterState::Injuried;
 
 	//Excalibur Equipped Parts
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory|Excalibur")
@@ -112,7 +113,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missions")
 	TMap<TSubclassOf<AActor>, bool> MissionActivation;
 
+	//Missions
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missions")
+	int CurrentMission;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missions")
+	TArray<int> MissionInfoActivation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missions")
+	TArray<bool> MissionComplete;
+
 	//Cinematics
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cinematics")
+	TMap<ULevelSequence*, bool> CinematicActivation;
 	
 
 protected:

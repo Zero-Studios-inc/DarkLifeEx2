@@ -33,8 +33,12 @@ public:
     UPROPERTY(BlueprintReadWrite)
         UCPP_DarkLifeSaveGame* SaveGameObject;
 
+	
+
 public:
 	UFUNCTION(BlueprintCallable, Category = "Save/Load")
-	void SaveGame();	
+	void SaveGame();
+	UFUNCTION(BlueprintCallable, Category = "Save/Load")
+	void LoadGame();		
 
 };

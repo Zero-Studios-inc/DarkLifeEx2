@@ -32,6 +32,8 @@ public:
 		ACPP_DarkLifeCharacter* CharacterRef;
     UPROPERTY(BlueprintReadWrite)
         UCPP_DarkLifeSaveGame* SaveGameObject;
+	UPROPERTY(BlueprintReadWrite)
+	bool bGameLoaded = false;
 
 	
 

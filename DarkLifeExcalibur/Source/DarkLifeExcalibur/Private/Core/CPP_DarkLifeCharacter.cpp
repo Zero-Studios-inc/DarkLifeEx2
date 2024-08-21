@@ -317,6 +317,9 @@ void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 			FakeExcaliburActorRef = nullptr;
 		}
 	}
+
+
+
 }
 
 

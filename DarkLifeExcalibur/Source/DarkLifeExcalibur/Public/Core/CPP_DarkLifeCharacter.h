@@ -469,6 +469,8 @@ public:
 		void PlayBlockingHitAnimations();
 	UFUNCTION(BlueprintCallable, Category = "Character Status")
 		void SetCharacterState(ECharacterState NewCharacterState);
+	UFUNCTION(BlueprintCallable)	
+		void SetFakeExcalibur(bool& retFlag);
 	UFUNCTION(BlueprintCallable)
 	void CharacterDrawSword(bool bOnlyToBack);
 	UFUNCTION(BlueprintCallable)

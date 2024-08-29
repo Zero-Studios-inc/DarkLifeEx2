@@ -234,7 +234,7 @@ void ACPP_DarkLifeCharacter::BeginPlay()
 
 void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 {
-	// Obtén la instancia de GameInstance
+	
 	UCPP_GameInstance* DLGameInstance = Cast<UCPP_GameInstance>(GetGameInstance());
 	if (!DLGameInstance)
 	{
@@ -270,35 +270,9 @@ void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 
 	if (CurrentCharacterState == ECharacterState::Injuried_Sword)
 	{
-		static const FString FakeExcaliburPath = TEXT("/Game/TESTING/Character/Excalibur/Modular_Fantasy_Sword/Blueprints/BP_FakeExcalibur.BP_FakeExcalibur_C");
-		UClass* FakeExcaliburClass = StaticLoadClass(AActor::StaticClass(), nullptr, *FakeExcaliburPath);
-
-		if (!FakeExcaliburClass)
-		{
-			return;
-		}
-
-		FActorSpawnParameters SpawnParameters;
-		FakeExcaliburActorRef = GetWorld()->SpawnActor<AActor>(FakeExcaliburClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
-
-		if (FakeExcaliburActorRef)
-		{
-			USkeletalMeshComponent* FakeExcaliburMesh = GetMesh();
-			if (FakeExcaliburMesh)
-			{
-				if (FakeExcaliburMesh->DoesSocketExist(TEXT("Sword")))
-				{
-					FakeExcaliburActorRef->AttachToComponent(FakeExcaliburMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("Sword"));
-
-					FVector Location(2.0f, 2.0f, 7.0f);
-					FRotator Rotation(-11.0f, 15.0f, 20.0f);
-					FVector Scale(1.0f, 1.0f, 1.0f);
-
-					FTransform FExcaliburTransform(Rotation, Location, Scale);
-					FakeExcaliburActorRef->SetActorRelativeTransform(FExcaliburTransform);
-				}
-			}
-		}
+		bool retFlag;
+		SetFakeExcalibur(retFlag);
+		if (retFlag) return;
 
 	}
 	else if (CurrentCharacterState == ECharacterState::Normal) {
@@ -1180,6 +1154,9 @@ void ACPP_DarkLifeCharacter::SetCharacterState(ECharacterState NewCharacterstate
 		break;
 	case ECharacterState::Injuried_Sword:
 		SetCharacterMovement(ECharacterMovement::Injuried_Sword);
+		bool retFlag;
+		SetFakeExcalibur(retFlag);
+		if (retFlag) return;
 		break;
 	default:
 		break;
@@ -1190,6 +1167,41 @@ void ACPP_DarkLifeCharacter::SetCharacterState(ECharacterState NewCharacterstate
 		DLGameInstance->SaveGame();
 	}
 
+}
+
+void ACPP_DarkLifeCharacter::SetFakeExcalibur(bool& retFlag)
+{
+	retFlag = true;
+	static const FString FakeExcaliburPath = TEXT("/Game/TESTING/Character/Excalibur/Modular_Fantasy_Sword/Blueprints/BP_FakeExcalibur.BP_FakeExcalibur_C");
+	UClass* FakeExcaliburClass = StaticLoadClass(AActor::StaticClass(), nullptr, *FakeExcaliburPath);
+
+	if (!FakeExcaliburClass)
+	{
+		return;
+	}
+
+	FActorSpawnParameters SpawnParameters;
+	FakeExcaliburActorRef = GetWorld()->SpawnActor<AActor>(FakeExcaliburClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+
+	if (FakeExcaliburActorRef)
+	{
+		USkeletalMeshComponent* FakeExcaliburMesh = GetMesh();
+		if (FakeExcaliburMesh)
+		{
+			if (FakeExcaliburMesh->DoesSocketExist(TEXT("Sword")))
+			{
+				FakeExcaliburActorRef->AttachToComponent(FakeExcaliburMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("Sword"));
+
+				FVector Location(2.0f, 2.0f, 7.0f);
+				FRotator Rotation(-11.0f, 15.0f, 20.0f);
+				FVector Scale(1.0f, 1.0f, 1.0f);
+
+				FTransform FExcaliburTransform(Rotation, Location, Scale);
+				FakeExcaliburActorRef->SetActorRelativeTransform(FExcaliburTransform);
+			}
+		}
+	}
+	retFlag = false;
 }
 
 void ACPP_DarkLifeCharacter::CharacterDrawSword(bool bOnlyToBack)

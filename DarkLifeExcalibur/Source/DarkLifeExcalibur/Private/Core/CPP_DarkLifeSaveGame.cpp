@@ -3,6 +3,7 @@
 
 #include "Core/CPP_DarkLifeSaveGame.h"
 #include "Core/CPP_DarkLifeCharacter.h"
+#include "Core/CPP_GameInstance.h"
 
 void UCPP_DarkLifeSaveGame::ParametersCalculation()
 {
@@ -48,6 +49,24 @@ FTransform UCPP_DarkLifeSaveGame::GetSavedLevelTransform(FName LevelName, bool& 
 	}
 
 	return FTransform();
+}
+
+void UCPP_DarkLifeSaveGame::IstutorialDiscovered(int TutorialID, bool& bVisited)
+{
+	bVisited = false;
+	if (TutorialsDiscovered.Find(TutorialID))
+	{
+		bVisited = true;
+	}
+}
+
+void UCPP_DarkLifeSaveGame::AddTutorialDiscovered(int TutorialID)
+{
+	TutorialsDiscovered.AddUnique(TutorialID);
+	UCPP_GameInstance* DLGameInstance = Cast<UCPP_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (DLGameInstance) {
+		DLGameInstance->SaveGame();
+	}
 }
 
 void UCPP_DarkLifeSaveGame::CalculateHealth()

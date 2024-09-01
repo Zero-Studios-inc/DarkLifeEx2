@@ -124,6 +124,10 @@ public:
 	//Cinematics
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cinematics")
 	TMap<ULevelSequence*, bool> CinematicActivation;
+
+	//Tutorials
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tutorials")
+	TArray<int> TutorialsDiscovered;
 	
 
 protected:
@@ -140,6 +144,10 @@ public:
 	void SetNewSavedLevelTransform(FName LevelName, FTransform NewTransform);
 	UFUNCTION(BlueprintCallable)
 	FTransform GetSavedLevelTransform(FName LevelName, bool &ValidLevel);
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Tutorials")
+	void IstutorialDiscovered(int TutorialID, bool& bDiscovered);
+	UFUNCTION(BlueprintCallable, Category = "Tutorials")
+	void AddTutorialDiscovered(int TutorialID);
 
 
 private:

@@ -54,7 +54,7 @@ FTransform UCPP_DarkLifeSaveGame::GetSavedLevelTransform(FName LevelName, bool& 
 void UCPP_DarkLifeSaveGame::IstutorialDiscovered(int TutorialID, bool& bVisited)
 {
 	bVisited = false;
-	if (TutorialsDiscovered.Find(TutorialID))
+	if (TutorialsDiscovered.Contains(TutorialID))
 	{
 		bVisited = true;
 	}

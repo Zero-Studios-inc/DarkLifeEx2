@@ -15,9 +15,9 @@ ACPP_ProjectileSpell::ACPP_ProjectileSpell()
 	SphereCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SphereCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	
-	Spell = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SpellVFX"));
+	Spell = CreateDefaultSubobject<UNiagaraComponent>(TEXT("SpellVFX"));
 	Spell->SetupAttachment(RootComponent);
-	SpellHit = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SpellHitVFX"));
+	SpellHit = CreateDefaultSubobject<UNiagaraComponent>(TEXT("SpellHitVFX"));
 	SpellHit->SetupAttachment(RootComponent);
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
@@ -30,27 +30,30 @@ void ACPP_ProjectileSpell::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (ProjectilSpellSettings)
+	if (ProjectileSpellSettings)
 	{
-		SpellImpulse = ProjectilSpellSettings->SpellImpulse;
-		SpellDamage = ProjectilSpellSettings->SpellDamage;
-		SpellStaminaDamage = ProjectilSpellSettings->SpellStaminaDamage;
+		SpellImpulse = ProjectileSpellSettings->SpellImpulse;
+		SpellDamage = ProjectileSpellSettings->SpellDamage;
+		SpellStaminaDamage = ProjectileSpellSettings->SpellStaminaDamage;
 
-		if (ProjectilSpellSettings->Spell) {
-			Spell->SetTemplate(ProjectilSpellSettings->Spell);
+		if (ProjectileSpellSettings->Spell) {
+			Spell->SetAsset(ProjectileSpellSettings->Spell);
 			Spell->SetActive(true, true);
 			Spell->SetVisibility(true, true);
 		}
-		if (ProjectilSpellSettings->SpellHit) {
-			SpellHit->SetTemplate(ProjectilSpellSettings->SpellHit);
+		if (ProjectileSpellSettings->SpellHit) {
+			SpellHit->SetAsset(ProjectileSpellSettings->SpellHit);
 		}
-		SphereCollision->SetSphereRadius(ProjectilSpellSettings->SphereCollisionRadius);
+		SphereCollision->SetSphereRadius(ProjectileSpellSettings->SphereCollisionRadius);
+
+		if(ProjectileSpellSettings->SpellHitSound)
+		{
+			SpellSound = ProjectileSpellSettings->SpellHitSound;
+		}
 
 	}
 
-	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	if (PlayerCharacter) {
-
+	if (ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)) {
 		
 		FVector PlayerVelocity = PlayerCharacter->GetVelocity();
 		double VelocityMultiplier = (GetDistanceTo(PlayerCharacter) / SpellImpulse);

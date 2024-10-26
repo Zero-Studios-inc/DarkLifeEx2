@@ -65,8 +65,11 @@ void ACPP_ProjectileSpell::BeginPlay()
 		ProjectileMovement->bRotationFollowsVelocity = true;
 		
 	}
-	
+
+		
 }
+
+
 
 // Called every frame
 void ACPP_ProjectileSpell::Tick(float DeltaTime)
@@ -74,4 +77,6 @@ void ACPP_ProjectileSpell::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+
 

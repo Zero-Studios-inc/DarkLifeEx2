@@ -866,16 +866,26 @@ void ACPP_DarkLifeCharacter::SetCombatState(ECharacterCombatState newCombatState
 
 void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType DamageType, AActor* CauserReference)
 {
-	//FVector ImpactNormal = HitInfo.ImpactNormal;
-	FVector ImpactNormal = CauserReference->GetActorForwardVector();
+	
+	FVector ImpactNormal;
+	if (CauserReference) {
+		
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, CauserReference->GetClass()->GetName());
+		ImpactNormal = (CauserReference->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		
+	} else {
+		
+		ImpactNormal = HitInfo.ImpactNormal;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "NoCauserReference");
+	}
+
 	switch (DamageType)
 	{
 	case EEnemyDamageType::RegularDamage:
-		if (CauserReference) {
-			PlayRegularDamageHitAnimation(ImpactNormal);
-		}
+		PlayRegularDamageHitAnimation(ImpactNormal);
 		break;
 	case EEnemyDamageType::StrongDamage:
+		
 		break;
 	case EEnemyDamageType::StuntDamage:
 		PlayStuntDamageHitAnimation();
@@ -883,35 +893,35 @@ void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType D
 	default:
 		break;
 	}
-
 }
 
 void ACPP_DarkLifeCharacter::PlayRegularDamageHitAnimation(FVector ImpactNormal)
 {
-	// Verifica si tienes al menos 4 animaciones para procesar todos los casos
+	
 	if (HitAnimations.Num() > 3) {
-		// Back Hit Animation (enemigo detrás del personaje)
-		if (HitAnimations.IsValidIndex(3) && HitAngleInRange(ImpactNormal, -GetActorForwardVector(), 100.0f, 180.0f, true, true)) {
+		// Back Hit Animation 
+		if (HitAnimations.IsValidIndex(3) && HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true)) {
 			PlayAnimMontage(HitAnimations[3]);
 		}
-		// Right Hit Animation (enemigo en el lado derecho)
-		else if (HitAnimations.IsValidIndex(2) && HitAngleInRange(ImpactNormal, -GetActorRightVector(), 0.0f, 90.0f, true, false)) {
+		// Right Hit Animation 
+		else if (HitAnimations.IsValidIndex(2) && HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f, true, false)) {
 			PlayAnimMontage(HitAnimations[2]);
 		}
-		// Left Hit Animation (enemigo en el lado izquierdo)
-		else if (HitAnimations.IsValidIndex(1) && HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f, true, false)) {
+		// Left Hit Animation 
+		else if (HitAnimations.IsValidIndex(1) && HitAngleInRange(ImpactNormal, -GetActorRightVector(), 0.0f, 90.0f, true, false)) {
 			PlayAnimMontage(HitAnimations[1]);
 		}
-		// Front Hit Animation (enemigo enfrente del personaje)
-		else if (HitAnimations.IsValidIndex(0) && HitAngleInRange(ImpactNormal, GetActorForwardVector(), 0.0f, 75.0f, true, true)) {
+		// Front Hit Animation 
+		else if (HitAnimations.IsValidIndex(0) && HitAngleInRange(ImpactNormal, -GetActorForwardVector(), 0.0f, 90.0f, true, true)) {
 			PlayAnimMontage(HitAnimations[0]);
 		}
 	}
 	else if (HitAnimations.IsValidIndex(0)) {
-		// Caso base con una sola animación
+		
 		PlayAnimMontage(HitAnimations[0]);
 	}
 }
+
 
 
 

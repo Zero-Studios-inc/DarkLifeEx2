@@ -9,6 +9,9 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "Data/Spells/CPP_DA_ProjectileSpell.h"
 #include "CPP_ProjectileSpell.generated.h"
 
@@ -22,16 +25,16 @@ public:
 	ACPP_ProjectileSpell();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpellSettings", meta = (ExposeOnSpawn = "true"))
-	UCPP_DA_ProjectileSpell* ProjectilSpellSettings;
+	UCPP_DA_ProjectileSpell* ProjectileSpellSettings;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	//Components
 	UPROPERTY(BlueprintReadWrite, Category = "Components")
-	UParticleSystemComponent* Spell;
+	UNiagaraComponent* Spell;
 	UPROPERTY(BlueprintReadWrite, Category = "Components")
-	UParticleSystemComponent* SpellHit;
+	UNiagaraComponent* SpellHit;
 	UPROPERTY(BlueprintReadWrite, Category = "Components")
 	UProjectileMovementComponent* ProjectileMovement;
 	UPROPERTY(BlueprintReadWrite, Category = "Components")
@@ -44,6 +47,8 @@ protected:
 	double SpellImpulse = 2700.0F;
 	UPROPERTY(BlueprintReadOnly, Category = "SpellSettings")
 	double SpellStaminaDamage = 40.0f;
+	UPROPERTY(BlueprintReadOnly, Category = "SpellSettings")
+	USoundBase* SpellSound;
 
 	
 public:	

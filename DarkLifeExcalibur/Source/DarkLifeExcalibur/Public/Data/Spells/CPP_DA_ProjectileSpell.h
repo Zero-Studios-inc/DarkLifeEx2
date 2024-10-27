@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "NiagaraSystem.h"
+#include "Sound/SoundBase.h"
+#include "NiagaraFunctionLibrary.h"
 #include "CPP_DA_ProjectileSpell.generated.h"
 
 /**
@@ -18,9 +21,9 @@ public:
 
 	//Settings
 UPROPERTY(EditAnywhere, BlueprintReadWrite)
-UParticleSystem* Spell;
+UNiagaraSystem* Spell;
 UPROPERTY(EditAnywhere, BlueprintReadWrite)
-UParticleSystem* SpellHit;
+UNiagaraSystem* SpellHit;
 UPROPERTY(EditAnywhere, BlueprintReadWrite)
 double SpellImpulse = 2700.0f;
 UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -29,5 +32,8 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite)
 double SpellStaminaDamage = 40.0f;
 UPROPERTY(EditAnywhere, BlueprintReadWrite)
 double SphereCollisionRadius = 32.0f;
+UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* SpellHitSound;
+	
 	
 };

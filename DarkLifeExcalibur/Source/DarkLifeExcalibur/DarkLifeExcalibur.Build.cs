@@ -8,7 +8,7 @@ public class DarkLifeExcalibur : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "AIModule", "InputCore", "LevelSequence", "MovieScene" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "AIModule", "InputCore", "LevelSequence", "MovieScene", "Niagara"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

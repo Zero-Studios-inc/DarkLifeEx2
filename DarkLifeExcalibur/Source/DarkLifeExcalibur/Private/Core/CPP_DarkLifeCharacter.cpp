@@ -115,11 +115,12 @@ void ACPP_DarkLifeCharacter::UpdateStaminaByCharacterCombatState()
 	}
 }
 
-bool ACPP_DarkLifeCharacter::HitAngleInRange(FVector ImpactNormal, FVector Vector, double minAngle, double maxAngle, bool inclusiveMin, bool inclusiveMax)
+bool ACPP_DarkLifeCharacter::HitAngleInRange(FVector ImpactNormal, FVector Vector, double MinAngle, double MaxAngle, bool bInclusiveMin, bool bInclusiveMax)
 {
-	double dotProduct = UKismetMathLibrary::Dot_VectorVector(ImpactNormal, Vector);
-	return UKismetMathLibrary::InRange_FloatFloat(UKismetMathLibrary::DegAcos(dotProduct), minAngle, maxAngle, inclusiveMin, inclusiveMax);
 	
+	double dotProduct = UKismetMathLibrary::Dot_VectorVector(ImpactNormal, Vector);
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::SanitizeFloat(UKismetMathLibrary::DegAcos(dotProduct)));
+	return UKismetMathLibrary::InRange_FloatFloat(UKismetMathLibrary::DegAcos(dotProduct), MinAngle, MaxAngle, bInclusiveMin, bInclusiveMax);
 }
 
 void ACPP_DarkLifeCharacter::SetWalkSpeed()
@@ -316,10 +317,10 @@ void ACPP_DarkLifeCharacter::LoadParameters()
 
 void ACPP_DarkLifeCharacter::SetExcalibur()
 {
-	// Comprobación de puntero nulo para Excalibur
+	// Comprobaciï¿½n de puntero nulo para Excalibur
 	if (Excalibur)
 	{
-		// Si Excalibur tiene un ChildActor, destrúyelo
+		// Si Excalibur tiene un ChildActor, destrï¿½yelo
 		if (Excalibur->GetChildActor())
 		{
 			Excalibur->GetChildActor()->Destroy();
@@ -339,10 +340,10 @@ void ACPP_DarkLifeCharacter::SetExcalibur()
 
 void ACPP_DarkLifeCharacter::SetBow()
 {
-	// Comprobación de puntero nulo para LongBow
+	// Comprobaciï¿½n de puntero nulo para LongBow
 	if (LongBow)
 	{
-		// Si LongBow tiene un ChildActor, destrúyelo
+		// Si LongBow tiene un ChildActor, destrï¿½yelo
 		if (LongBow->GetChildActor())
 		{
 			LongBow->GetChildActor()->Destroy();
@@ -369,14 +370,14 @@ void ACPP_DarkLifeCharacter::SetShield()
 		// Comprobar si ShieldMesh existe
 		if (ShieldMesh)
 		{
-			// Comprobar si ShieldSoftReference es válido
+			// Comprobar si ShieldSoftReference es vï¿½lido
 			if (ShieldSoftReference.IsValid())
 			{
 				ShieldMesh->SetStaticMesh(ShieldSoftReference.Get());
 			}
 			else
 			{
-				// Cargar sincrónicamente el recurso si no es válido
+				// Cargar sincrï¿½nicamente el recurso si no es vï¿½lido
 				ShieldSoftReference.LoadSynchronous();
 				if (ShieldSoftReference.IsValid())
 				{
@@ -863,15 +864,28 @@ void ACPP_DarkLifeCharacter::SetCombatState(ECharacterCombatState newCombatState
 	SetVariablesByCombatState();
 }
 
-void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType DamageType)
+void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType DamageType, AActor* CauserReference)
 {
-	FVector ImpactNormal = HitInfo.ImpactNormal;
+	
+	FVector ImpactNormal;
+	if (CauserReference) {
+		
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, CauserReference->GetClass()->GetName());
+		ImpactNormal = (CauserReference->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		
+	} else {
+		
+		ImpactNormal = HitInfo.ImpactNormal;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "NoCauserReference");
+	}
+
 	switch (DamageType)
 	{
 	case EEnemyDamageType::RegularDamage:
 		PlayRegularDamageHitAnimation(ImpactNormal);
 		break;
 	case EEnemyDamageType::StrongDamage:
+		
 		break;
 	case EEnemyDamageType::StuntDamage:
 		PlayStuntDamageHitAnimation();
@@ -879,41 +893,37 @@ void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType D
 	default:
 		break;
 	}
-
 }
 
 void ACPP_DarkLifeCharacter::PlayRegularDamageHitAnimation(FVector ImpactNormal)
 {
-	if (HitAnimations.Num() > 1) {
-		if (HitAnimations.IsValidIndex(0) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true))) {
-			//Back Hit Animation
+	
+	if (HitAnimations.Num() > 3) {
+		// Back Hit Animation 
+		if (HitAnimations.IsValidIndex(3) && HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true)) {
 			PlayAnimMontage(HitAnimations[3]);
 		}
-		else if (HitAnimations.IsValidIndex(1) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 54.0f, 90.0f, true, true))) {
-
-			if (HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f, true, false)) {
-				//Right Hit Animation
-				PlayAnimMontage(HitAnimations[2]);
-			}
-			else {
-				//Left Hit Animation
-				PlayAnimMontage(HitAnimations[1]);
-			}
+		// Right Hit Animation 
+		else if (HitAnimations.IsValidIndex(2) && HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f, true, false)) {
+			PlayAnimMontage(HitAnimations[2]);
 		}
-		else if (HitAnimations.IsValidIndex(2) && (HitAngleInRange(ImpactNormal, GetActorForwardVector(), 0.0f, 44.0f, true, true)))
-		{
-			//Front Hit Animation
+		// Left Hit Animation 
+		else if (HitAnimations.IsValidIndex(1) && HitAngleInRange(ImpactNormal, -GetActorRightVector(), 0.0f, 90.0f, true, false)) {
+			PlayAnimMontage(HitAnimations[1]);
+		}
+		// Front Hit Animation 
+		else if (HitAnimations.IsValidIndex(0) && HitAngleInRange(ImpactNormal, -GetActorForwardVector(), 0.0f, 90.0f, true, true)) {
 			PlayAnimMontage(HitAnimations[0]);
 		}
 	}
-	else {
-
-		//If only have one hit animation or Front Hit Animation
-		if (HitAnimations.IsValidIndex(0)) {
-			PlayAnimMontage(HitAnimations[0]);
-		}
+	else if (HitAnimations.IsValidIndex(0)) {
+		
+		PlayAnimMontage(HitAnimations[0]);
 	}
 }
+
+
+
 
 void ACPP_DarkLifeCharacter::PlayStuntDamageHitAnimation()
 {

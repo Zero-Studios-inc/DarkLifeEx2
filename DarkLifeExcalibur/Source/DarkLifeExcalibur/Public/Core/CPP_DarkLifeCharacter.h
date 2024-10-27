@@ -442,7 +442,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 		void SetCombatState(ECharacterCombatState newCombatState);
 	UFUNCTION(BlueprintCallable, Category = "Animations")		
-		void HitAnimation(FHitResult HitInfo, EEnemyDamageType DamageType);
+		void HitAnimation(FHitResult HitInfo, EEnemyDamageType DamageType, AActor* CauserReference);
 	UFUNCTION(BlueprintCallable, Category = "Animations")
 		void PlayRegularDamageHitAnimation(FVector ImpactNormal);
 	UFUNCTION(BlueprintCallable, Category = "Animations")

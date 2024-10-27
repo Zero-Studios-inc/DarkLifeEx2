@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Particles/ParticleSystemComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
@@ -31,10 +30,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	//Components
-	UPROPERTY(BlueprintReadWrite, Category = "Components")
-	UNiagaraComponent* Spell;
-	UPROPERTY(BlueprintReadWrite, Category = "Components")
-	UNiagaraComponent* SpellHit;
+	UPROPERTY(BlueprintReadOnly,VisibleAnywhere, Category = "Components")
+	TObjectPtr<UNiagaraComponent> Spell;
+	UPROPERTY(BlueprintReadOnly,VisibleAnywhere, Category = "Components")
+	TObjectPtr<UNiagaraComponent> SpellHit;
 	UPROPERTY(BlueprintReadWrite, Category = "Components")
 	UProjectileMovementComponent* ProjectileMovement;
 	UPROPERTY(BlueprintReadWrite, Category = "Components")
@@ -48,7 +47,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "SpellSettings")
 	double SpellStaminaDamage = 40.0f;
 	UPROPERTY(BlueprintReadOnly, Category = "SpellSettings")
-	USoundBase* SpellSound;
+	TObjectPtr<USoundBase> SpellSound;
 
 	
 public:	

@@ -16,10 +16,12 @@ ACPP_ProjectileSpell::ACPP_ProjectileSpell()
 	SphereCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	
 	Spell = CreateDefaultSubobject<UNiagaraComponent>(TEXT("SpellVFX"));
+	check(Spell);
 	Spell->SetupAttachment(RootComponent);
 	SpellHit = CreateDefaultSubobject<UNiagaraComponent>(TEXT("SpellHitVFX"));
+	check(SpellHit);
 	SpellHit->SetupAttachment(RootComponent);
-
+	
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 
 	
@@ -29,19 +31,19 @@ ACPP_ProjectileSpell::ACPP_ProjectileSpell()
 void ACPP_ProjectileSpell::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	if (ProjectileSpellSettings)
 	{
 		SpellImpulse = ProjectileSpellSettings->SpellImpulse;
 		SpellDamage = ProjectileSpellSettings->SpellDamage;
 		SpellStaminaDamage = ProjectileSpellSettings->SpellStaminaDamage;
 
-		if (ProjectileSpellSettings->Spell) {
+		if (ProjectileSpellSettings->Spell && Spell) {
 			Spell->SetAsset(ProjectileSpellSettings->Spell);
 			Spell->SetActive(true, true);
 			Spell->SetVisibility(true, true);
 		}
-		if (ProjectileSpellSettings->SpellHit) {
+		if (ProjectileSpellSettings->SpellHit && SpellHit) {
 			SpellHit->SetAsset(ProjectileSpellSettings->SpellHit);
 		}
 		SphereCollision->SetSphereRadius(ProjectileSpellSettings->SphereCollisionRadius);

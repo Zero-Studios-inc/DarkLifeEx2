@@ -22,8 +22,16 @@ public:
 	//Settings
 UPROPERTY(EditAnywhere, BlueprintReadWrite)
 UNiagaraSystem* Spell;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRotator SpellRotation = FRotator(0,0,0);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector SpellScale = FVector(1,1,1);
 UPROPERTY(EditAnywhere, BlueprintReadWrite)
 UNiagaraSystem* SpellHit;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRotator SpellHitRotation = FRotator(0,0,0);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector SpellHitScale = FVector(1,1,1);
 UPROPERTY(EditAnywhere, BlueprintReadWrite)
 double SpellImpulse = 2700.0f;
 UPROPERTY(EditAnywhere, BlueprintReadWrite)

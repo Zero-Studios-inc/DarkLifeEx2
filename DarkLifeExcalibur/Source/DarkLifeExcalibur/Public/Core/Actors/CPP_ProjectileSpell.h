@@ -35,11 +35,19 @@ protected:
 	UPROPERTY(BlueprintReadOnly,VisibleAnywhere, Category = "Components")
 	TObjectPtr<UNiagaraComponent> SpellHit;
 	UPROPERTY(BlueprintReadWrite, Category = "Components")
-	UProjectileMovementComponent* ProjectileMovement;
-	UPROPERTY(BlueprintReadWrite, Category = "Components")
-	USphereComponent* SphereCollision;
+	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere, Category = "Components")
+	TObjectPtr<USphereComponent> SphereCollision;
 
 	//Projectile Spell Settings
+	UPROPERTY(BlueprintReadOnly, Category="SpellSettings")
+	FRotator SpellRotation;
+	UPROPERTY(BlueprintReadOnly, Category = "SpellSettings")
+	FVector SpellScale;
+	UPROPERTY(BlueprintReadOnly, Category = "SpellSettings")
+	FRotator SpellHitRotation;
+	UPROPERTY(BlueprintReadOnly, Category = "SpellSettings")
+	FVector SpellHitScale;
 	UPROPERTY(BlueprintReadOnly, Category = "SpellSettings")
 	double SpellDamage = 5.0f;
 	UPROPERTY(BlueprintReadOnly, Category = "SpellSettings")
@@ -49,7 +57,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "SpellSettings")
 	TObjectPtr<USoundBase> SpellSound;
 
-	
+UFUNCTION(BlueprintCallable)
+	void OnProjectileSpellHit();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

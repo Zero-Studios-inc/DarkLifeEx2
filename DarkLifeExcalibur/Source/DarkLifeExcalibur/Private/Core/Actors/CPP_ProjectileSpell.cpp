@@ -37,6 +37,10 @@ void ACPP_ProjectileSpell::BeginPlay()
 		SpellImpulse = ProjectileSpellSettings->SpellImpulse;
 		SpellDamage = ProjectileSpellSettings->SpellDamage;
 		SpellStaminaDamage = ProjectileSpellSettings->SpellStaminaDamage;
+		SpellRotation = ProjectileSpellSettings->SpellRotation;
+		SpellScale = ProjectileSpellSettings->SpellScale;
+		SpellHitRotation = ProjectileSpellSettings->SpellHitRotation;
+		SpellHitScale = ProjectileSpellSettings->SpellHitScale;
 
 		if (ProjectileSpellSettings->Spell && Spell) {
 			Spell->SetAsset(ProjectileSpellSettings->Spell);
@@ -67,7 +71,7 @@ void ACPP_ProjectileSpell::BeginPlay()
 		ProjectileMovement->bRotationFollowsVelocity = true;
 		
 	}
-
+	
 		
 }
 
@@ -79,6 +83,21 @@ void ACPP_ProjectileSpell::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+void ACPP_ProjectileSpell::OnProjectileSpellHit()
+{
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
+		SpellHit->GetAsset(),
+		SphereCollision->GetComponentLocation(),
+		SpellHitRotation,
+		SpellHitScale,
+		true,
+		true,
+		ENCPoolMethod::None,
+		true);
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(),SpellSound,SphereCollision->GetComponentLocation());
+}
+
 
 
 

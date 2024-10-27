@@ -3,6 +3,8 @@
 
 #include "Core/Actors/CPP_ProjectileSpell.h"
 
+
+
 // Sets default values
 ACPP_ProjectileSpell::ACPP_ProjectileSpell()
 {
@@ -21,6 +23,10 @@ ACPP_ProjectileSpell::ACPP_ProjectileSpell()
 	SpellHit = CreateDefaultSubobject<UNiagaraComponent>(TEXT("SpellHitVFX"));
 	check(SpellHit);
 	SpellHit->SetupAttachment(RootComponent);
+
+	SpellSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SpellAudio"));
+	check(SpellSoundComponent);
+	SpellSoundComponent->SetupAttachment(RootComponent);
 	
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 
@@ -46,15 +52,27 @@ void ACPP_ProjectileSpell::BeginPlay()
 			Spell->SetAsset(ProjectileSpellSettings->Spell);
 			Spell->SetActive(true, true);
 			Spell->SetVisibility(true, true);
+			Spell->SetRelativeRotation(SpellRotation);
+			Spell->SetRelativeScale3D(SpellScale);
 		}
 		if (ProjectileSpellSettings->SpellHit && SpellHit) {
 			SpellHit->SetAsset(ProjectileSpellSettings->SpellHit);
 		}
 		SphereCollision->SetSphereRadius(ProjectileSpellSettings->SphereCollisionRadius);
 
-		if(ProjectileSpellSettings->SpellHitSound)
+		if(ProjectileSpellSettings->SpellSound)
 		{
-			SpellSound = ProjectileSpellSettings->SpellHitSound;
+			SpellSound = ProjectileSpellSettings->SpellSound;
+		}
+		if (ProjectileSpellSettings->SpellHitSound)
+		{
+			SpellHitSound = ProjectileSpellSettings->SpellHitSound;
+		}
+		if (ProjectileSpellSettings->SpellSound)
+		{
+			SpellSoundComponent->SetSound(SpellSound);
+			SpellSoundComponent->SetActive(true, true);
+			SpellSoundComponent->Play(0);
 		}
 
 	}
@@ -95,7 +113,7 @@ void ACPP_ProjectileSpell::OnProjectileSpellHit()
 		true,
 		ENCPoolMethod::None,
 		true);
-	UGameplayStatics::SpawnSoundAtLocation(GetWorld(),SpellSound,SphereCollision->GetComponentLocation());
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(),SpellHitSound,SphereCollision->GetComponentLocation());
 }
 
 

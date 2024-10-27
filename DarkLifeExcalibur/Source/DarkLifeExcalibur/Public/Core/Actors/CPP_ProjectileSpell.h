@@ -11,6 +11,7 @@
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "Components/AudioComponent.h"
 #include "Data/Spells/CPP_DA_ProjectileSpell.h"
 #include "CPP_ProjectileSpell.generated.h"
 
@@ -38,6 +39,8 @@ protected:
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 	UPROPERTY(BlueprintReadWrite,VisibleAnywhere, Category = "Components")
 	TObjectPtr<USphereComponent> SphereCollision;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Components")
+	TObjectPtr<UAudioComponent> SpellSoundComponent;
 
 	//Projectile Spell Settings
 	UPROPERTY(BlueprintReadOnly, Category="SpellSettings")
@@ -56,6 +59,8 @@ protected:
 	double SpellStaminaDamage = 40.0f;
 	UPROPERTY(BlueprintReadOnly, Category = "SpellSettings")
 	TObjectPtr<USoundBase> SpellSound;
+	UPROPERTY(BlueprintReadOnly, Category="SpellSettings")
+	TObjectPtr<USoundBase> SpellHitSound;
 
 UFUNCTION(BlueprintCallable)
 	void OnProjectileSpellHit();

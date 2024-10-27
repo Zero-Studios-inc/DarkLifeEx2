@@ -41,6 +41,8 @@ double SpellStaminaDamage = 40.0f;
 UPROPERTY(EditAnywhere, BlueprintReadWrite)
 double SphereCollisionRadius = 32.0f;
 UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* SpellSound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USoundBase* SpellHitSound;
 	
 	

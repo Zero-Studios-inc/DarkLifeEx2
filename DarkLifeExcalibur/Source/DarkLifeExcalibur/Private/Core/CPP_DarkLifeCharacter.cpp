@@ -882,7 +882,25 @@ void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType D
 	switch (DamageType)
 	{
 	case EEnemyDamageType::RegularDamage:
-		PlayRegularDamageHitAnimation(ImpactNormal);
+		if (bBlocking)
+		{
+			if(Stamina<= 10.0f)
+			{
+				PlayStuntDamageHitAnimation();
+				bBlocking = false;
+			}
+			else
+			{
+				PlayBlockingAnimations();
+			}
+			
+			
+		}
+		else
+		{
+			PlayRegularDamageHitAnimation(ImpactNormal);
+		}
+		
 		break;
 	case EEnemyDamageType::StrongDamage:
 		
@@ -929,8 +947,11 @@ void ACPP_DarkLifeCharacter::PlayStuntDamageHitAnimation()
 {
 	if ((CombatState == ECharacterCombatState::OneHandSword) || (CombatState == ECharacterCombatState::OneHandShield))
 	{
-		if (StuntAnimations.IsValidIndex(0)) {
-			PlayAnimMontage(StuntAnimations[0]);
+		if (StuntAnimations.IsValidIndex(0) && IsValid(StuntAnimations[0])) {
+			if (GetCurrentMontage() != StuntAnimations[0])
+			{
+				PlayAnimMontage(StuntAnimations[0]);
+			}			
 		}
 	}
 }
@@ -1137,14 +1158,20 @@ void ACPP_DarkLifeCharacter::PlayDeflectedAnimation(int CustomComboIndex, EChara
 void ACPP_DarkLifeCharacter::PlayBlockingAnimations()
 {
 	if (BlockAnimations.Find(CombatState)&&(IsValid(BlockAnimations[CombatState]))) {
-		PlayAnimMontage(BlockAnimations[CombatState]);
+		if (GetCurrentMontage() != BlockAnimations[CombatState])
+		{
+			PlayAnimMontage(BlockAnimations[CombatState]);
+		}			
 	}
 }
 
 void ACPP_DarkLifeCharacter::PlayBlockingHitAnimations()
 {
 	if (BlockHitAnimations.Find(CombatState) && (IsValid(BlockHitAnimations[CombatState]))) {
-		PlayAnimMontage(BlockHitAnimations[CombatState]);
+		
+			PlayAnimMontage(BlockHitAnimations[CombatState]);
+		
+		
 	}
 }
 

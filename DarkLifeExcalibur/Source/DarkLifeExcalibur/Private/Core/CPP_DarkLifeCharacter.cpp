@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Core/CPP_DarkLifeCharacter.h"
+
+#include "StaticMeshAttributes.h"
 #include "Core/CPP_Enemy.h"
 #include "UObject/UnrealType.h"
 #include "UObject/PropertyPortFlags.h"
@@ -119,7 +121,7 @@ bool ACPP_DarkLifeCharacter::HitAngleInRange(FVector ImpactNormal, FVector Vecto
 {
 	
 	double dotProduct = UKismetMathLibrary::Dot_VectorVector(ImpactNormal, Vector);
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::SanitizeFloat(UKismetMathLibrary::DegAcos(dotProduct)));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::SanitizeFloat(UKismetMathLibrary::DegAcos(dotProduct)));
 	return UKismetMathLibrary::InRange_FloatFloat(UKismetMathLibrary::DegAcos(dotProduct), MinAngle, MaxAngle, bInclusiveMin, bInclusiveMax);
 }
 
@@ -868,44 +870,49 @@ void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType D
 {
 	
 	FVector ImpactNormal;
+	bool bHitDuringStuntAnimation = false;
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f,FColor::Green, UEnum::GetValueAsString(CurrentCharacterNegativeStatus));
 	if (CauserReference) {
 		
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, CauserReference->GetClass()->GetName());
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, CauserReference->GetClass()->GetName());
 		ImpactNormal = (CauserReference->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 		
 	} else {
 		
 		ImpactNormal = HitInfo.ImpactNormal;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "NoCauserReference");
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "NoCauserReference");
 	}
 
 	switch (DamageType)
 	{
 	case EEnemyDamageType::RegularDamage:
+		
 		if (bBlocking)
 		{
-			if(Stamina<= 10.0f)
-			{
-				PlayStuntDamageHitAnimation();
-				bBlocking = false;
-			}
-			else
-			{
-				PlayBlockingAnimations();
-			}
-			
-			
+			PlayBlockingHitAnimations();
+            
 		}
 		else
 		{
+			if (GetCurrentMontage() == StuntHitAnimations[0] || GetCurrentMontage() == StuntAnimations[0])
+			{
+				break;
+			}
 			PlayRegularDamageHitAnimation(ImpactNormal);
+			
 		}
 		
 		break;
 	case EEnemyDamageType::StrongDamage:
-		
 		break;
 	case EEnemyDamageType::StuntDamage:
+		
+		PlayStuntHitAnimations(bHitDuringStuntAnimation);
+		//bBlocking = false;
+		if(bHitDuringStuntAnimation == true)
+		{
+			break;
+		}
 		PlayStuntDamageHitAnimation();
 		break;
 	default:
@@ -918,23 +925,23 @@ void ACPP_DarkLifeCharacter::PlayRegularDamageHitAnimation(FVector ImpactNormal)
 	
 	if (HitAnimations.Num() > 3) {
 		// Back Hit Animation 
-		if (HitAnimations.IsValidIndex(3) && HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true)) {
+		if (HitAnimations.IsValidIndex(3) && HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true) && (GetCurrentMontage() != HitAnimations[3])) {
 			PlayAnimMontage(HitAnimations[3]);
 		}
 		// Right Hit Animation 
-		else if (HitAnimations.IsValidIndex(2) && HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f, true, false)) {
+		else if (HitAnimations.IsValidIndex(2) && HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f, true, false)&& (GetCurrentMontage() != HitAnimations[2])) {
 			PlayAnimMontage(HitAnimations[2]);
 		}
 		// Left Hit Animation 
-		else if (HitAnimations.IsValidIndex(1) && HitAngleInRange(ImpactNormal, -GetActorRightVector(), 0.0f, 90.0f, true, false)) {
+		else if (HitAnimations.IsValidIndex(1) && HitAngleInRange(ImpactNormal, -GetActorRightVector(), 0.0f, 90.0f, true, false)&& (GetCurrentMontage() != HitAnimations[1])) {
 			PlayAnimMontage(HitAnimations[1]);
 		}
 		// Front Hit Animation 
-		else if (HitAnimations.IsValidIndex(0) && HitAngleInRange(ImpactNormal, -GetActorForwardVector(), 0.0f, 90.0f, true, true)) {
+		else if (HitAnimations.IsValidIndex(0) && HitAngleInRange(ImpactNormal, -GetActorForwardVector(), 0.0f, 90.0f, true, true)&& (GetCurrentMontage() != HitAnimations[0])) {
 			PlayAnimMontage(HitAnimations[0]);
 		}
 	}
-	else if (HitAnimations.IsValidIndex(0)) {
+	else if (HitAnimations.IsValidIndex(0) && (GetCurrentMontage() != HitAnimations[0])) {
 		
 		PlayAnimMontage(HitAnimations[0]);
 	}
@@ -959,6 +966,7 @@ void ACPP_DarkLifeCharacter::PlayStuntDamageHitAnimation()
 void ACPP_DarkLifeCharacter::SetCharacterNegativeStatus(ECharacterNegativeStatus NewNegativeStatus)
 {
 	CurrentCharacterNegativeStatus = NewNegativeStatus;
+	//GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Blue, UEnum::GetValueAsString(CurrentCharacterNegativeStatus));	
 }
 
 void ACPP_DarkLifeCharacter::PlayParryFinisherAnimation(int parryIndex, UAnimMontage*& ParryMontage, TArray<UAnimMontage*>& ParryAnimList)
@@ -1168,10 +1176,12 @@ void ACPP_DarkLifeCharacter::PlayBlockingAnimations()
 void ACPP_DarkLifeCharacter::PlayBlockingHitAnimations()
 {
 	if (BlockHitAnimations.Find(CombatState) && (IsValid(BlockHitAnimations[CombatState]))) {
-		
+
+		if (GetCurrentMontage() != BlockHitAnimations[CombatState])
+		{
 			PlayAnimMontage(BlockHitAnimations[CombatState]);
-		
-		
+		}
+				
 	}
 }
 
@@ -1304,6 +1314,25 @@ void ACPP_DarkLifeCharacter::CharacterDrawShield(bool bOnlyToBack)
 	//PlayerCharacter->StopSprint();
 }
 
+void ACPP_DarkLifeCharacter::PlayStuntHitAnimations(bool& bSuccess)
+{
+	bSuccess =  false;
+	
+	if(StuntHitAnimations.IsValidIndex(0) && IsValid(StuntHitAnimations[0]))
+	{
+		if (GetCurrentMontage() == StuntAnimations[0] && GetMesh()->GetAnimInstance()->Montage_GetCurrentSection(StuntAnimations[0]) == "Stunt")
+		{
+			PlayAnimMontage(StuntHitAnimations[0]);
+			bSuccess = true;
+			
+		}
+		else if (GetCurrentMontage() == StuntHitAnimations[0])
+		{
+			bSuccess = true;
+		}
+				
+	}
+}
 
 
 // Called every frame

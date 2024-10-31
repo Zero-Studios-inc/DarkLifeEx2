@@ -111,6 +111,17 @@ enum class ECharacterInputDirection : uint8 {
 	ForwardLeft = 8 UMETA(DisplayName = "ForwardLeft")
 };
 
+UENUM(BlueprintType)
+enum class ECharacterAction : uint8
+{
+	None = 0 UMETA(DisplayName = "None"),
+	Attacking = 1 UMETA(DisplayName = "Attacking"),
+	Blocking = 2 UMETA(DisplayName = "Blocking"),
+	Dodge = 3 UMETA(DisplayName = "Dodge"),
+	Interacting = 4 UMETA(DisplayName = "Interacting")
+	
+};
+
 
 UCLASS()
 class DARKLIFEEXCALIBUR_API ACPP_DarkLifeCharacter : public ACharacter
@@ -220,6 +231,8 @@ public:
 		TMap<ECharacterCombatState, UAnimMontage*> BlockAnimations;
 	UPROPERTY(EditAnywhere, BlueprintreadWrite, Category = "Animations")
 		TMap<ECharacterCombatState, UAnimMontage*> BlockHitAnimations;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animations")
+	TArray<UAnimMontage*> StuntHitAnimations;
 
 	//Character Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
@@ -475,6 +488,8 @@ public:
 	void CharacterDrawSword(bool bOnlyToBack);
 	UFUNCTION(BlueprintCallable)
 	void CharacterDrawShield(bool bOnlyToBack);
+	UFUNCTION(BlueprintCallable)
+	void PlayStuntHitAnimations(bool& bSuccess);
 
 
 

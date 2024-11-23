@@ -154,6 +154,8 @@ public:
 		double HealthPercentExecution = 0.5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	bool bSelfLocked = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Parameters")
+	bool bInstantParryExecution;
 
 	//Event Dispatchers
 	UPROPERTY(BlueprintAssignable)

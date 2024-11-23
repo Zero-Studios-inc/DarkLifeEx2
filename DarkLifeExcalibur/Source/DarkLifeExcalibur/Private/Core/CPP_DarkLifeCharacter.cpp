@@ -899,6 +899,7 @@ void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType D
 				break;
 			}
 			PlayRegularDamageHitAnimation(ImpactNormal);
+			bBlocking = false;
 			
 		}
 		
@@ -908,7 +909,7 @@ void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType D
 	case EEnemyDamageType::StuntDamage:
 		
 		PlayStuntHitAnimations(bHitDuringStuntAnimation);
-		//bBlocking = false;
+		bBlocking = false;
 		if(bHitDuringStuntAnimation == true)
 		{
 			break;
@@ -1125,6 +1126,7 @@ void ACPP_DarkLifeCharacter::HideWeapons(bool bHide)
 
 void ACPP_DarkLifeCharacter::PlayDeflectedAnimation(int CustomComboIndex, ECharacterDamageType DamageType)
 {
+	
 	switch (DamageType)
 	{
 	case ECharacterDamageType::Sword:

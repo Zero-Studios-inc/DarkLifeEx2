@@ -153,7 +153,7 @@ void ACPP_DarkLifeCharacter::CheckChargeAttackKey()
 
 void ACPP_DarkLifeCharacter::AttackFunction()
 {
-	if (Stamina >= 20.0f) {
+	//if (Stamina >= 20.0f) {
 
 		UKismetSystemLibrary::K2_PauseTimer(this, "StaminaIncrease");
 		UKismetSystemLibrary::K2_PauseTimer(this, "ResetComboCounter");
@@ -170,7 +170,7 @@ void ACPP_DarkLifeCharacter::AttackFunction()
 			SetCharacterMovement(ECharacterMovement::Jog);
 			GetWorldTimerManager().SetTimer(ChargeAttackTimer, this, &ACPP_DarkLifeCharacter::CheckChargeAttackKey, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), true, -1.0f);
 		}
-	}
+	//}
 }
 
 void ACPP_DarkLifeCharacter::ResetComboCounter()

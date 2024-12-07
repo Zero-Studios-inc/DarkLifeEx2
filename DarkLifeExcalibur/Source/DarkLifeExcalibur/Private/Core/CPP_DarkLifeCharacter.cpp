@@ -779,14 +779,17 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 
 		StopSprint();
 		bBlocking = false;
-
+		
 	}
 
 
 	else {
-		PlayAnimMontage(ShieldAttackAnimations[0]);
-		bBlocking = false;
-		Success = true;
+		if (Stamina >= 50.0f)
+		{
+			PlayAnimMontage(ShieldAttackAnimations[0]);
+			Stamina = 0;
+			Success = true;
+		}
 	}
 
 

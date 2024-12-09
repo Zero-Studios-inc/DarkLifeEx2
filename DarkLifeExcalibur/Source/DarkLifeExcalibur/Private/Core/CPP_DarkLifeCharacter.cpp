@@ -427,9 +427,9 @@ void ACPP_DarkLifeCharacter::EvasionStepAnimations()
 
 
 
-	if (Stamina >= 30.0) {
+	//if (Stamina >= 30.0) {
 		PlayAnimMontage(EvasionAnimations[(int8)DodgeDirection], EvasionSpeedValue);
-	}
+	//}
 
 	if (!bBeastPowerMovement) {
 
@@ -784,12 +784,11 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 
 
 	else {
-		if (Stamina >= 50.0f)
-		{
+		
 			PlayAnimMontage(ShieldAttackAnimations[0]);
-			Stamina = 0;
+			//Stamina = 0;
 			Success = true;
-		}
+		
 	}
 
 

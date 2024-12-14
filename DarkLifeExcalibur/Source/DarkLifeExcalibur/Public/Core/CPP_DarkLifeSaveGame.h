@@ -13,6 +13,7 @@
 #include "Data/Items/CPP_DA_Item_ExcaliburBlade.h"
 #include "../Data/Items/CPP_DA_Item_Shield.h"
 #include "../Data/Items/CPP_DA_Item_Bow.h"
+#include "Core/Components/CPP_ItemContainer.h"
 #include "Containers/Map.h"
 #include "LevelSequence.h"
 #include "Core/CPP_DarkLifeCharacter.h"
@@ -101,6 +102,8 @@ public:
    //Inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	TMap<UCPP_DA_Item*, int> Inventory;
+	
+	
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

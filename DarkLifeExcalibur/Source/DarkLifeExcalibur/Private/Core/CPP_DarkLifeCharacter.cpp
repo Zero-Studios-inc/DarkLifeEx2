@@ -8,6 +8,7 @@
 #include "UObject/PropertyPortFlags.h"
 #include "Core/CPP_GameInstance.h"
 #include "Core/Components/CPP_ItemContainer.h"
+#include "Data/Items/CPP_DA_Item_Heal.h"
 
 
 // Sets default values
@@ -178,6 +179,22 @@ void ACPP_DarkLifeCharacter::ResetComboCounter()
 	ComboCounter = 0;
 }
 
+void ACPP_DarkLifeCharacter::SaveMainInventory()
+{
+	UCPP_GameInstance* GameInstanceRef = Cast<UCPP_GameInstance>(GetGameInstance());
+	if (GameInstanceRef)
+	{
+		FProperty* SaveGameProperty = GameInstanceRef->GetClass()->FindPropertyByName(FName(TEXT("Save Game")));
+		void* SaveGamePropertyValue = SaveGameProperty->ContainerPtrToValuePtr<void>(GameInstanceRef);
+		UCPP_DarkLifeSaveGame* SaveGame = *reinterpret_cast<UCPP_DarkLifeSaveGame**>(SaveGamePropertyValue);
+		if (SaveGame)
+		{
+			SaveGame->Inventory = InventoryManager->MainInventory;
+			GameInstanceRef->SaveGame();
+		}
+	}
+}
+
 void ACPP_DarkLifeCharacter::SetRunSpeed()
 {
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
@@ -295,7 +312,10 @@ void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 		}
 	}
 
-
+	if (SaveGame)
+	{
+		InventoryManager->MainInventory = SaveGame->Inventory;
+	}
 
 }
 

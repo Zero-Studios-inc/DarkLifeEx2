@@ -784,10 +784,13 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 
 
 	else {
-		
-			PlayAnimMontage(ShieldAttackAnimations[0]);
-			//Stamina = 0;
-			Success = true;
+
+	       if (GetCurrentMontage()!=ShieldAttackAnimations[0])
+	       {
+		       PlayAnimMontage(ShieldAttackAnimations[0]);
+	       	//Stamina = 0;
+	       	Success = true;
+	       }
 		
 	}
 

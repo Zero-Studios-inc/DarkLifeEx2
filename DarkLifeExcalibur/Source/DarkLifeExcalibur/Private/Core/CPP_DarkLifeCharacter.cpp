@@ -8,6 +8,7 @@
 #include "UObject/PropertyPortFlags.h"
 #include "Core/CPP_GameInstance.h"
 #include "Core/Components/CPP_ItemContainer.h"
+#include "Data/Items/CPP_DA_Item_Heal.h"
 
 
 // Sets default values
@@ -178,6 +179,22 @@ void ACPP_DarkLifeCharacter::ResetComboCounter()
 	ComboCounter = 0;
 }
 
+void ACPP_DarkLifeCharacter::SaveMainInventory()
+{
+	UCPP_GameInstance* GameInstanceRef = Cast<UCPP_GameInstance>(GetGameInstance());
+	if (GameInstanceRef)
+	{
+		FProperty* SaveGameProperty = GameInstanceRef->GetClass()->FindPropertyByName(FName(TEXT("Save Game")));
+		void* SaveGamePropertyValue = SaveGameProperty->ContainerPtrToValuePtr<void>(GameInstanceRef);
+		UCPP_DarkLifeSaveGame* SaveGame = *reinterpret_cast<UCPP_DarkLifeSaveGame**>(SaveGamePropertyValue);
+		if (SaveGame)
+		{
+			SaveGame->Inventory = InventoryManager->MainInventory;
+			GameInstanceRef->SaveGame();
+		}
+	}
+}
+
 void ACPP_DarkLifeCharacter::SetRunSpeed()
 {
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
@@ -295,7 +312,10 @@ void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 		}
 	}
 
-
+	if (SaveGame)
+	{
+		InventoryManager->MainInventory = SaveGame->Inventory;
+	}
 
 }
 
@@ -427,9 +447,9 @@ void ACPP_DarkLifeCharacter::EvasionStepAnimations()
 
 
 
-	if (Stamina >= 30.0) {
+	//if (Stamina >= 30.0) {
 		PlayAnimMontage(EvasionAnimations[(int8)DodgeDirection], EvasionSpeedValue);
-	}
+	//}
 
 	if (!bBeastPowerMovement) {
 
@@ -779,14 +799,19 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 
 		StopSprint();
 		bBlocking = false;
-
+		
 	}
 
 
 	else {
-		PlayAnimMontage(ShieldAttackAnimations[0]);
-		bBlocking = false;
-		Success = true;
+
+	       if (GetCurrentMontage()!=ShieldAttackAnimations[0])
+	       {
+		       PlayAnimMontage(ShieldAttackAnimations[0]);
+	       	//Stamina = 0;
+	       	Success = true;
+	       }
+		
 	}
 
 

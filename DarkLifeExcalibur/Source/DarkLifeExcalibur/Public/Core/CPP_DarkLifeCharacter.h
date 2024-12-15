@@ -375,6 +375,8 @@ protected:
 		void AttackFunction();
 	UFUNCTION()
 	void ResetComboCounter();
+	UFUNCTION(BlueprintCallable)
+	void SaveMainInventory();
 	
 
 	//Input

@@ -14,11 +14,10 @@
 // Sets default values
 ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	
-	
+
 	//Parameters Default Values
 	Health = 100;
 	MaxHealth = 100;
@@ -31,19 +30,19 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	//Components Init
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(GetMesh());
-	SpringArm->SetRelativeLocation(FVector(-12.0f, 0.0f, 188.0f ));
+	SpringArm->SetRelativeLocation(FVector(-12.0f, 0.0f, 188.0f));
 	SpringArm->SetRelativeRotation(FRotator(0.0f, 0.0f, 90.0f));
 	SpringArm->bUsePawnControlRotation = true;
 	SpringArm->TargetArmLength = 200.0f;
 
-	
+
 	LongBow = CreateDefaultSubobject<UChildActorComponent>(TEXT("Bow"));
 	LongBow->SetupAttachment(GetMesh(), "Bow_Back");
 
 	IgnisBomb = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Ignis"));
 	IgnisBomb->SetupAttachment(GetMesh(), "ignis");
 	IgnisBomb->SetVisibility(false, false);
-	
+
 	Excalibur = CreateDefaultSubobject<UChildActorComponent>(TEXT("Excalibur"));
 	Excalibur->SetupAttachment(GetMesh(), "Sword_Back");
 
@@ -57,7 +56,7 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 
 	CharacterLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("CharacterLight"));
 	CharacterLight->SetupAttachment(RootComponent);
-	
+
 	InventoryManager = CreateDefaultSubobject<UCPP_ItemContainer>(TEXT("InventoryManager"));
 
 	//Variables Default Values
@@ -92,8 +91,8 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	bInvulnerability = false;
 	bCrouched = false;
 	CrouchSpeed = 180.0;
-	
-		
+
+	AbilityComponent = CreateDefaultSubobject<UCPP_DarkLifeGASComponent>(TEXT("AbilityComponent"));
 }
 
 void ACPP_DarkLifeCharacter::UpdateStaminaByCharacterCombatState()
@@ -111,19 +110,20 @@ void ACPP_DarkLifeCharacter::UpdateStaminaByCharacterCombatState()
 	case ECharacterCombatState::OneHandTorch:
 		break;
 	case ECharacterCombatState::TwoBareHand:
-		Stamina = UKismetMathLibrary::FClamp(Stamina -  12.0, 0.0, MaxStamina);
+		Stamina = UKismetMathLibrary::FClamp(Stamina - 12.0, 0.0, MaxStamina);
 		break;
 	default:
 		break;
 	}
 }
 
-bool ACPP_DarkLifeCharacter::HitAngleInRange(FVector ImpactNormal, FVector Vector, double MinAngle, double MaxAngle, bool bInclusiveMin, bool bInclusiveMax)
+bool ACPP_DarkLifeCharacter::HitAngleInRange(FVector ImpactNormal, FVector Vector, double MinAngle, double MaxAngle,
+                                             bool bInclusiveMin, bool bInclusiveMax)
 {
-	
 	double dotProduct = UKismetMathLibrary::Dot_VectorVector(ImpactNormal, Vector);
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::SanitizeFloat(UKismetMathLibrary::DegAcos(dotProduct)));
-	return UKismetMathLibrary::InRange_FloatFloat(UKismetMathLibrary::DegAcos(dotProduct), MinAngle, MaxAngle, bInclusiveMin, bInclusiveMax);
+	return UKismetMathLibrary::InRange_FloatFloat(UKismetMathLibrary::DegAcos(dotProduct), MinAngle, MaxAngle,
+	                                              bInclusiveMin, bInclusiveMax);
 }
 
 void ACPP_DarkLifeCharacter::SetWalkSpeed()
@@ -138,17 +138,19 @@ void ACPP_DarkLifeCharacter::SetCrouchSpeed()
 
 void ACPP_DarkLifeCharacter::CheckChargeAttackKey()
 {
-	bool bKeyDownTimeCheck = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetInputKeyTimeDown(LightAttackKey) >= ChargeAttackKeyDownTime;
-	if ((UKismetInputLibrary::Key_IsValid(LightAttackKey)) && bKeyDownTimeCheck) {
-		if (!bIsAttacking) {
+	bool bKeyDownTimeCheck = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetInputKeyTimeDown(LightAttackKey)
+		>= ChargeAttackKeyDownTime;
+	if ((UKismetInputLibrary::Key_IsValid(LightAttackKey)) && bKeyDownTimeCheck)
+	{
+		if (!bIsAttacking)
+		{
 			PlayRandomChargeAnimationByCombatState();
 			UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), ChargeAttackTimer);
 		}
-		else {
+		else
+		{
 			UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), ChargeAttackTimer);
 		}
-
-	
 	}
 }
 
@@ -156,21 +158,24 @@ void ACPP_DarkLifeCharacter::AttackFunction()
 {
 	//if (Stamina >= 20.0f) {
 
-		UKismetSystemLibrary::K2_PauseTimer(this, "StaminaIncrease");
-		UKismetSystemLibrary::K2_PauseTimer(this, "ResetComboCounter");
-		UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(this, ResetComboCounterHandle);
+	UKismetSystemLibrary::K2_PauseTimer(this, "StaminaIncrease");
+	UKismetSystemLibrary::K2_PauseTimer(this, "ResetComboCounter");
+	UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(this, ResetComboCounterHandle);
 
-		if (bIsAttacking) {
-			bSaveAttack = true;
-		}
-		else {
-			bIsAttacking = true;
-			bAttackKeyPressed = true;
-			bool bAttackSuccess;
-			PlayAnimationByCharacterState(ComboCounter, bAttackSuccess);
-			SetCharacterMovement(ECharacterMovement::Jog);
-			GetWorldTimerManager().SetTimer(ChargeAttackTimer, this, &ACPP_DarkLifeCharacter::CheckChargeAttackKey, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), true, -1.0f);
-		}
+	if (bIsAttacking)
+	{
+		bSaveAttack = true;
+	}
+	else
+	{
+		bIsAttacking = true;
+		bAttackKeyPressed = true;
+		bool bAttackSuccess;
+		PlayAnimationByCharacterState(ComboCounter, bAttackSuccess);
+		SetCharacterMovement(ECharacterMovement::Jog);
+		GetWorldTimerManager().SetTimer(ChargeAttackTimer, this, &ACPP_DarkLifeCharacter::CheckChargeAttackKey,
+		                                UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), true, -1.0f);
+	}
 	//}
 }
 
@@ -202,19 +207,20 @@ void ACPP_DarkLifeCharacter::SetRunSpeed()
 
 void ACPP_DarkLifeCharacter::LookUp(float value)
 {
-	
-		if (bDrawingBow) {
-			AddControllerPitchInput(value * 0.2f);
-		}
-	
-		else AddControllerPitchInput(value);
-	
+	if (bDrawingBow)
+	{
+		AddControllerPitchInput(value * 0.2f);
+	}
+
+	else AddControllerPitchInput(value);
 }
 
 void ACPP_DarkLifeCharacter::Turn(float value)
 {
-	if (!bLockedEnemy) {
-		if (bDrawingBow) {
+	if (!bLockedEnemy)
+	{
+		if (bDrawingBow)
+		{
 			AddControllerYawInput(value * 0.2f);
 		}
 		else AddControllerYawInput(value);
@@ -223,16 +229,18 @@ void ACPP_DarkLifeCharacter::Turn(float value)
 
 void ACPP_DarkLifeCharacter::Sprint()
 {
-	if ((CurrentCharacterMovement != ECharacterMovement::Ladder) && (CurrentCharacterState == ECharacterState::Normal)) {
-		if (!bBeastPowerMovement) {
-			if (!bSprintKeyPress) {
-				if (bCanThrowProjectile) {
+	if ((CurrentCharacterMovement != ECharacterMovement::Ladder) && (CurrentCharacterState == ECharacterState::Normal))
+	{
+		if (!bBeastPowerMovement)
+		{
+			if (!bSprintKeyPress)
+			{
+				if (bCanThrowProjectile)
+				{
 					ThrowDeactivate();
 					SetCharacterMovement(ECharacterMovement::Sprint);
 				}
 				SetCharacterMovement(ECharacterMovement::Sprint);
-					
-				
 			}
 		}
 	}
@@ -248,21 +256,29 @@ void ACPP_DarkLifeCharacter::BeginPlay()
 	bDrawShieldPreviousState = bDrawShield;
 	bTorchPreviousState = false;
 	SetCombatState(ECharacterCombatState::TwoBareHand);
-	
+
+	if (AbilityComponent)
+	{
+		for (TSubclassOf<UGameplayAbility>& Ability : DefaultAbilities)
+		{
+			if (Ability)
+			{
+				AbilityComponent->GiveAbility(Ability);
+			}
+		}
+	}
 }
 
 
 void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 {
-	
 	UCPP_GameInstance* DLGameInstance = Cast<UCPP_GameInstance>(GetGameInstance());
 	if (!DLGameInstance)
 	{
-		
 		return;
 	}
 
-	
+
 	FProperty* SaveGameProperty = DLGameInstance->GetClass()->FindPropertyByName(FName(TEXT("Save Game")));
 	if (!SaveGameProperty)
 	{
@@ -271,7 +287,7 @@ void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 
 	void* SaveGamePropertyValue = SaveGameProperty->ContainerPtrToValuePtr<void>(DLGameInstance);
 	if (!SaveGamePropertyValue)
-	{	
+	{
 		return;
 	}
 
@@ -293,14 +309,15 @@ void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 		bool retFlag;
 		SetFakeExcalibur(retFlag);
 		if (retFlag) return;
-
 	}
-	else if (CurrentCharacterState == ECharacterState::Normal) {
+	else if (CurrentCharacterState == ECharacterState::Normal)
+	{
 		SetExcalibur();
 		SetBow();
 		SetShield();
 	}
-	else if (CurrentCharacterState == ECharacterState::Injuried) {
+	else if (CurrentCharacterState == ECharacterState::Injuried)
+	{
 		HideWeapons(true);
 	}
 	else
@@ -316,16 +333,15 @@ void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 	{
 		InventoryManager->MainInventory = SaveGame->Inventory;
 	}
-
 }
-
 
 
 void ACPP_DarkLifeCharacter::LoadParameters()
 {
 	UCPP_GameInstance* DLGameInstance = Cast<UCPP_GameInstance>(GetGameInstance());
 	UCPP_DarkLifeSaveGame* SaveGame = DLGameInstance->SaveGameObject;
-	if (SaveGame) {
+	if (SaveGame)
+	{
 		SaveGame->ParametersCalculation();
 		Health, MaxHealth = SaveGame->CurrentHealth;
 		Stamina, MaxStamina = SaveGame->CurrentStamina;
@@ -333,7 +349,6 @@ void ACPP_DarkLifeCharacter::LoadParameters()
 		Defense = SaveGame->CurrentDefense;
 		Recharge = SaveGame->CurrentRecharge;
 		MaxBeast = SaveGame->CurrentBeast;
-		
 	}
 }
 
@@ -349,15 +364,15 @@ void ACPP_DarkLifeCharacter::SetExcalibur()
 		}
 
 		// Cargar la clase del Blueprint de Excalibur
-		UClass* ExcaliburClass = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/TESTING/Character/Excalibur/Modular_Fantasy_Sword/Blueprints/BP_DarkLifeModularSword.BP_DarkLifeModularSword_C"));
+		UClass* ExcaliburClass = StaticLoadClass(AActor::StaticClass(), nullptr,
+		                                         TEXT(
+			                                         "/Game/TESTING/Character/Excalibur/Modular_Fantasy_Sword/Blueprints/BP_DarkLifeModularSword.BP_DarkLifeModularSword_C"));
 		if (ExcaliburClass)
 		{
 			Excalibur->SetChildActorClass(ExcaliburClass);
 			LoadParameters();
 		}
-		
 	}
-	
 }
 
 void ACPP_DarkLifeCharacter::SetBow()
@@ -372,14 +387,13 @@ void ACPP_DarkLifeCharacter::SetBow()
 		}
 
 		// Cargar la clase del Blueprint del Arco
-		UClass* BowClass = StaticLoadClass(AActor::StaticClass(), nullptr, TEXT("/Game/TESTING/Character/Bow/BP_Bow.BP_Bow_C"));
+		UClass* BowClass = StaticLoadClass(AActor::StaticClass(), nullptr,
+		                                   TEXT("/Game/TESTING/Character/Bow/BP_Bow.BP_Bow_C"));
 		if (BowClass)
 		{
 			LongBow->SetChildActorClass(BowClass);
 		}
-		
 	}
-	
 }
 
 void ACPP_DarkLifeCharacter::SetShield()
@@ -405,79 +419,38 @@ void ACPP_DarkLifeCharacter::SetShield()
 				{
 					ShieldMesh->SetStaticMesh(ShieldSoftReference.Get());
 				}
-				
 			}
 		}
-		
 	}
-	
 }
 
-void ACPP_DarkLifeCharacter::EvasionStepAnimations()
-{
 
-	ECharacterInputDirection DodgeDirection = ECharacterInputDirection::None;
-	if ((GetInputAxisValue("MoveForward") > 0) && (GetInputAxisValue("MoveRight") == 0)) {
-		DodgeDirection = ECharacterInputDirection::Forward;
-	}
-	else if ((GetInputAxisValue("MoveForward") > 0) && (GetInputAxisValue("MoveRight") > 0)) {
-		DodgeDirection = ECharacterInputDirection::ForwardRight;
-	}
-	else if ((GetInputAxisValue("MoveForward") == 0) && (GetInputAxisValue("MoveRight") > 0)) {
-		DodgeDirection = ECharacterInputDirection::Right;
-	}
-	else if ((GetInputAxisValue("MoveForward") < 0) && (GetInputAxisValue("MoveRight") > 0)) {
-		DodgeDirection = ECharacterInputDirection::BackwardRight;
-	}
-	else if ((GetInputAxisValue("MoveForward") < 0) && (GetInputAxisValue("MoveRight") == 0)) {
-		DodgeDirection = ECharacterInputDirection::Backward;
-	}
-	else if ((GetInputAxisValue("MoveForward") < 0) && (GetInputAxisValue("MoveRight") < 0)) {
-		DodgeDirection = ECharacterInputDirection::BackwardLeft;
-	}
-	else if ((GetInputAxisValue("MoveForward") == 0) && (GetInputAxisValue("MoveRight") < 0)) {
-		DodgeDirection = ECharacterInputDirection::Left;
-	}
-	else if ((GetInputAxisValue("MoveForward") > 0) && (GetInputAxisValue("MoveRight") < 0)) {
-		DodgeDirection = ECharacterInputDirection::ForwardLeft;
-	}
-	else if ((GetInputAxisValue("MoveForward") == 0) && (GetInputAxisValue("MoveRight") == 0)) {
-		DodgeDirection = ECharacterInputDirection::None;
-	}
-
-
-
-	//if (Stamina >= 30.0) {
-		PlayAnimMontage(EvasionAnimations[(int8)DodgeDirection], EvasionSpeedValue);
-	//}
-
-	if (!bBeastPowerMovement) {
-
-		Stamina = UKismetMathLibrary::FClamp(Stamina - 10.0, MaxStamina / StaminaDividerMinLimit, MaxStamina);
-	}
-
-}
 
 void ACPP_DarkLifeCharacter::StaminaIncrease()
 {
-	if (bBlocking) {
+	if (bBlocking)
+	{
 		Stamina = UKismetMathLibrary::FClamp(Stamina + 0.15, 0.0, MaxStamina);
 	}
-	else {
+	else
+	{
 		Stamina = UKismetMathLibrary::FClamp(Stamina + 2.0, 0.0, MaxStamina);
 	}
 
 
-	if (Stamina == MaxStamina) {
+	if (Stamina == MaxStamina)
+	{
 		GetWorldTimerManager().PauseTimer(StaminaIncreaseHandle);
 	}
 }
 
 void ACPP_DarkLifeCharacter::StaminaDecrease()
 {
-	if (!bStaminaBoost) {
+	if (!bStaminaBoost)
+	{
 		Stamina = UKismetMathLibrary::FClamp(Stamina + (-0.5f), 0.0f, MaxStamina);
-		if (Stamina <= 0.0f) {
+		if (Stamina <= 0.0f)
+		{
 			SetCharacterMovement(ECharacterMovement::Jog);
 		}
 	}
@@ -492,72 +465,83 @@ void ACPP_DarkLifeCharacter::ResetCombo()
 {
 	bSaveAttack = false;
 	bIsAttacking = false;
-	GetWorldTimerManager().SetTimer(StaminaIncreaseHandle,this,&ACPP_DarkLifeCharacter::StaminaIncrease, StaminaIncreaseTime, true, StaminaIncreaseDelay);
-	
+	GetWorldTimerManager().SetTimer(StaminaIncreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaIncrease,
+	                                StaminaIncreaseTime, true, StaminaIncreaseDelay);
+
 	//Reset Combo Counter after 1.5 sec no loop
-	GetWorldTimerManager().SetTimer(ResetComboCounterHandle, this, &ACPP_DarkLifeCharacter::ResetComboCounter, 1.5f, false , 1.5f);
+	GetWorldTimerManager().SetTimer(ResetComboCounterHandle, this, &ACPP_DarkLifeCharacter::ResetComboCounter, 1.5f,
+	                                false, 1.5f);
 }
 
 void ACPP_DarkLifeCharacter::StopSprint()
 {
-	if (!bSlowRun) {
+	if (!bSlowRun)
+	{
 		bSprintKeyPress = false;
-		if (bBeastPowerMovement) {
+		if (bBeastPowerMovement)
+		{
 			GetCharacterMovement()->MaxWalkSpeed = BeastPowerSpeed;
 		}
-		else {
-			if (bWalk) {
-				if(bCrouched){GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;}
-				else {GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;}
+		else
+		{
+			if (bWalk)
+			{
+				if (bCrouched) { GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed; }
+				else { GetCharacterMovement()->MaxWalkSpeed = WalkSpeed; }
 			}
 
 			else if (bSlowRun)
 			{
-				if(bCrouched){GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;}
-				else {GetCharacterMovement()->MaxWalkSpeed = RunSlowSpeed;}
-				
+				if (bCrouched) { GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed; }
+				else { GetCharacterMovement()->MaxWalkSpeed = RunSlowSpeed; }
 			}
 
-			else {
-				if(bCrouched){GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;}
-				else {GetCharacterMovement()->MaxWalkSpeed = RunSpeed;}
+			else
+			{
+				if (bCrouched) { GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed; }
+				else { GetCharacterMovement()->MaxWalkSpeed = RunSpeed; }
 			}
 		}
 	}
 
-		bSprint = false;
+	bSprint = false;
 
-		if (StaminaDecreaseHandle.IsValid()) {
-			GetWorldTimerManager().PauseTimer(StaminaDecreaseHandle);
-			GetWorldTimerManager().ClearTimer(StaminaDecreaseHandle);
-		}
+	if (StaminaDecreaseHandle.IsValid())
+	{
+		GetWorldTimerManager().PauseTimer(StaminaDecreaseHandle);
+		GetWorldTimerManager().ClearTimer(StaminaDecreaseHandle);
+	}
 
-		if (bLockedEnemy) {
-			SpringArm->CameraLagSpeed = 30.0f;
-		}
+	if (bLockedEnemy)
+	{
+		SpringArm->CameraLagSpeed = 30.0f;
+	}
 
-		GetWorldTimerManager().SetTimer(StaminaIncreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaIncrease, StaminaIncreaseTime, true, 1.0f);
-	
+	GetWorldTimerManager().SetTimer(StaminaIncreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaIncrease,
+	                                StaminaIncreaseTime, true, 1.0f);
 }
 
 void ACPP_DarkLifeCharacter::StartSprint()
 {
 	bSprintKeyPress = true;
-	if (( GetInputAxisValue("MoveForward")>0)&&(Stamina > 0.0f)&&(!bSlowRun)) {
+	if ((GetInputAxisValue("MoveForward") > 0) && (Stamina > 0.0f) && (!bSlowRun))
+	{
 		GetCharacterMovement()->MaxWalkSpeed = 700.0f;
 		bSprint = true;
 		SpringArm->bEnableCameraLag = true;
 		SpringArm->CameraLagSpeed = 15.0f;
 
-		if (StaminaIncreaseHandle.IsValid()) {
+		if (StaminaIncreaseHandle.IsValid())
+		{
 			GetWorldTimerManager().PauseTimer(StaminaIncreaseHandle);
 			GetWorldTimerManager().ClearTimer(StaminaIncreaseHandle);
 		}
 
-		GetWorldTimerManager().SetTimer(StaminaDecreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaDecrease, StaminaIncreaseTime, true, 0.0f);
-
-	 }
-	else {
+		GetWorldTimerManager().SetTimer(StaminaDecreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaDecrease,
+		                                StaminaIncreaseTime, true, 0.0f);
+	}
+	else
+	{
 		bSprintKeyPress = false;
 	}
 }
@@ -573,7 +557,8 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 		SetWalkSpeed();
 		bWalk = true;
 		bCrouched = false;
-		if (GetCharacterMovement()->IsCrouching()) {
+		if (GetCharacterMovement()->IsCrouching())
+		{
 			UnCrouch();
 		}
 		break;
@@ -582,14 +567,16 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 		SetRunSpeed();
 		bWalk = false;
 		bCrouched = false;
-		if (GetCharacterMovement()->IsCrouching()) {
+		if (GetCharacterMovement()->IsCrouching())
+		{
 			UnCrouch();
 		}
 		break;
 	case ECharacterMovement::Sprint:
 		StopAnimMontage(GetCurrentMontage());
 		ResetCombo();
-		if (GetCharacterMovement()->IsCrouching()) {
+		if (GetCharacterMovement()->IsCrouching())
+		{
 			UnCrouch();
 		}
 		StartSprint();
@@ -613,7 +600,8 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 		bWalk = true;
 		StopSprint();
 		ResetCombo();
-		if (GetCharacterMovement()->IsCrouching()) {
+		if (GetCharacterMovement()->IsCrouching())
+		{
 			UnCrouch();
 		}
 		break;
@@ -621,7 +609,8 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 		SetWalkSpeed();
 		bWalk = true;
 		StopSprint();
-		if (GetCharacterMovement()->IsCrouching()) {
+		if (GetCharacterMovement()->IsCrouching())
+		{
 			UnCrouch();
 		}
 		break;
@@ -629,7 +618,8 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 		SetWalkSpeed();
 		bWalk = true;
 		StopSprint();
-		if (GetCharacterMovement()->IsCrouching()) {
+		if (GetCharacterMovement()->IsCrouching())
+		{
 			UnCrouch();
 		}
 		break;
@@ -662,31 +652,26 @@ void ACPP_DarkLifeCharacter::ShootArrow()
 {
 	bDrawFinish = false;
 	//PlayAnimMontage(DrawBowAnimation);
-	PlayAnimMontage(DrawBowAnimation,1.0f,"Default");
-	
-	
+	PlayAnimMontage(DrawBowAnimation, 1.0f, "Default");
 }
 
 void ACPP_DarkLifeCharacter::SetTorchActive(bool bActivate, bool bRestorePreviousState)
 {
-	if (!bRestorePreviousState) {
-		
+	if (!bRestorePreviousState)
+	{
 		bTorchActive = bActivate;
 		bTorchPreviousState = bTorchActive;
 		Torch->SetHiddenInGame(!bTorchActive, true);
-		
 	}
-	else {
+	else
+	{
 		bTorchActive = bTorchPreviousState;
 		Torch->SetHiddenInGame(!bTorchActive, true);
 	}
 
-	
-	
+
 	ThrowDeactivate();
 	//StopSprint();
-	
-	
 }
 
 void ACPP_DarkLifeCharacter::ThrowDeactivate()
@@ -695,26 +680,20 @@ void ACPP_DarkLifeCharacter::ThrowDeactivate()
 	bCanThrowProjectile = false;
 	bDrawProjectile = false;
 	IgnisBomb->SetVisibility(false, false);
-
 }
 
 void ACPP_DarkLifeCharacter::ArcheryDeactivate()
 {
-	
 	bArchery = false;
-	
-
 }
 
 void ACPP_DarkLifeCharacter::HealthIncrease(double value)
 {
-	
-	Health = UKismetMathLibrary::FClamp(Health + value,0.0f,MaxHealth);
+	Health = UKismetMathLibrary::FClamp(Health + value, 0.0f, MaxHealth);
 }
 
 bool ACPP_DarkLifeCharacter::DetectHitFromTheBack(FHitResult ReceivedHit)
 {
-	
 	FVector NormImpactNormal = ReceivedHit.ImpactNormal;
 	FVector NormForwardVector = GetActorForwardVector();
 	UKismetMathLibrary::Vector_Normalize(NormImpactNormal, 0.0001f);
@@ -722,7 +701,6 @@ bool ACPP_DarkLifeCharacter::DetectHitFromTheBack(FHitResult ReceivedHit)
 	double dotProduct = UKismetMathLibrary::Dot_VectorVector(NormImpactNormal, NormForwardVector);
 	double AcosD = UKismetMathLibrary::DegAcos(dotProduct);
 	return UKismetMathLibrary::InRange_FloatFloat(AcosD, 90.0f, 180.0f, true, true);
-
 }
 
 void ACPP_DarkLifeCharacter::UnlockTarget()
@@ -731,7 +709,6 @@ void ACPP_DarkLifeCharacter::UnlockTarget()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	CurrentEnemy = nullptr;
-	
 }
 
 void ACPP_DarkLifeCharacter::JumpActivation(bool ActivationValue)
@@ -741,26 +718,29 @@ void ACPP_DarkLifeCharacter::JumpActivation(bool ActivationValue)
 
 void ACPP_DarkLifeCharacter::PerformJump()
 {
-	if ((bJump)&&(CurrentCharacterState == ECharacterState::Normal)) {
+	if ((bJump) && (CurrentCharacterState == ECharacterState::Normal))
+	{
 		bJump = false;
 		StopSprint();
-		Jump(); 
-		
+		Jump();
 	}
 }
 
 void ACPP_DarkLifeCharacter::HandWeaponsVisibility(bool hide)
 {
-	if (bTorchActive) {
+	if (bTorchActive)
+	{
 		Torch->SetHiddenInGame(hide, true);
 	}
 
-	if (bDrawSword) {
+	if (bDrawSword)
+	{
 		Excalibur->SetHiddenInGame(hide, true);
 	}
 
 
-	if (bDrawShield) {
+	if (bDrawShield)
+	{
 		ShieldMesh->SetHiddenInGame(hide, true);
 	}
 }
@@ -769,60 +749,62 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 {
 	Success = false;
 
-	if (!bBlocking) {
-
-		if (bSprint) {
-			if (AttackOnSprintAnimations.IsValidIndex((int32)CombatState)) {
+	if (!bBlocking)
+	{
+		if (bSprint)
+		{
+			if (AttackOnSprintAnimations.IsValidIndex((int32)CombatState))
+			{
 				PlayAnimMontage(AttackOnSprintAnimations[(int32)CombatState]);
 				UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), ChargeAttackTimer);
 				Success = true;
 			}
 		}
-		else {
-			if ((!CurrentStateAnimations.IsEmpty()) && (CurrentStateAnimations.IsValidIndex(ComboCounter))) {
-				if ((animationIndex + 1) == CurrentStateAnimations.Num()) {
+		else
+		{
+			if ((!CurrentStateAnimations.IsEmpty()) && (CurrentStateAnimations.IsValidIndex(ComboCounter)))
+			{
+				if ((animationIndex + 1) == CurrentStateAnimations.Num())
+				{
 					ComboCounter = 0;
 					PlayAnimMontage(CurrentStateAnimations[animationIndex]);
 					Attacking.Broadcast();
 					Success = true;
-
 				}
-				else {
+				else
+				{
 					ComboCounter = animationIndex + 1;
 					PlayAnimMontage(CurrentStateAnimations[animationIndex]);
 					Attacking.Broadcast();
 					Success = true;
-
 				}
 			}
 		}
 
 		StopSprint();
 		bBlocking = false;
-		
 	}
 
 
-	else {
-
-	       if (GetCurrentMontage()!=ShieldAttackAnimations[0])
-	       {
-		       PlayAnimMontage(ShieldAttackAnimations[0]);
-	       	//Stamina = 0;
-	       	Success = true;
-	       }
-		
+	else
+	{
+		if (GetCurrentMontage() != ShieldAttackAnimations[0])
+		{
+			PlayAnimMontage(ShieldAttackAnimations[0]);
+			//Stamina = 0;
+			Success = true;
+		}
 	}
 
 
 	UpdateStaminaByCharacterCombatState();
 	//StopSprint();
-
 }
 
 void ACPP_DarkLifeCharacter::SaveComboAttack()
 {
-	if (bSaveAttack) {
+	if (bSaveAttack)
+	{
 		bIsAttacking = true;
 	}
 }
@@ -831,18 +813,18 @@ void ACPP_DarkLifeCharacter::SetVariablesByCombatState()
 {
 	bDrawSwordPreviousState = bDrawSword;
 	ComboCounter = 0;
-	
+
 	switch (CombatState)
 	{
 	case ECharacterCombatState::OneHandSword:
 		bDrawSword = true;
-		if (!bDrawShield) { 
-			SetTorchActive(true, false); 
-			
+		if (!bDrawShield)
+		{
+			SetTorchActive(true, false);
 		}
-		else { 
-			SetTorchActive(false, false); 
-			
+		else
+		{
+			SetTorchActive(false, false);
 		}
 		CurrentStateAnimations = OneHandSwordAnimations;
 		Fracture = UKismetMathLibrary::FClamp(Fracture - 10, 10.0f, 9999.0f);
@@ -861,16 +843,16 @@ void ACPP_DarkLifeCharacter::SetVariablesByCombatState()
 		bDrawShield = true;
 		bDrawSword = false;
 		SetTorchActive(false, false);
-		//CurrentStateAnimations = ShieldAttackAnimations;
-		//Just for testing
+	//CurrentStateAnimations = ShieldAttackAnimations;
+	//Just for testing
 		CurrentStateAnimations = BareHandAttackAnimations;
 		break;
 	case ECharacterCombatState::OneHandTorch:
 		bDrawSword = false;
 		bDrawShield = false;
 		SetTorchActive(true, false);
-		//CurrentStateAnimations = TorchAttackAnimations;
-		//Just for testing
+	//CurrentStateAnimations = TorchAttackAnimations;
+	//Just for testing
 		CurrentStateAnimations = BareHandAttackAnimations;
 		break;
 	case ECharacterCombatState::TwoBareHand:
@@ -893,17 +875,16 @@ void ACPP_DarkLifeCharacter::SetCombatState(ECharacterCombatState newCombatState
 
 void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType DamageType, AActor* CauserReference)
 {
-	
 	FVector ImpactNormal;
 	bool bHitDuringStuntAnimation = false;
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f,FColor::Green, UEnum::GetValueAsString(CurrentCharacterNegativeStatus));
-	if (CauserReference) {
-		
+	if (CauserReference)
+	{
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, CauserReference->GetClass()->GetName());
 		ImpactNormal = (CauserReference->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-		
-	} else {
-		
+	}
+	else
+	{
 		ImpactNormal = HitInfo.ImpactNormal;
 		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "NoCauserReference");
 	}
@@ -911,11 +892,10 @@ void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType D
 	switch (DamageType)
 	{
 	case EEnemyDamageType::RegularDamage:
-		
+
 		if (bBlocking)
 		{
 			PlayBlockingHitAnimations();
-            
 		}
 		else
 		{
@@ -925,17 +905,16 @@ void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType D
 			}
 			PlayRegularDamageHitAnimation(ImpactNormal);
 			bBlocking = false;
-			
 		}
-		
+
 		break;
 	case EEnemyDamageType::StrongDamage:
 		break;
 	case EEnemyDamageType::StuntDamage:
-		
+
 		PlayStuntHitAnimations(bHitDuringStuntAnimation);
 		bBlocking = false;
-		if(bHitDuringStuntAnimation == true)
+		if (bHitDuringStuntAnimation == true)
 		{
 			break;
 		}
@@ -948,43 +927,53 @@ void ACPP_DarkLifeCharacter::HitAnimation(FHitResult HitInfo, EEnemyDamageType D
 
 void ACPP_DarkLifeCharacter::PlayRegularDamageHitAnimation(FVector ImpactNormal)
 {
-	
-	if (HitAnimations.Num() > 3) {
+	if (HitAnimations.Num() > 3)
+	{
 		// Back Hit Animation 
-		if (HitAnimations.IsValidIndex(3) && HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f, true, true) && (GetCurrentMontage() != HitAnimations[3])) {
+		if (HitAnimations.IsValidIndex(3) && HitAngleInRange(ImpactNormal, GetActorForwardVector(), 100.0f, 180.0f,
+		                                                     true, true) && (GetCurrentMontage() != HitAnimations[3]))
+		{
 			PlayAnimMontage(HitAnimations[3]);
 		}
 		// Right Hit Animation 
-		else if (HitAnimations.IsValidIndex(2) && HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f, true, false)&& (GetCurrentMontage() != HitAnimations[2])) {
+		else if (HitAnimations.IsValidIndex(2) && HitAngleInRange(ImpactNormal, GetActorRightVector(), 0.0f, 90.0f,
+		                                                          true, false) && (GetCurrentMontage() != HitAnimations[
+			2]))
+		{
 			PlayAnimMontage(HitAnimations[2]);
 		}
 		// Left Hit Animation 
-		else if (HitAnimations.IsValidIndex(1) && HitAngleInRange(ImpactNormal, -GetActorRightVector(), 0.0f, 90.0f, true, false)&& (GetCurrentMontage() != HitAnimations[1])) {
+		else if (HitAnimations.IsValidIndex(1) && HitAngleInRange(ImpactNormal, -GetActorRightVector(), 0.0f, 90.0f,
+		                                                          true, false) && (GetCurrentMontage() != HitAnimations[
+			1]))
+		{
 			PlayAnimMontage(HitAnimations[1]);
 		}
 		// Front Hit Animation 
-		else if (HitAnimations.IsValidIndex(0) && HitAngleInRange(ImpactNormal, -GetActorForwardVector(), 0.0f, 90.0f, true, true)&& (GetCurrentMontage() != HitAnimations[0])) {
+		else if (HitAnimations.IsValidIndex(0) && HitAngleInRange(ImpactNormal, -GetActorForwardVector(), 0.0f, 90.0f,
+		                                                          true, true) && (GetCurrentMontage() != HitAnimations[
+			0]))
+		{
 			PlayAnimMontage(HitAnimations[0]);
 		}
 	}
-	else if (HitAnimations.IsValidIndex(0) && (GetCurrentMontage() != HitAnimations[0])) {
-		
+	else if (HitAnimations.IsValidIndex(0) && (GetCurrentMontage() != HitAnimations[0]))
+	{
 		PlayAnimMontage(HitAnimations[0]);
 	}
 }
-
-
 
 
 void ACPP_DarkLifeCharacter::PlayStuntDamageHitAnimation()
 {
 	if ((CombatState == ECharacterCombatState::OneHandSword) || (CombatState == ECharacterCombatState::OneHandShield))
 	{
-		if (StuntAnimations.IsValidIndex(0) && IsValid(StuntAnimations[0])) {
+		if (StuntAnimations.IsValidIndex(0) && IsValid(StuntAnimations[0]))
+		{
 			if (GetCurrentMontage() != StuntAnimations[0])
 			{
 				PlayAnimMontage(StuntAnimations[0]);
-			}			
+			}
 		}
 	}
 }
@@ -995,35 +984,42 @@ void ACPP_DarkLifeCharacter::SetCharacterNegativeStatus(ECharacterNegativeStatus
 	//GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Blue, UEnum::GetValueAsString(CurrentCharacterNegativeStatus));	
 }
 
-void ACPP_DarkLifeCharacter::PlayParryFinisherAnimation(int parryIndex, UAnimMontage*& ParryMontage, TArray<UAnimMontage*>& ParryAnimList)
+void ACPP_DarkLifeCharacter::PlayParryFinisherAnimation(int parryIndex, UAnimMontage*& ParryMontage,
+                                                        TArray<UAnimMontage*>& ParryAnimList)
 {
-	if (ParryAnimList.IsValidIndex(parryIndex)) {
-		if (IsValid(ParryAnimList[parryIndex])) {
+	if (ParryAnimList.IsValidIndex(parryIndex))
+	{
+		if (IsValid(ParryAnimList[parryIndex]))
+		{
 			PlayAnimMontage(ParryAnimList[parryIndex]);
 			ParryMontage = ParryAnimList[parryIndex];
-			
 		}
 	}
 }
 
 void ACPP_DarkLifeCharacter::PlayFromTheBackFinisherAnimation(int backFinishIndex, UAnimMontage*& FromTheBackMontage)
 {
-	if (BackFinisher.IsValidIndex(backFinishIndex)) {
-		if (IsValid(BackFinisher[backFinishIndex])) {
+	if (BackFinisher.IsValidIndex(backFinishIndex))
+	{
+		if (IsValid(BackFinisher[backFinishIndex]))
+		{
 			PlayAnimMontage(BackFinisher[backFinishIndex]);
 			FromTheBackMontage = BackFinisher[backFinishIndex];
 		}
-	 }
+	}
 }
 
-void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType FinishMovementType, double& AnimationLength, bool& Success)
+void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType FinishMovementType,
+                                                       double& AnimationLength, bool& Success)
 {
 	Success = true;
-	if (IsValid(CurrentEnemy)) {
+	if (IsValid(CurrentEnemy))
+	{
 		ACPP_Enemy* EnemyRef = Cast<ACPP_Enemy>(CurrentEnemy);
-		if (IsValid(EnemyRef)) {
-			if ((EnemyRef->bCanBeExecuted) && (EnemyRef->bExecutionActive)) {
-
+		if (IsValid(EnemyRef))
+		{
+			if ((EnemyRef->bCanBeExecuted) && (EnemyRef->bExecutionActive))
+			{
 				int randomIndex = 0;
 				UAnimMontage* ParryMontage = nullptr;
 				UAnimMontage* BackMontage = nullptr;
@@ -1033,15 +1029,17 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 				{
 				case ECharacterFinishMoveType::AfterParry:
 
-					if (CombatState == ECharacterCombatState::TwoHandSword) {
+					if (CombatState == ECharacterCombatState::TwoHandSword)
+					{
 						LocalParryFinisherAnimation = TwoHandsParryFinisher;
 					}
 					else LocalParryFinisherAnimation = OneHandParryFinisher;
 
-					if (!LocalParryFinisherAnimation.IsEmpty()) {
-
+					if (!LocalParryFinisherAnimation.IsEmpty())
+					{
 						randomIndex = UKismetMathLibrary::RandomInteger(LocalParryFinisherAnimation.Num());
-						UAIBlueprintHelperLibrary::GetAIController(EnemyRef)->GetBrainComponent()->PauseLogic("Finisher Received");
+						UAIBlueprintHelperLibrary::GetAIController(EnemyRef)->GetBrainComponent()->PauseLogic(
+							"Finisher Received");
 						EnemyRef->GetMesh()->Stop();
 						PlayParryFinisherAnimation(randomIndex, ParryMontage, LocalParryFinisherAnimation);
 						EnemyRef->PlayParryFinisherAnimation(randomIndex, CombatState);
@@ -1051,17 +1049,19 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 						break;
 					}
 
-					else {
+					else
+					{
 						Success = false;
 						break;
 					}
 				case ECharacterFinishMoveType::FromTheBack:
 
-					if (!BackFinisher.IsEmpty()) {
-
+					if (!BackFinisher.IsEmpty())
+					{
 						randomIndex = UKismetMathLibrary::RandomInteger(BackFinisher.Num());
 						EnemyRef->GetMesh()->Stop();
-						UAIBlueprintHelperLibrary::GetAIController(EnemyRef)->GetBrainComponent()->PauseLogic("Finisher Received");
+						UAIBlueprintHelperLibrary::GetAIController(EnemyRef)->GetBrainComponent()->PauseLogic(
+							"Finisher Received");
 						PlayFromTheBackFinisherAnimation(randomIndex, BackMontage);
 						EnemyRef->PlayFromTheBackFinisherAnimation(randomIndex);
 						AnimationLength = BackMontage->GetPlayLength();
@@ -1069,7 +1069,8 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 						ResetCombo();
 						break;
 					}
-					else {
+					else
+					{
 						Success = false;
 						break;
 					}
@@ -1094,7 +1095,7 @@ void ACPP_DarkLifeCharacter::PlayRandomFinishAnimation(ECharacterFinishMoveType 
 }
 
 void ACPP_DarkLifeCharacter::PlayRandomChargeAnimationByCombatState()
-{ 
+{
 	int AnimationsCount;
 	TArray<UAnimMontage*> ChargeAttackArray;
 
@@ -1118,15 +1119,15 @@ void ACPP_DarkLifeCharacter::PlayRandomChargeAnimationByCombatState()
 		break;
 	}
 
-	if (ChargeAttackArray.Num() > 0) {
+	if (ChargeAttackArray.Num() > 0)
+	{
 		AnimationsCount = UKismetMathLibrary::RandomInteger(ChargeAttackArray.Num());
-		if (ChargeAttackArray.IsValidIndex(AnimationsCount)) {
+		if (ChargeAttackArray.IsValidIndex(AnimationsCount))
+		{
 			PlayAnimMontage(ChargeAttackArray[AnimationsCount]);
 			ResetCombo();
 		}
-
 	}
-
 }
 
 void ACPP_DarkLifeCharacter::EnemyAttacking(ACPP_Enemy* Enemy)
@@ -1134,7 +1135,6 @@ void ACPP_DarkLifeCharacter::EnemyAttacking(ACPP_Enemy* Enemy)
 	bPlayerIsEngaged = true;
 	EnemyAttackingRef = Enemy;
 	CharacterEngaged.Broadcast(true, Enemy);
-	
 }
 
 void ACPP_DarkLifeCharacter::HideWeapons(bool bHide)
@@ -1151,31 +1151,38 @@ void ACPP_DarkLifeCharacter::HideWeapons(bool bHide)
 
 void ACPP_DarkLifeCharacter::PlayDeflectedAnimation(int CustomComboIndex, ECharacterDamageType DamageType)
 {
-	
 	switch (DamageType)
 	{
 	case ECharacterDamageType::Sword:
-		if (CombatState == ECharacterCombatState::OneHandSword) {
-			if (OneHandDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(OneHandDeflectedAnimations[CustomComboIndex]))) {
+		if (CombatState == ECharacterCombatState::OneHandSword)
+		{
+			if (OneHandDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(
+				OneHandDeflectedAnimations[CustomComboIndex])))
+			{
 				PlayAnimMontage(OneHandDeflectedAnimations[CustomComboIndex]);
 			}
 		}
-		else if (CombatState == ECharacterCombatState::TwoHandSword) {
-			if (TwoHandsDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(TwoHandsDeflectedAnimations[CustomComboIndex]))) {
+		else if (CombatState == ECharacterCombatState::TwoHandSword)
+		{
+			if (TwoHandsDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(
+				TwoHandsDeflectedAnimations[CustomComboIndex])))
+			{
 				PlayAnimMontage(TwoHandsDeflectedAnimations[CustomComboIndex]);
 			}
 		}
 		break;
 	case ECharacterDamageType::Shield:
-		if (ShieldDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(ShieldDeflectedAnimations[CustomComboIndex])))
+		if (ShieldDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(
+			ShieldDeflectedAnimations[CustomComboIndex])))
 		{
 			PlayAnimMontage(ShieldDeflectedAnimations[CustomComboIndex]);
-     	}
+		}
 		break;
 	case ECharacterDamageType::Torch:
 		break;
 	case ECharacterDamageType::Punch:
-		if (PunchDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(PunchDeflectedAnimations[CustomComboIndex])))
+		if (PunchDeflectedAnimations.IsValidIndex(CustomComboIndex) && (IsValid(
+			PunchDeflectedAnimations[CustomComboIndex])))
 		{
 			PlayAnimMontage(PunchDeflectedAnimations[CustomComboIndex]);
 		}
@@ -1185,30 +1192,27 @@ void ACPP_DarkLifeCharacter::PlayDeflectedAnimation(int CustomComboIndex, EChara
 	default:
 		break;
 	}
-
-	
-	
 }
 
 void ACPP_DarkLifeCharacter::PlayBlockingAnimations()
 {
-	if (BlockAnimations.Find(CombatState)&&(IsValid(BlockAnimations[CombatState]))) {
+	if (BlockAnimations.Find(CombatState) && (IsValid(BlockAnimations[CombatState])))
+	{
 		if (GetCurrentMontage() != BlockAnimations[CombatState])
 		{
 			PlayAnimMontage(BlockAnimations[CombatState]);
-		}			
+		}
 	}
 }
 
 void ACPP_DarkLifeCharacter::PlayBlockingHitAnimations()
 {
-	if (BlockHitAnimations.Find(CombatState) && (IsValid(BlockHitAnimations[CombatState]))) {
-
+	if (BlockHitAnimations.Find(CombatState) && (IsValid(BlockHitAnimations[CombatState])))
+	{
 		if (GetCurrentMontage() != BlockHitAnimations[CombatState])
 		{
 			PlayAnimMontage(BlockHitAnimations[CombatState]);
 		}
-				
 	}
 }
 
@@ -1216,7 +1220,8 @@ void ACPP_DarkLifeCharacter::SetCharacterState(ECharacterState NewCharacterstate
 {
 	CurrentCharacterState = NewCharacterstate;
 
-	switch (CurrentCharacterState) {
+	switch (CurrentCharacterState)
+	{
 	case ECharacterState::Normal:
 		SetCharacterMovement(ECharacterMovement::Jog);
 		break;
@@ -1237,16 +1242,17 @@ void ACPP_DarkLifeCharacter::SetCharacterState(ECharacterState NewCharacterstate
 	}
 
 	UCPP_GameInstance* DLGameInstance = Cast<UCPP_GameInstance>(GetGameInstance());
-	if (DLGameInstance) {
+	if (DLGameInstance)
+	{
 		DLGameInstance->SaveGame();
 	}
-
 }
 
 void ACPP_DarkLifeCharacter::SetFakeExcalibur(bool& retFlag)
 {
 	retFlag = true;
-	static const FString FakeExcaliburPath = TEXT("/Game/TESTING/Character/Excalibur/Modular_Fantasy_Sword/Blueprints/BP_FakeExcalibur.BP_FakeExcalibur_C");
+	static const FString FakeExcaliburPath = TEXT(
+		"/Game/TESTING/Character/Excalibur/Modular_Fantasy_Sword/Blueprints/BP_FakeExcalibur.BP_FakeExcalibur_C");
 	UClass* FakeExcaliburClass = StaticLoadClass(AActor::StaticClass(), nullptr, *FakeExcaliburPath);
 
 	if (!FakeExcaliburClass)
@@ -1255,7 +1261,8 @@ void ACPP_DarkLifeCharacter::SetFakeExcalibur(bool& retFlag)
 	}
 
 	FActorSpawnParameters SpawnParameters;
-	FakeExcaliburActorRef = GetWorld()->SpawnActor<AActor>(FakeExcaliburClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+	FakeExcaliburActorRef = GetWorld()->SpawnActor<AActor>(FakeExcaliburClass, FVector::ZeroVector,
+	                                                       FRotator::ZeroRotator, SpawnParameters);
 
 	if (FakeExcaliburActorRef)
 	{
@@ -1264,7 +1271,9 @@ void ACPP_DarkLifeCharacter::SetFakeExcalibur(bool& retFlag)
 		{
 			if (FakeExcaliburMesh->DoesSocketExist(TEXT("Sword")))
 			{
-				FakeExcaliburActorRef->AttachToComponent(FakeExcaliburMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("Sword"));
+				FakeExcaliburActorRef->AttachToComponent(FakeExcaliburMesh,
+				                                         FAttachmentTransformRules::KeepRelativeTransform,
+				                                         TEXT("Sword"));
 
 				FVector Location(2.0f, 2.0f, 7.0f);
 				FRotator Rotation(-11.0f, 15.0f, 20.0f);
@@ -1280,29 +1289,35 @@ void ACPP_DarkLifeCharacter::SetFakeExcalibur(bool& retFlag)
 
 void ACPP_DarkLifeCharacter::CharacterDrawSword(bool bOnlyToBack)
 {
-	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, true);
-	if ((bDrawSword)||(bOnlyToBack)) {
-
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative,
+	                                          EAttachmentRule::KeepRelative, true);
+	if ((bDrawSword) || (bOnlyToBack))
+	{
 		Excalibur->AttachToComponent(GetMesh(), AttachmentRules, "Sword_Back");
 
-		if (bDrawShield) {
+		if (bDrawShield)
+		{
 			SetCombatState(ECharacterCombatState::OneHandShield);
 		}
-		else if (bTorchActive) {
+		else if (bTorchActive)
+		{
 			SetCombatState(ECharacterCombatState::OneHandTorch);
 		}
-		else {
+		else
+		{
 			SetCombatState(ECharacterCombatState::TwoBareHand);
 		}
 	}
 
-	else {
+	else
+	{
 		Excalibur->AttachToComponent(GetMesh(), AttachmentRules, "Sword");
-		if ((bDrawShield) || (bTorchActive)) {
-
+		if ((bDrawShield) || (bTorchActive))
+		{
 			SetCombatState(ECharacterCombatState::OneHandSword);
 		}
-		else {
+		else
+		{
 			SetCombatState(ECharacterCombatState::TwoHandSword);
 		}
 
@@ -1314,25 +1329,31 @@ void ACPP_DarkLifeCharacter::CharacterDrawSword(bool bOnlyToBack)
 
 void ACPP_DarkLifeCharacter::CharacterDrawShield(bool bOnlyToBack)
 {
-	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, true);
-	if ((bDrawShield) || (bOnlyToBack)) {
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative,
+	                                          EAttachmentRule::KeepRelative, true);
+	if ((bDrawShield) || (bOnlyToBack))
+	{
 		ShieldMesh->AttachToComponent(GetMesh(), AttachmentRules, "Shield_Back");
-		if (bDrawSword) {
-
+		if (bDrawSword)
+		{
 			SetCombatState(ECharacterCombatState::TwoHandSword);
 		}
 
-		else {
+		else
+		{
 			SetCombatState(ECharacterCombatState::TwoBareHand);
 		}
 	}
-	else {
+	else
+	{
 		ShieldMesh->AttachToComponent(GetMesh(), AttachmentRules, "Shield");
-		if (bDrawSword) {
+		if (bDrawSword)
+		{
 			bDrawShield = true;
 			SetCombatState(ECharacterCombatState::OneHandSword);
 		}
-		else {
+		else
+		{
 			SetCombatState(ECharacterCombatState::OneHandShield);
 		}
 	}
@@ -1343,21 +1364,21 @@ void ACPP_DarkLifeCharacter::CharacterDrawShield(bool bOnlyToBack)
 
 void ACPP_DarkLifeCharacter::PlayStuntHitAnimations(bool& bSuccess)
 {
-	bSuccess =  false;
-	
-	if(StuntHitAnimations.IsValidIndex(0) && IsValid(StuntHitAnimations[0]))
+	bSuccess = false;
+
+	if (StuntHitAnimations.IsValidIndex(0) && IsValid(StuntHitAnimations[0]))
 	{
-		if (GetCurrentMontage() == StuntAnimations[0] && GetMesh()->GetAnimInstance()->Montage_GetCurrentSection(StuntAnimations[0]) == "Stunt")
+		if (GetCurrentMontage() == StuntAnimations[0] && GetMesh()->GetAnimInstance()->
+		                                                            Montage_GetCurrentSection(StuntAnimations[0]) ==
+			"Stunt")
 		{
 			PlayAnimMontage(StuntHitAnimations[0]);
 			bSuccess = true;
-			
 		}
 		else if (GetCurrentMontage() == StuntHitAnimations[0])
 		{
 			bSuccess = true;
 		}
-				
 	}
 }
 
@@ -1366,7 +1387,6 @@ void ACPP_DarkLifeCharacter::PlayStuntHitAnimations(bool& bSuccess)
 void ACPP_DarkLifeCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -1376,10 +1396,5 @@ void ACPP_DarkLifeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACPP_DarkLifeCharacter::PerformJump);
 	PlayerInputComponent->BindAxis("LookUp", this, &ACPP_DarkLifeCharacter::LookUp);
 	PlayerInputComponent->BindAxis("Turn", this, &ACPP_DarkLifeCharacter::Turn);
-	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, & ACPP_DarkLifeCharacter::Sprint);
-
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACPP_DarkLifeCharacter::Sprint);
 }
-
-
-
-

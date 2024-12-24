@@ -18,6 +18,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/ChildActorComponent.h"
 #include "Components/CPP_ItemContainer.h"
+#include "Abilities/CPP_DarkLifeGASComponent.h"
+#include "Abilities/CPP_GA_Dodge.h"
 #include "UObject/ConstructorHelpers.h"
 
 class ACPP_Enemy;
@@ -163,6 +165,13 @@ public:
 		double Defense;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double MaxBeast;
+
+	//Abilities
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Abilities")
+	UCPP_DarkLifeGASComponent* AbilityComponent;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category="Abilities")
+	TArray<TSubclassOf<class UGameplayAbility>> DefaultAbilities;
 
 	//Character Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
@@ -408,9 +417,7 @@ public:
 	void SetBow();
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
 	void SetShield();
-
-	UFUNCTION(BlueprintCallable, Category = "Animations")
-		void EvasionStepAnimations();
+	
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
 		void StaminaIncrease();
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")

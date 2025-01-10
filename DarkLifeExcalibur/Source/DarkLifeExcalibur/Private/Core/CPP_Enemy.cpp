@@ -552,12 +552,17 @@ void ACPP_Enemy::SetEnemyPhase(EEnemyPhase NewEnemyPhase)
 
 }
 
-void ACPP_Enemy::CheckHealthForPhaseChange()
+void ACPP_Enemy::CheckHealthForPhaseChange(bool &bPhaseChanged)
 {
+	bPhaseChanged = false;
 	EEnemyPhase NextEnemyPhase = static_cast<EEnemyPhase>(static_cast<int>(CurrentEnemyPhase) + 1);
 
 	if (HealthPercentPerPhase.Find(NextEnemyPhase)) {
-		if (Health < InitHealth * HealthPercentPerPhase[NextEnemyPhase]) SetEnemyPhase(NextEnemyPhase);
+		if (Health < InitHealth * HealthPercentPerPhase[NextEnemyPhase])
+		{
+			SetEnemyPhase(NextEnemyPhase);
+			bPhaseChanged = true;
+		}
 	}
 }
 

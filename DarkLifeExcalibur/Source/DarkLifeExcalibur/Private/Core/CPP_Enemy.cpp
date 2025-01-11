@@ -528,7 +528,7 @@ void ACPP_Enemy::ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* Chara
 void ACPP_Enemy::SetEnemyPhase(EEnemyPhase NewEnemyPhase)
 {
 	if (NewEnemyPhase == CurrentEnemyPhase) return;
-	UCPP_EnemyPhaseData* NewEnemyPhaseData = EnemyPhasesData[NewEnemyPhase];
+	UCPP_EnemyPhaseData* NewEnemyPhaseData = GetEnemyPhaseData(NewEnemyPhase);
 	if (NewEnemyPhaseData) {
 
 		//New Animations
@@ -564,6 +564,11 @@ void ACPP_Enemy::CheckHealthForPhaseChange(bool &bPhaseChanged)
 			bPhaseChanged = true;
 		}
 	}
+}
+
+UCPP_EnemyPhaseData* ACPP_Enemy::GetEnemyPhaseData(EEnemyPhase EnemyPhase)
+{
+	return EnemyPhasesData[EnemyPhase];
 }
 
 

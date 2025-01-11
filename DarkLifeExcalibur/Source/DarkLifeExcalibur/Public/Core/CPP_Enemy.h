@@ -311,6 +311,8 @@ public:
 	void SetEnemyPhase(EEnemyPhase NewEnemyPhase);
 	UFUNCTION(BlueprintCallable, Category = "Enemy Phases")
 	void CheckHealthForPhaseChange(bool &bPhaseChangeed );
+	UFUNCTION(BlueprintCallable,Category="Enemy Phases")
+	UCPP_EnemyPhaseData* GetEnemyPhaseData(EEnemyPhase EnemyPhase);
 
 	void ApplyDamage(bool& IsForwardHit, FHitResult& HitInfo, bool& bBlockSuccess, ECharacterDamageType DamageType, ACPP_DarkLifeCharacter* CharacterRef, bool& bSearchingSuccess, double& HealthDecreased, double DamageReceived, USceneComponent* ExecutionIndicator, double& StaminaDecreased, bool& retFlag);
 

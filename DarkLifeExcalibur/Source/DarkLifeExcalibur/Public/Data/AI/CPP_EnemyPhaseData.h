@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "LevelSequence.h"
 #include "CPP_EnemyPhaseData.generated.h"
 
 /**
@@ -24,6 +25,13 @@ class DARKLIFEEXCALIBUR_API UCPP_EnemyPhaseData : public UDataAsset
 	GENERATED_BODY()
 
 public:
+
+	//LevelSequence
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Phase Sequence")
+	ULevelSequence* PhaseStartSequence;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Phase Sequence")
+	bool bPlayPhaseSequence = false;
+	
 	//Animations
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	TArray <UAnimMontage*> HitAnim;

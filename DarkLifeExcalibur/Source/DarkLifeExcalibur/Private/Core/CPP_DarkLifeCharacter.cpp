@@ -788,12 +788,35 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 
 	else
 	{
-		if (GetCurrentMontage() != ShieldAttackAnimations[0])
+		switch (CombatState)
 		{
-			PlayAnimMontage(ShieldAttackAnimations[0]);
-			//Stamina = 0;
-			Success = true;
+			case ECharacterCombatState::OneHandShield:
+				break;
+		case ECharacterCombatState::TwoHandSword:
+			if (GetCurrentMontage() != ShieldAttackAnimations[1] && ShieldAttackAnimations.IsValidIndex(1))
+			{
+				PlayAnimMontage(ShieldAttackAnimations[1]);
+				//Stamina = 0;
+				Success = true;
+			}
+			break;
+		case ECharacterCombatState::OneHandSword:
+			if (GetCurrentMontage() != ShieldAttackAnimations[0] && ShieldAttackAnimations.IsValidIndex(0))
+			{
+				PlayAnimMontage(ShieldAttackAnimations[0]);
+				//Stamina = 0;
+				Success = true;
+			}
+			break;
+		case ECharacterCombatState::OneHandTorch:
+			break;
+		case ECharacterCombatState::TwoBareHand:
+			break;
+		default:
+			break;
 		}
+		
+		
 	}
 
 

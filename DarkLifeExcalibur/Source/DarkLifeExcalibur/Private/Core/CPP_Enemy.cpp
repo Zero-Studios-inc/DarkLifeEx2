@@ -96,14 +96,17 @@ void ACPP_Enemy::ChangeStateBySight(FVector TargetDetectedLocation)
 		if (IsValid(Blackboard)) {
 
 			if (!IsValid(Blackboard->GetValueAsObject(TargetActor))){
-				ChangeAIState(EAIGeneralState::Attack);
+				
 				Blackboard->SetValueAsObject(TargetActor, UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-				PlayerCharacterRef->EnemyAttacking(this);
+				
 		}
 			else {
+							
 				OnAttacking.Broadcast();
 			}
-
+			
+			ChangeAIState(EAIGeneralState::Attack);
+			PlayerCharacterRef->EnemyAttacking(this);
 			Blackboard->SetValueAsVector(TargetLocation, TargetDetectedLocation);
 
 		}

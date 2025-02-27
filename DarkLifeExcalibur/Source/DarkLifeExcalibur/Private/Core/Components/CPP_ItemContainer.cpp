@@ -52,9 +52,19 @@ void UCPP_ItemContainer::SetRuneBySlotIndex(int index, UCPP_DA_Item_Rune* Rune)
 	{
 		if (RunesSlots.IsValidIndex(index)) {
 			RunesSlots[index] = Rune;
+			OnRuneAdded.Broadcast(Rune, index);
 		}
 
 
+	}
+}
+
+void UCPP_ItemContainer::RemoveRuneFromSlot(int index)
+{
+	if ((RunesSlots.IsValidIndex(index)) && IsValid(RunesSlots[index]))
+	{
+		RunesSlots.Remove(RunesSlots[index]);
+		OnRuneRemoved.Broadcast(index);
 	}
 }
 
@@ -73,6 +83,7 @@ void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount = 1
 		MainInventory.Add(Item, ItemAmount);
 		
 	}
+	OnItemAdded.Broadcast(Item);
 }
 
 

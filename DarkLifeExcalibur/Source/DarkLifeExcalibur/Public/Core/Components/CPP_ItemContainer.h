@@ -44,16 +44,22 @@ public:
 	//Event Dispatchers
 	UPROPERTY(BlueprintAssignable)
 	FOnItemAdded OnItemAdded;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnRuneAdded OnRuneAdded;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnItemDeleted OnItemDeleted;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnRuneRemoved OnRuneRemoved;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnExcaliburPartAdded OnExcaliburPartAdded;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnItemEquipped OnItemEquipped;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnExcaliburPartEquipped OnExcaliburPartEquipped;
 
@@ -82,6 +88,10 @@ public:
 		UCPP_DA_Item_Shield* Shield;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCPP_DA_Item_Bow* Bow;
+
+	//Debug & Test
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUseCustomInitItems = false;
 
 
 public:
@@ -115,6 +125,8 @@ public:
 		bool IsItemEquipped(UCPP_DA_Item* Item);
 	UFUNCTION(BlueprintCallable)
 		void GetItemInfo(UCPP_DA_Item* Item, UCPP_DA_Item*& ItemInfo);
+
+
 	
 
 	//Load Saved Info

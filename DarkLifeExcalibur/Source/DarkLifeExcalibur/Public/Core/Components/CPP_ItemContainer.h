@@ -19,10 +19,21 @@
 class ACPP_DarkLifeCharacter;
 class UCPP_DarkLifeSaveGame;
 
+
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DARKLIFEEXCALIBUR_API UCPP_ItemContainer : public UActorComponent
 {
 	GENERATED_BODY()
+
+	//Event Dispatchers
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemAdded, UCPP_DA_Item*, Item);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemDeleted, UCPP_DA_Item*, Item);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnRuneAdded, UCPP_DA_Item_Rune*, Rune, int, Slot);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRuneRemoved, int, Slot);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnExcaliburPartAdded, UCPP_DA_Item_ExcaliburModule*, ExcaliburModule);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemEquipped, UCPP_DA_Item*, Item);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnExcaliburPartEquipped, UCPP_DA_Item_ExcaliburModule*, ExcaliburModule);
 
 public:	
 	// Sets default values for this component's properties
@@ -30,7 +41,27 @@ public:
 
 	UCPP_DarkLifeSaveGame* SavedGame;
 
-	
+	//Event Dispatchers
+	UPROPERTY(BlueprintAssignable)
+	FOnItemAdded OnItemAdded;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnRuneAdded OnRuneAdded;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnItemDeleted OnItemDeleted;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnRuneRemoved OnRuneRemoved;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnExcaliburPartAdded OnExcaliburPartAdded;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnItemEquipped OnItemEquipped;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnExcaliburPartEquipped OnExcaliburPartEquipped;
 
 protected:
 	// Called when the game starts
@@ -58,6 +89,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCPP_DA_Item_Bow* Bow;
 
+	//Debug & Test
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUseCustomInitItems = false;
+
 
 public:
 
@@ -69,6 +104,8 @@ public:
 	UCPP_DA_Item_Rune* GetRuneBySlotIndex(int index);
 	UFUNCTION(BlueprintCallable)
 		void SetRuneBySlotIndex(int index, UCPP_DA_Item_Rune* Rune);
+	UFUNCTION(BlueprintCallable)
+	void RemoveRuneFromSlot(int index);
 
 
 	//Inventory Management
@@ -88,6 +125,8 @@ public:
 		bool IsItemEquipped(UCPP_DA_Item* Item);
 	UFUNCTION(BlueprintCallable)
 		void GetItemInfo(UCPP_DA_Item* Item, UCPP_DA_Item*& ItemInfo);
+
+
 	
 
 	//Load Saved Info

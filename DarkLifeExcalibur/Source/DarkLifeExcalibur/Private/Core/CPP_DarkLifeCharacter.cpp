@@ -298,7 +298,7 @@ void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 	}
 
 	SetCharacterState(SaveGame->CharacterState);
-	if (InventoryManager)
+	if ((InventoryManager) && (InventoryManager->bUseCustomInitItems == false))
 	{
 		InventoryManager->LoadSavedInfo(SaveGame);
 	}

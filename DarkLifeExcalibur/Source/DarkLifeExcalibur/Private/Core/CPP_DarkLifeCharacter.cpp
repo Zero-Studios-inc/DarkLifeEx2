@@ -1405,6 +1405,35 @@ void ACPP_DarkLifeCharacter::PlayStuntHitAnimations(bool& bSuccess)
 	}
 }
 
+void ACPP_DarkLifeCharacter::WeaponsByCharacterState(ECharacterCombatState NewCombatState)
+{
+	switch (CombatState)
+	{
+	case ECharacterCombatState::OneHandSword:
+		CharacterDrawSword(false);
+		CharacterDrawShield(false);
+		break;
+	case ECharacterCombatState::TwoHandSword:
+		CharacterDrawSword(false);
+		CharacterDrawShield(true);
+		break;
+	case ECharacterCombatState::OneHandShield:
+		CharacterDrawSword(true);
+		CharacterDrawShield(false);
+		break;
+	case ECharacterCombatState::OneHandTorch:
+		CharacterDrawSword(true);
+		CharacterDrawShield(true);
+		break;
+	case ECharacterCombatState::TwoBareHand:
+		CharacterDrawSword(true);
+		CharacterDrawShield(true);
+		break;
+	default:
+		break;
+	}
+}
+
 
 // Called every frame
 void ACPP_DarkLifeCharacter::Tick(float DeltaTime)

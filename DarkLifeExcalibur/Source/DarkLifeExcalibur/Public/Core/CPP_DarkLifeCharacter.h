@@ -499,7 +499,8 @@ public:
 	void CharacterDrawShield(bool bOnlyToBack);
 	UFUNCTION(BlueprintCallable)
 	void PlayStuntHitAnimations(bool& bSuccess);
-
+	UFUNCTION(BlueprintCallable)
+	void WeaponsByCharacterState(ECharacterCombatState NewCombatState);
 
 
 	// Called every frame

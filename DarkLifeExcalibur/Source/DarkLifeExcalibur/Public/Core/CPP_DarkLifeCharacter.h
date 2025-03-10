@@ -494,9 +494,17 @@ public:
 	UFUNCTION(BlueprintCallable)	
 		void SetFakeExcalibur(bool& retFlag);
 	UFUNCTION(BlueprintCallable)
-	void CharacterDrawSword(bool bOnlyToBack);
+	void CharacterDrawSword(bool bOnlyToBack, bool bForceEquipment = false , bool bForceUnequiment = false);
+	UFUNCTION()
+	void UnequipExcalibur();
+	UFUNCTION()
+	void EquipExcalibur();
 	UFUNCTION(BlueprintCallable)
-	void CharacterDrawShield(bool bOnlyToBack);
+	void CharacterDrawShield(bool bOnlyToBack, bool bForceEquipment = false , bool bForceUnequip = false);
+	UFUNCTION()
+	void UnequipShield();
+	UFUNCTION()
+	void EquipShield();
 	UFUNCTION(BlueprintCallable)
 	void PlayStuntHitAnimations(bool& bSuccess);
 	UFUNCTION(BlueprintCallable)

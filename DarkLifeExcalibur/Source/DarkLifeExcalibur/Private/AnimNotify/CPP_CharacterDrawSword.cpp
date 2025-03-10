@@ -9,7 +9,7 @@ void UCPP_CharacterDrawSword::NotifyBegin(USkeletalMeshComponent* MeshComp, UAni
 	
 	if (IsValid(PlayerCharacter)) {
 
-		PlayerCharacter->CharacterDrawSword(false);
+		PlayerCharacter->CharacterDrawSword(false,false,false);
 	}
 
 }

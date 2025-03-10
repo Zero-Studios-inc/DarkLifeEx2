@@ -8,6 +8,6 @@ void UCPP_CharacterDrawShield::NotifyBegin(USkeletalMeshComponent* MeshComp, UAn
 	ACPP_DarkLifeCharacter* PlayerCharacter = Cast<ACPP_DarkLifeCharacter>(MeshComp->GetOwner());
 
 	if (IsValid(PlayerCharacter)) {
-		PlayerCharacter->CharacterDrawShield(false);
+		PlayerCharacter->CharacterDrawShield(false,false,false);
 	}
 }

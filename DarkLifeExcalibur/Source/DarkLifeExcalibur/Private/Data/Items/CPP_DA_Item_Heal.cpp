@@ -2,6 +2,7 @@
 
 
 #include "Data/Items/CPP_DA_Item_Heal.h"
+#include "Core/CPP_DarkLifeCharacter.h"
 
 void UCPP_DA_Item_Heal::UseItem(ACPP_DarkLifeCharacter* CharacterRef) {
 	if (IsValid(CharacterRef)) {

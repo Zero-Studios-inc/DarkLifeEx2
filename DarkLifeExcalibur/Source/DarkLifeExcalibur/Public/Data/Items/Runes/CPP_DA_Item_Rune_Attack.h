@@ -18,4 +18,9 @@ public:
 	UCPP_DA_Item_Rune_Attack() {
 		RuneType = ERuneType::Attack;
 	}
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	double UseCooldown;
+ 
+	void UseItem(ACPP_DarkLifeCharacter* CharacterRef) override;
 };

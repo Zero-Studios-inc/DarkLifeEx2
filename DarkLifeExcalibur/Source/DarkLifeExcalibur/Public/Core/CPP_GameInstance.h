@@ -11,6 +11,8 @@
 class ACPP_DarkLifeCharacter;
 class UCPP_DarkLifeSaveGame;
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRuneCooldownFinishedEvent, UCPP_DA_Item_Rune_Attack*, Rune);
 /**
  * 
  */
@@ -34,7 +36,11 @@ public:
         UCPP_DarkLifeSaveGame* SaveGameObject;
 	UPROPERTY(BlueprintReadWrite)
 	bool bGameLoaded = false;
+	UPROPERTY(BlueprintReadWrite)
+	TMap<UCPP_DA_Item_Rune_Attack*, FTimerHandle> RunesCooldownRegistry;
 
+	UPROPERTY(BlueprintAssignable, Category = "Runes|Cooldown")
+	FOnRuneCooldownFinishedEvent OnRuneCooldownFinishedEvent;
 	
 
 public:
@@ -42,5 +48,13 @@ public:
 	void SaveGame();
 	UFUNCTION(BlueprintCallable, Category = "Save/Load")
 	void LoadGame();		
-
+    UFUNCTION(BlueprintCallable, Category = "Runes")
+	void RunesUseCoolDown(UCPP_DA_Item_Rune_Attack* AttackRune);
+	UFUNCTION(BlueprintCallable, Category = "Runes")
+	void OnRuneCooldownFinished(UCPP_DA_Item_Rune_Attack* AttackRune);
+	UFUNCTION(BlueprintCallable, Category = "Runes")
+	bool IsRuneOnCooldown(UCPP_DA_Item_Rune_Attack* AttackRune) const;
+	UFUNCTION(BlueprintCallable, Category = "Runes|Cooldown")
+	float GetRemainingCooldownTime(UCPP_DA_Item_Rune_Attack* AttackRune) const;
+	
 };

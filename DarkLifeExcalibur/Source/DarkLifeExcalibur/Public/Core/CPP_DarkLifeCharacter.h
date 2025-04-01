@@ -20,6 +20,7 @@
 #include "Components/CPP_ItemContainer.h"
 #include "Abilities/CPP_DarkLifeGASComponent.h"
 #include "Abilities/CPP_GA_Dodge.h"
+#include "Data/Parameters/PlayerCharacter/CPP_DA_CharacterParams.h"
 #include "UObject/ConstructorHelpers.h"
 
 class ACPP_Enemy;
@@ -165,6 +166,8 @@ public:
 		double Defense;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double MaxBeast;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	UCPP_DA_CharacterParams* CharacterParams;
 
 	//Abilities
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Abilities")

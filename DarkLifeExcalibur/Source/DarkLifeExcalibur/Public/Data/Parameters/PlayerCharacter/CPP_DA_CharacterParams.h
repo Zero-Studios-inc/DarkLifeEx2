@@ -23,4 +23,6 @@ public:
 	double SprintStaminaDecrease = 0.5;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="StaminaDecrease")
 	double DodgeStaminaDecrease = 0.5;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="StaminaDecrease")
+	double BareHandsStaminaDecrease = 0.5;
 };

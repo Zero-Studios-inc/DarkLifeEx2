@@ -424,7 +424,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
 		void StaminaIncrease();
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
-		void StaminaDecrease();
+		void StaminaDecrease(double decreaseratio);
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")
 		void PoisonIncrease();
 	UFUNCTION(BlueprintCallable, Category = "Parameters|Modifiers")

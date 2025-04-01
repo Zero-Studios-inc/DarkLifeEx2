@@ -98,20 +98,29 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 
 void ACPP_DarkLifeCharacter::UpdateStaminaByCharacterCombatState()
 {
+	double OneHandStaminaDecrease = 0.5;
+	double TwoHandsStaminaDecrease = 0.5;
+	double BareHandsStaminaDecrease = 0.5;
+	if(CharacterParams)
+	{
+		OneHandStaminaDecrease = CharacterParams->OneHandAttackStaminaDecrease;
+		TwoHandsStaminaDecrease = CharacterParams->TwoHandsAttackStaminaDecrease;
+		BareHandsStaminaDecrease = CharacterParams->BareHandsStaminaDecrease;
+	}
 	switch (CombatState)
 	{
 	case ECharacterCombatState::OneHandSword:
-		Stamina = UKismetMathLibrary::FClamp(Stamina - 10.0, 0.0, MaxStamina);
+		Stamina = UKismetMathLibrary::FClamp(Stamina - OneHandStaminaDecrease, 0.0, MaxStamina);
 		break;
 	case ECharacterCombatState::TwoHandSword:
-		Stamina = UKismetMathLibrary::FClamp(Stamina - 10.0, 0.0, MaxStamina);
+		Stamina = UKismetMathLibrary::FClamp(Stamina - TwoHandsStaminaDecrease, 0.0, MaxStamina);
 		break;
 	case ECharacterCombatState::OneHandShield:
 		break;
 	case ECharacterCombatState::OneHandTorch:
 		break;
 	case ECharacterCombatState::TwoBareHand:
-		Stamina = UKismetMathLibrary::FClamp(Stamina - 12.0, 0.0, MaxStamina);
+		Stamina = UKismetMathLibrary::FClamp(Stamina - BareHandsStaminaDecrease, 0.0, MaxStamina);
 		break;
 	default:
 		break;
@@ -445,11 +454,11 @@ void ACPP_DarkLifeCharacter::StaminaIncrease()
 	}
 }
 
-void ACPP_DarkLifeCharacter::StaminaDecrease()
+void ACPP_DarkLifeCharacter::StaminaDecrease(double decreaseratio)
 {
 	if (!bStaminaBoost)
 	{
-		Stamina = UKismetMathLibrary::FClamp(Stamina + (-0.5f), 0.0f, MaxStamina);
+		Stamina = UKismetMathLibrary::FClamp(Stamina + (-(decreaseratio)), 0.0f, MaxStamina);
 		if (Stamina <= 0.0f)
 		{
 			SetCharacterMovement(ECharacterMovement::Jog);
@@ -538,7 +547,15 @@ void ACPP_DarkLifeCharacter::StartSprint()
 			GetWorldTimerManager().ClearTimer(StaminaIncreaseHandle);
 		}
 
-		GetWorldTimerManager().SetTimer(StaminaDecreaseHandle, this, &ACPP_DarkLifeCharacter::StaminaDecrease,
+		double StaminaDecreaseRatio = 0.5;
+		if (CharacterParams)
+		{
+			StaminaDecreaseRatio = CharacterParams->SprintStaminaDecrease;
+		}
+		
+		FTimerDelegate StaminaDecreaseTimerDel;
+        StaminaDecreaseTimerDel.BindUFunction(this, FName("StaminaDecrease"),StaminaDecreaseRatio,FString("StaminaDecrease"));
+		GetWorldTimerManager().SetTimer(StaminaDecreaseHandle, StaminaDecreaseTimerDel,
 		                                StaminaIncreaseTime, true, 0.0f);
 	}
 	else

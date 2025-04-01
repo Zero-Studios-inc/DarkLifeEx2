@@ -15,6 +15,8 @@ class DARKLIFEEXCALIBUR_API UCPP_DA_CharacterParams : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
+
+	//Stamina
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="StaminaDecrease")
 	double OneHandAttackStaminaDecrease = 0.5;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="StaminaDecrease")
@@ -25,4 +27,10 @@ public:
 	double DodgeStaminaDecrease = 0.5;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="StaminaDecrease")
 	double BareHandsStaminaDecrease = 0.5;
+
+	//Abilities
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Abilities|Lock")
+	double LockRadius = 1200.0;
+
+
 };

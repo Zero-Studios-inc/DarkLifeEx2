@@ -9,7 +9,7 @@
 #include "Core/CPP_GameInstance.h"
 #include "Core/Components/CPP_ItemContainer.h"
 #include "Data/Items/CPP_DA_Item_Heal.h"
-
+#include "Widgets/Text/ISlateEditableTextWidget.h"
 
 
 // Sets default values
@@ -17,16 +17,6 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-
-	//Parameters Default Values
-	Health = 100;
-	MaxHealth = 100;
-	Stamina = 300;
-	MaxStamina = 100;
-	Fracture = 10;
-	Recharge = 10;
-	Defense = 10;
 
 	//Components Init
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -59,39 +49,6 @@ ACPP_DarkLifeCharacter::ACPP_DarkLifeCharacter()
 	CharacterLight->SetupAttachment(RootComponent);
 
 	InventoryManager = CreateDefaultSubobject<UCPP_ItemContainer>(TEXT("InventoryManager"));
-
-	//Variables Default Values
-	EvasionSpeedValue = 1.5;
-	bBeastPowerMovement = false;
-	bSaveAttack = false;
-	bIsAttacking = false;
-	bDrawFinish = false;
-	bBlocking = false;
-	StaminaDividerMinLimit = -4.0;
-	StaminaSubstraction = 12.0;
-	StaminaIncreaseDelay = 1.0;
-	StaminaIncreaseTime = 0.01;
-	bSprintKeyPress = false;
-	bWalk = false;
-	WalkSpeed = 120.0;
-	//RunSlowSpeed = 100;
-	RunSpeed = 300.0;
-	BeastPowerSpeed = 5000.0;
-	bSprint = false;
-	bLockedEnemy = false;
-	bDrawingShield = false;
-	bDrawShield = false;
-	bDrawSword = false;
-	bDrawingSword = false;
-	bDrawingBow = false;
-	bTorchActive = false;
-	bJump = false;
-	//bSlowRun = false;
-	bStaminaBoost = false;
-	bTorchUp = false;
-	bInvulnerability = false;
-	bCrouched = false;
-	CrouchSpeed = 180.0;
 
 	AbilityComponent = CreateDefaultSubobject<UCPP_DarkLifeGASComponent>(TEXT("AbilityComponent"));
 }
@@ -266,6 +223,11 @@ void ACPP_DarkLifeCharacter::BeginPlay()
 	bDrawShieldPreviousState = bDrawShield;
 	bTorchPreviousState = false;
 	SetCombatState(ECharacterCombatState::TwoBareHand);
+
+	if (CharacterParams)
+	{
+		LockRadius = CharacterParams->LockRadius;
+	}
 
 	if (AbilityComponent)
 	{

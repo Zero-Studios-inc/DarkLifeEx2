@@ -151,19 +151,19 @@ public:
 
 	//Character Parameters
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
-		double Health;
+		double Health = 100.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
-		double MaxHealth;
+		double MaxHealth = 100.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
-		double Stamina;
+		double Stamina = 300.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
-		double MaxStamina;
+		double MaxStamina = 100.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
-		double Fracture;
+		double Fracture = 10.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
-		double Recharge;
+		double Recharge = 10.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
-		double Defense;
+		double Defense = 10.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 		double MaxBeast;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
@@ -248,77 +248,77 @@ public:
 
 	//Character Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
-		bool bBeastPowerMovement;
+		bool bBeastPowerMovement = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
-		bool bTorchActive;
+		bool bTorchActive = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
-		bool bTorchUp;
+		bool bTorchUp = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
-		bool bDrawSword;
+		bool bDrawSword = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
-		bool bDrawingSword;
+		bool bDrawingSword = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
-		bool bDrawingBow;
+		bool bDrawingBow = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
-		bool bDrawShield;
+		bool bDrawShield = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Special Movements")
-		bool bDrawingShield;
+		bool bDrawingShield = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		double EvasionSpeedValue;
+		double EvasionSpeedValue = 1.5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		bool bSprintKeyPress;
+		bool bSprintKeyPress = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		bool bWalk;
+		bool bWalk = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		bool bSprint;
+		bool bSprint = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		bool bJump;
+		bool bJump = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		double WalkSpeed;
+		double WalkSpeed = 120.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		double CrouchSpeed;
+		double CrouchSpeed = 180.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		double RunSlowSpeed;
+		double RunSlowSpeed = 100.0;;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		bool bSlowRun;
+		bool bSlowRun = false;
 		
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		double RunSpeed;
+		double RunSpeed = 300.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-		double BeastPowerSpeed;
+		double BeastPowerSpeed = 5000.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 		ECharacterMovement CurrentCharacterMovement = ECharacterMovement::Jog;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters|Modifiers")
-		double StaminaDividerMinLimit;
+		double StaminaDividerMinLimit = -4.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters|Modifiers")
-		double StaminaSubstraction;
+		double StaminaSubstraction = 12.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters|Modifiers")
-		double StaminaIncreaseDelay;
+		double StaminaIncreaseDelay = 1.0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters|Modifiers")
-		double StaminaIncreaseTime;
+		double StaminaIncreaseTime = 0.01;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters|Modifiers")
-		bool bStaminaBoost;
+		bool bStaminaBoost = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		bool bSaveAttack;
+		bool bSaveAttack = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		bool bIsAttacking;
+		bool bIsAttacking =	false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		bool bBlocking;
+		bool bBlocking = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		bool bDrawFinish;
+		bool bDrawFinish = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		bool bLockedEnemy;
+		bool bLockedEnemy = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		bool bCanThrowProjectile;
+		bool bCanThrowProjectile = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		bool bDrawProjectile;
+		bool bDrawProjectile = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		bool bArchery;
+		bool bArchery = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		bool bInvulnerability;
+		bool bInvulnerability = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		bool bCrouched;
+		bool bCrouched = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		int ComboCounter = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
@@ -338,6 +338,9 @@ public:
 		bool bPlayerIsEngaged;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 		ACPP_Enemy* EnemyAttackingRef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	double LockRadius = 1200.0;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Camera Transitions")
 		AActor* CurrentViewActor;

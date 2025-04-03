@@ -478,11 +478,12 @@ void ACPP_Enemy::ChangeToSearchingState(ECharacterDamageType DamageType, ACPP_Da
 	}
 }
 
-void ACPP_Enemy::ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* CharacterRef, ECharacterDamageType DamageType, double DamageReceived, int32 ComboCounter, bool &bIsInStunt,bool &bBlockSuccess, double &HealthDecreased,USceneComponent* ExecutionIndicator)
+void ACPP_Enemy::ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* CharacterRef, ECharacterDamageType DamageType, double DamageReceived, int32 ComboCounter, bool &bIsInStunt,bool &bBlockSuccess, double &HealthDecreased,USceneComponent* ExecutionIndicator, bool &bDeflect)
 {
 	bool bSearchingSuccess = false;
 	bool IsForwardHit;
 	double StaminaDecreased;
+	bDeflect = false;
 	bIsInStunt = false;
 	bBlockSuccess = false;
 
@@ -509,6 +510,7 @@ void ACPP_Enemy::ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* Chara
 					if (IsValid(CharacterRef))
 					{
 						CharacterRef->PlayDeflectedAnimation(0, DamageType);
+						bDeflect =  true;
 					}
 				}
 				else {
@@ -523,6 +525,7 @@ void ACPP_Enemy::ReceiveDamage(FHitResult HitInfo, ACPP_DarkLifeCharacter* Chara
 				if (IsValid(CharacterRef))
 				{
 					CharacterRef->PlayDeflectedAnimation(0, DamageType);
+					bDeflect = true;
 				}
 			}
 		}

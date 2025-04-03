@@ -17,6 +17,8 @@ class DARKLIFEEXCALIBUR_API UCPP_TimeDilation : public UAnimNotifyState
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		double TimeDilationValue = 1.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bGlobalTimeDilation = false;
 
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float Duration) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;

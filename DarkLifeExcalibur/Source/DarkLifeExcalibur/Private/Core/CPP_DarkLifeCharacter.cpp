@@ -771,6 +771,12 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 		switch (CombatState)
 		{
 			case ECharacterCombatState::OneHandShield:
+				if (GetCurrentMontage() != ShieldAttackAnimations[0] && ShieldAttackAnimations.IsValidIndex(0))
+				{
+					PlayAnimMontage(ShieldAttackAnimations[0]);
+					//Stamina = 0;
+					Success = true;
+				}
 				break;
 		case ECharacterCombatState::TwoHandSword:
 			if (GetCurrentMontage() != ShieldAttackAnimations[1] && ShieldAttackAnimations.IsValidIndex(1))

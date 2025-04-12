@@ -729,6 +729,17 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 {
 	Success = false;
 
+	if (bTorchUp)
+	{
+		if (GetCurrentMontage() != ShieldAttackAnimations[2] && ShieldAttackAnimations.IsValidIndex(0))
+		{
+			PlayAnimMontage(ShieldAttackAnimations[2]);
+			//Stamina = 0;
+			Success = true;
+			return;
+		}
+	}
+
 	if (!bBlocking)
 	{
 		if (bSprint)
@@ -763,6 +774,7 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 
 		StopSprint();
 		bBlocking = false;
+		
 	}
 
 

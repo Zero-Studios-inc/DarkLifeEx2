@@ -11,51 +11,54 @@ void UCPP_GA_Dodge::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	if (ACPP_DarkLifeCharacter* Character = Cast<ACPP_DarkLifeCharacter>(ActorInfo->AvatarActor.Get()))
 	{
+		if((Character->bIsCrouched && !Character->CheckObstacleAbove(100.0,30.0, EDrawDebugTrace::None)) || (!Character->bCrouched))
+		{
+			
+			ECharacterInputDirection DodgeDirection = ECharacterInputDirection::None;
+			if ((Character->GetInputAxisValue("MoveForward") > 0) && (Character->GetInputAxisValue("MoveRight") == 0))
+			{
+				DodgeDirection = ECharacterInputDirection::Forward;
+			}
+			else if ((Character->GetInputAxisValue("MoveForward") > 0) && (Character->GetInputAxisValue("MoveRight") > 0))
+			{
+				DodgeDirection = ECharacterInputDirection::ForwardRight;
+			}
+			else if ((Character->GetInputAxisValue("MoveForward") == 0) && (Character->GetInputAxisValue("MoveRight") > 0))
+			{
+				DodgeDirection = ECharacterInputDirection::Right;
+			}
+			else if ((Character->GetInputAxisValue("MoveForward") < 0) && (Character->GetInputAxisValue("MoveRight") > 0))
+			{
+				DodgeDirection = ECharacterInputDirection::BackwardRight;
+			}
+			else if ((Character->GetInputAxisValue("MoveForward") < 0) && (Character->GetInputAxisValue("MoveRight") == 0))
+			{
+				DodgeDirection = ECharacterInputDirection::Backward;
+			}
+			else if ((Character->GetInputAxisValue("MoveForward") < 0) && (Character->GetInputAxisValue("MoveRight") < 0))
+			{
+				DodgeDirection = ECharacterInputDirection::BackwardLeft;
+			}
+			else if ((Character->GetInputAxisValue("MoveForward") == 0) && (Character->GetInputAxisValue("MoveRight") < 0))
+			{
+				DodgeDirection = ECharacterInputDirection::Left;
+			}
+			else if ((Character->GetInputAxisValue("MoveForward") > 0) && (Character->GetInputAxisValue("MoveRight") < 0))
+			{
+				DodgeDirection = ECharacterInputDirection::ForwardLeft;
+			}
+			else if ((Character->GetInputAxisValue("MoveForward") == 0) && (Character->GetInputAxisValue("MoveRight") == 0))
+			{
+				DodgeDirection = ECharacterInputDirection::None;
+			}
 
-		ECharacterInputDirection DodgeDirection = ECharacterInputDirection::None;
-		if ((Character->GetInputAxisValue("MoveForward") > 0) && (Character->GetInputAxisValue("MoveRight") == 0))
-		{
-			DodgeDirection = ECharacterInputDirection::Forward;
-		}
-		else if ((Character->GetInputAxisValue("MoveForward") > 0) && (Character->GetInputAxisValue("MoveRight") > 0))
-		{
-			DodgeDirection = ECharacterInputDirection::ForwardRight;
-		}
-		else if ((Character->GetInputAxisValue("MoveForward") == 0) && (Character->GetInputAxisValue("MoveRight") > 0))
-		{
-			DodgeDirection = ECharacterInputDirection::Right;
-		}
-		else if ((Character->GetInputAxisValue("MoveForward") < 0) && (Character->GetInputAxisValue("MoveRight") > 0))
-		{
-			DodgeDirection = ECharacterInputDirection::BackwardRight;
-		}
-		else if ((Character->GetInputAxisValue("MoveForward") < 0) && (Character->GetInputAxisValue("MoveRight") == 0))
-		{
-			DodgeDirection = ECharacterInputDirection::Backward;
-		}
-		else if ((Character->GetInputAxisValue("MoveForward") < 0) && (Character->GetInputAxisValue("MoveRight") < 0))
-		{
-			DodgeDirection = ECharacterInputDirection::BackwardLeft;
-		}
-		else if ((Character->GetInputAxisValue("MoveForward") == 0) && (Character->GetInputAxisValue("MoveRight") < 0))
-		{
-			DodgeDirection = ECharacterInputDirection::Left;
-		}
-		else if ((Character->GetInputAxisValue("MoveForward") > 0) && (Character->GetInputAxisValue("MoveRight") < 0))
-		{
-			DodgeDirection = ECharacterInputDirection::ForwardLeft;
-		}
-		else if ((Character->GetInputAxisValue("MoveForward") == 0) && (Character->GetInputAxisValue("MoveRight") == 0))
-		{
-			DodgeDirection = ECharacterInputDirection::None;
-		}
-
-		Character->PlayAnimMontage(Character->EvasionAnimations[(int8)DodgeDirection], Character->EvasionSpeedValue);
+			Character->PlayAnimMontage(Character->EvasionAnimations[(int8)DodgeDirection], Character->EvasionSpeedValue);
 
 		
-		Character->ResetCombo();
-		Character->SetCharacterMovement(ECharacterMovement::Jog);
-		EndAbility(Handle,ActorInfo,ActivationInfo,true, false);
+			Character->ResetCombo();
+			Character->SetCharacterMovement(ECharacterMovement::Jog);
+			EndAbility(Handle,ActorInfo,ActivationInfo,true, false);
+		}
 	}
 }
 

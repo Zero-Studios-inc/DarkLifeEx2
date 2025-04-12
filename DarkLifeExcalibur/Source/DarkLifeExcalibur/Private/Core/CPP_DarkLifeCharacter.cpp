@@ -206,8 +206,21 @@ void ACPP_DarkLifeCharacter::Sprint()
 				{
 					ThrowDeactivate();
 					SetCharacterMovement(ECharacterMovement::Sprint);
+					return;
 				}
-				SetCharacterMovement(ECharacterMovement::Sprint);
+
+
+				if(bIsCrouched && !CheckObstacleAbove(100.0,30.0, EDrawDebugTrace::None))
+				{
+					SetCharacterMovement(ECharacterMovement::Sprint);
+					return;
+				}
+
+				if (!bIsCrouched)
+				{
+					SetCharacterMovement(ECharacterMovement::Sprint);
+					return;
+				}
 			}
 		}
 	}
@@ -1490,6 +1503,20 @@ void ACPP_DarkLifeCharacter::WeaponsByCharacterState(ECharacterCombatState NewCo
 	default:
 		break;
 	}
+}
+
+bool ACPP_DarkLifeCharacter::CheckObstacleAbove(double TraceDistance, double TraceRadius, EDrawDebugTrace::Type DrawDebugTrace )
+{
+	
+	FVector TraceStart = GetActorLocation();
+	FVector TraceEnd = (GetActorUpVector() * TraceDistance) + TraceStart;
+	FHitResult HitResult;
+	const TArray<AActor*> ActorsToIgnore = {this};
+	
+	
+	
+	bool bObjectDetected = UKismetSystemLibrary::SphereTraceSingle(GetWorld(),TraceStart,TraceEnd,TraceRadius,ETraceTypeQuery::TraceTypeQuery1,false,ActorsToIgnore,DrawDebugTrace, HitResult,true);
+	return bObjectDetected;
 }
 
 

@@ -543,6 +543,7 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 {
 	CurrentCharacterMovement = NewMovement;
 	CharacterMovementChange.Broadcast(NewMovement);
+	JumpActivation(true);
 	switch (CurrentCharacterMovement)
 	{
 	case ECharacterMovement::Walk:
@@ -553,6 +554,7 @@ void ACPP_DarkLifeCharacter::SetCharacterMovement(ECharacterMovement NewMovement
 		if (GetCharacterMovement()->IsCrouching())
 		{
 			UnCrouch();
+			
 		}
 		break;
 	case ECharacterMovement::Jog:

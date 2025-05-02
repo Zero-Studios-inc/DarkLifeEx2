@@ -1236,6 +1236,7 @@ void ACPP_DarkLifeCharacter::PlayBlockingAnimations()
 	{
 		if (GetCurrentMontage() != BlockAnimations[CombatState])
 		{
+			StopAnimMontage(GetCurrentMontage());
 			PlayAnimMontage(BlockAnimations[CombatState]);
 		}
 	}

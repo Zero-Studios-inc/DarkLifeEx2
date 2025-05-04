@@ -13,6 +13,10 @@ void UCPP_GA_Dodge::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	{
 		if((Character->bIsCrouched && !Character->CheckObstacleAbove(100.0,30.0, EDrawDebugTrace::None)) || (!Character->bCrouched))
 		{
+			Character->ResetCombo();
+			Character->SetCharacterMovement(ECharacterMovement::Jog);
+			Character->StopAnimMontage(Character->GetCurrentMontage());
+			Character->bBlocking = false;
 			
 			ECharacterInputDirection DodgeDirection = ECharacterInputDirection::None;
 			if ((Character->GetInputAxisValue("MoveForward") > 0) && (Character->GetInputAxisValue("MoveRight") == 0))
@@ -54,9 +58,7 @@ void UCPP_GA_Dodge::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 
 			Character->PlayAnimMontage(Character->EvasionAnimations[(int8)DodgeDirection], Character->EvasionSpeedValue);
 
-		
-			Character->ResetCombo();
-			Character->SetCharacterMovement(ECharacterMovement::Jog);
+					
 			EndAbility(Handle,ActorInfo,ActivationInfo,true, false);
 		}
 	}

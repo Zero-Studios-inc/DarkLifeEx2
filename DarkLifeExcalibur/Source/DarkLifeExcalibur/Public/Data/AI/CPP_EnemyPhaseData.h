@@ -15,7 +15,8 @@ UENUM(BlueprintType)
 enum class EEnemyPhase : uint8 {
 	Phase_0 = 0 UMETA(DisplayName = "Phase 0"),
 	Phase_1 = 1 UMETA(DisplayName = "Phase 1"),
-	Phase_2 = 0 UMETA(DisplayName = "Phase 2")
+	Phase_2 = 2 UMETA(DisplayName = "Phase 2"),
+	Death = 3 UMETA(DisplayName = "Death")
 };
 
 

@@ -574,7 +574,16 @@ void ACPP_Enemy::CheckHealthForPhaseChange(bool &bPhaseChanged)
 
 UCPP_EnemyPhaseData* ACPP_Enemy::GetEnemyPhaseData(EEnemyPhase EnemyPhase)
 {
-	return EnemyPhasesData[EnemyPhase];
+	
+
+	if (EnemyPhasesData.Contains(EnemyPhase))
+	{
+		return EnemyPhasesData[EnemyPhase];
+	}
+
+	
+	return nullptr;
+	
 }
 
 

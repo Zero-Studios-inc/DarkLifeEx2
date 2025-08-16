@@ -86,6 +86,10 @@
 		{
 			"Name": "NiagaraSimCaching",
 			"Enabled": true
+		},
+		{
+			"Name": "OnlineServicesEOS",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [

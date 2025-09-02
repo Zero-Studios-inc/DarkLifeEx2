@@ -156,6 +156,8 @@ public:
 	bool bSelfLocked = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Parameters")
 	bool bInstantParryExecution;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Parameters")
+	FGameplayTag EnemyGameplayTag;
 
 	//Event Dispatchers
 	UPROPERTY(BlueprintAssignable)
@@ -222,9 +224,9 @@ public:
 		EEnemyPhase CurrentEnemyPhase = EEnemyPhase::Phase_0;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Phases")
 		TMap<EEnemyPhase, UCPP_EnemyPhaseData*> EnemyPhasesData;
-	
 
 	
+
 	
 protected:
 	// Called when the game starts or when spawned
@@ -278,7 +280,7 @@ protected:
 	void DisableBlock();
 	UFUNCTION()
 	void EnableTickByPlayerDistance();
-	
+
 	
 		
 public:	

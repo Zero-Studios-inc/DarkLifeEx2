@@ -131,6 +131,10 @@ public:
 	//Tutorials
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tutorials")
 	TArray<int> TutorialsDiscovered;
+
+	//Beated Enemies
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemies")
+	TArray<FGameplayTag> DefeatedEnemies;
 	
 
 protected:

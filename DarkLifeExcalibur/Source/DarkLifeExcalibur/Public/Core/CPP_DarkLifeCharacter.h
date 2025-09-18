@@ -517,6 +517,8 @@ public:
 	void WeaponsByCharacterState(ECharacterCombatState NewCombatState);
 	UFUNCTION(BlueprintCallable)
 	bool CheckObstacleAbove(double TraceDistance = 100.0, double TraceRadius = 30.0, EDrawDebugTrace::Type DrawDebugTrace = EDrawDebugTrace::None);
+	UFUNCTION(BlueprintCallable)
+	void CancelChargeAttack();
 
 
 	// Called every frame

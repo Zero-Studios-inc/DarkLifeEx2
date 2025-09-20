@@ -1522,6 +1522,11 @@ bool ACPP_DarkLifeCharacter::CheckObstacleAbove(double TraceDistance, double Tra
 	return bObjectDetected;
 }
 
+void ACPP_DarkLifeCharacter::CancelChargeAttack()
+{
+	UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), ChargeAttackTimer);
+}
+
 
 // Called every frame
 void ACPP_DarkLifeCharacter::Tick(float DeltaTime)

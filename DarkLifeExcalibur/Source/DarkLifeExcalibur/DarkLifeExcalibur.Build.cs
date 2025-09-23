@@ -22,7 +22,13 @@ public class DarkLifeExcalibur : ModuleRules
             "GameplayTasks",
             // Online Subsystem clásico en UE 5.2
             "OnlineSubsystem",
-            "OnlineSubsystemUtils"
+            "OnlineSubsystemUtils",
+            // Necesario para UImage/UButton y brushes desde C++
+            "UMG",
+            "Slate",
+            "SlateCore",
+            // Necesario para IPlatformInputDeviceMapper (fallback detección mando)
+            "InputDevice"
         });
 
         // Si TIENES el plugin "OnlineSubsystemEOS" activado, descomenta UNA de las dos líneas:
@@ -31,5 +37,8 @@ public class DarkLifeExcalibur : ModuleRules
 
         // (B) O cargarlo dinámicamente (si no incluyes headers de EOS)
         //DynamicallyLoadedModuleNames.AddRange(new string[] { "OnlineSubsystemEOS" });
+
+        // (Opcional) Si usas el plugin CommonUI para detectar tipo de mando:
+        //PrivateDependencyModuleNames.AddRange(new string[] { "CommonUI" });
     }
 }

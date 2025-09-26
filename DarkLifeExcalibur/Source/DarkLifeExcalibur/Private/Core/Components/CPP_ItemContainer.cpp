@@ -104,7 +104,7 @@ void UCPP_ItemContainer::DeleteItemFromInventory(UCPP_DA_Item* Item, bool& Succe
 	if ((MainInventory.Contains(Item))) {
 		MainInventory[Item]--;
 		Success = true;
-		if ((MainInventory[Item] == 0)) {
+		if (MainInventory[Item] == 0) {
 			MainInventory.Remove(Item);
 		}
 	}

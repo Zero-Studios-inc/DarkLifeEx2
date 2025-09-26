@@ -328,8 +328,10 @@ void ACPP_DarkLifeCharacter::LoadParameters()
 	if (SaveGame)
 	{
 		SaveGame->ParametersCalculation();
-		Health, MaxHealth = SaveGame->CurrentHealth;
-		Stamina, MaxStamina = SaveGame->CurrentStamina;
+		Health = SaveGame->CurrentHealth;
+		MaxHealth = SaveGame->CurrentHealth;
+		Stamina = SaveGame->CurrentStamina;
+		MaxStamina = SaveGame->CurrentStamina;
 		Fracture = SaveGame->CurrentFracture;
 		Defense = SaveGame->CurrentDefense;
 		Recharge = SaveGame->CurrentRecharge;

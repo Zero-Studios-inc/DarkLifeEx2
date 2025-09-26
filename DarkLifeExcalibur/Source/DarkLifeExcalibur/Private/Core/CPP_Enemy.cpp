@@ -397,7 +397,7 @@ void ACPP_Enemy::ChangeAIState(EAIGeneralState NewState)
 						if ((AIPreviousState != EAIGeneralState::Stunt) && (AIState == EAIGeneralState::Stunt)) {
 							bForceState = true;
 						}
-					if ((AIState == EAIGeneralState::Wait)) {
+					if (AIState == EAIGeneralState::Wait) {
 						StopAnimMontage(GetCurrentMontage());
 
 					}

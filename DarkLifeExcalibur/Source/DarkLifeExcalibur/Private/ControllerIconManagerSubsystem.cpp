@@ -10,8 +10,8 @@
 #include "Misc/CoreDelegates.h"
 #include "Framework/Application/SlateApplication.h"
 #include "InputCoreTypes.h"
-#include "Engine/AssetManager.h"         // UAssetManager
-#include "Engine/StreamableManager.h"    // FStreamableManager::LoadSynchronous
+#include "Engine/AssetManager.h"
+#include "Engine/StreamableManager.h"
 #include "Engine/Texture2D.h"
 #include "GameFramework/PlayerController.h"
 #include "Misc/CommandLine.h"
@@ -27,50 +27,66 @@
 // Log auxiliar
 static void LogIconSet(const TCHAR* Where, EIconSet Set)
 {
-	UE_LOG(LogTemp, Log, TEXT("[ControllerIcons][%s] IconSet=%d (0=PC,1=PS5,2=XBOX)"), Where, (int32)Set);
+	UE_LOG(LogTemp, Log, TEXT("[ControllerIcons][%s] IconSet=%d (0=PC,1=PS5_UI,2=XBOX_UI)"), Where, (int32)Set);
 }
 
 void UControllerIconManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
-	// Nombres a sustituir (los 5 que usa tu HUD)
+	// Nombres a sustituir (los que usa tu HUD)
 	AllowedNames = {
 		FName("Bumper_R"),   // R1 / RB
 		FName("Trigger_R"),  // R2 / RT
 		FName("Trigger_L"),  // L2 / LT
 		FName("FaceRight"),  // ○ / B
-		FName("FaceUp"),      // △ / Y
-		FName("FaceLeft"),  // ← NUEVO (PS5 = □, Xbox = X, PC = E)
+		FName("FaceUp"),     // △ / Y
+		FName("FaceLeft"),   // □ / X
 		FName("DPad_Up"),
 		FName("DPad_Down"),
-		FName("Bumper_L"),      // ← NUEVO: PC=click derecho, Xbox=LB, PS5=L1
+		FName("Bumper_L"),
 		FName("Bumper_R2")
 	};
 
 	// Carpetas por plataforma (tolerante a may/min)
-	FolderNamesPerSet.Add(EIconSet::PS5, { TEXT("Ps5"),  TEXT("ps5"),  TEXT("PS5") });
-	FolderNamesPerSet.Add(EIconSet::XBOX, { TEXT("Xbox"), TEXT("xbox"), TEXT("XBOX") });
-	FolderNamesPerSet.Add(EIconSet::PC, { TEXT("Pc"),   TEXT("pc"),   TEXT("PC") });
+	FolderNamesPerSet.Add(EIconSet::PS5_UI, { TEXT("PS5_UI"),  TEXT("ps5_ui") });
+	FolderNamesPerSet.Add(EIconSet::XBOX_UI, { TEXT("XBOX_UI"), TEXT("xbox_ui") });
+	FolderNamesPerSet.Add(EIconSet::PC, { TEXT("Pc"),      TEXT("pc"), TEXT("PC") });
+
+	// -------- CAMBIO: set inicial por plataforma --------
+	if (IsPlayStationPlatform())
+	{
+		SetIconSet(EIconSet::PS5_UI);
+	}
+	else
+	{
+		SetIconSet(EIconSet::PC);
+	}
 
 	// Re-escaneo al cargar mapa
 	PostLoadMapHandle = FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(
 		this, &UControllerIconManagerSubsystem::OnPostLoadMap);
 
-	// Set inicial “seguro” (PC) antes de tener info real
-	SetIconSet(EIconSet::PC);
-
 	BindInputDetection();
 
-	// Permite forzar por CLI (útil para probar en Shipping): -forceiconset=pc|xbox|ps5
+	// Permite forzar por CLI (Shipping): -forceiconset=pc|xbox|xbox_ui|ps5|ps5_ui
 	{
 		FString Force;
 		if (FParse::Value(FCommandLine::Get(), TEXT("forceiconset="), Force))
 		{
 			Force = Force.ToLower();
-			if (Force == TEXT("pc"))   SetIconSet(EIconSet::PC);
-			if (Force == TEXT("xbox")) SetIconSet(EIconSet::XBOX);
-			if (Force == TEXT("ps5"))  SetIconSet(EIconSet::PS5);
+			if (Force == TEXT("pc"))
+			{
+				SetIconSet(EIconSet::PC);
+			}
+			else if (Force == TEXT("xbox") || Force == TEXT("xbox_ui"))
+			{
+				SetIconSet(EIconSet::XBOX_UI);
+			}
+			else if (Force == TEXT("ps5") || Force == TEXT("ps5_ui"))
+			{
+				SetIconSet(EIconSet::PS5_UI);
+			}
 			LogIconSet(TEXT("CmdLine"), CurrentSet);
 		}
 	}
@@ -189,7 +205,17 @@ void UControllerIconManagerSubsystem::BindInputDetection()
 	// Estado inicial por adjuntos de Slate
 	const bool bAttached = FSlateApplication::IsInitialized() && FSlateApplication::Get().IsGamepadAttached();
 	bLastPolledGamepadAttached = bAttached;
-	if (bAttached) OnInputChangedToGamepadGeneric(); else OnInputChangedToKeyboard();
+
+	// -------- CAMBIO: en PS5, si hay mando adjunto, usar PlayStation por defecto --------
+	if (bAttached)
+	{
+		if (IsPlayStationPlatform()) OnGamepadTypePlayStation();
+		else                         OnInputChangedToGamepadGeneric();
+	}
+	else
+	{
+		OnInputChangedToKeyboard();
+	}
 }
 
 void UControllerIconManagerSubsystem::UnbindInputDetection()
@@ -234,6 +260,8 @@ void UControllerIconManagerSubsystem::EvaluateInitialDevice()
 				// Si hay teclado activo pero existe mando → prioriza mando
 				if (CIS->GetCurrentInputType() == ECommonInputType::MouseAndKeyboard && HasAnyGamepadAttached())
 				{
+					if (IsPlayStationPlatform()) { OnGamepadTypePlayStation(); return; }
+
 					switch (CIS->GetCurrentGamepadType())
 					{
 					case ECommonGamepadType::Playstation: OnGamepadTypePlayStation(); break;
@@ -245,6 +273,8 @@ void UControllerIconManagerSubsystem::EvaluateInitialDevice()
 				// Si ya está en modo mando, respeta marca si la conoce
 				else if (CIS->GetCurrentInputType() != ECommonInputType::MouseAndKeyboard)
 				{
+					if (IsPlayStationPlatform()) { OnGamepadTypePlayStation(); return; }
+
 					switch (CIS->GetCurrentGamepadType())
 					{
 					case ECommonGamepadType::Playstation: OnGamepadTypePlayStation(); break;
@@ -258,10 +288,11 @@ void UControllerIconManagerSubsystem::EvaluateInitialDevice()
 	}
 #endif
 
-	// Sin CommonUI / no disponible: usa adjuntos. Si hay mando → XBOX genérico
+	// Sin CommonUI / no disponible
 	if (HasAnyGamepadAttached())
 	{
-		OnInputChangedToGamepadGeneric();
+		if (IsPlayStationPlatform()) OnGamepadTypePlayStation();
+		else                         OnInputChangedToGamepadGeneric();
 	}
 	else
 	{
@@ -286,8 +317,15 @@ bool UControllerIconManagerSubsystem::TickPoll(float /*DeltaTime*/)
 	if (bAttachedNow != bLastPolledGamepadAttached)
 	{
 		bLastPolledGamepadAttached = bAttachedNow;
-		if (bAttachedNow) OnInputChangedToGamepadGeneric();
-		else              OnInputChangedToKeyboard();
+		if (bAttachedNow)
+		{
+			if (IsPlayStationPlatform()) OnGamepadTypePlayStation();
+			else                         OnInputChangedToGamepadGeneric();
+		}
+		else
+		{
+			OnInputChangedToKeyboard();
+		}
 		LogIconSet(TEXT("HotPlug"), CurrentSet);
 	}
 
@@ -319,7 +357,8 @@ bool UControllerIconManagerSubsystem::TickPoll(float /*DeltaTime*/)
 
 	if (Local_AnyKeyDown(PC, GamepadKeys))
 	{
-		OnInputChangedToGamepadGeneric();
+		if (IsPlayStationPlatform()) OnGamepadTypePlayStation();
+		else                         OnInputChangedToGamepadGeneric();
 		LogIconSet(TEXT("KeyPollGamepad"), CurrentSet);
 	}
 	else if (!bAttachedNow && Local_AnyKeyDown(PC, KBMKeys)) // teclado solo si NO hay mando
@@ -375,19 +414,27 @@ void UControllerIconManagerSubsystem::OnInputChangedToKeyboard()
 
 void UControllerIconManagerSubsystem::OnInputChangedToGamepadGeneric()
 {
-	SetIconSet(EIconSet::XBOX); // genérico si no sabemos marca
+	// -------- CAMBIO: en PS5, el "genérico" debe ser PlayStation --------
+	if (IsPlayStationPlatform())
+	{
+		SetIconSet(EIconSet::PS5_UI);
+	}
+	else
+	{
+		SetIconSet(EIconSet::XBOX_UI);
+	}
 	if (UWorld* World = GetWorld()) ApplyIconSetToAllWidgets(World);
 }
 
 void UControllerIconManagerSubsystem::OnGamepadTypePlayStation()
 {
-	SetIconSet(EIconSet::PS5);
+	SetIconSet(EIconSet::PS5_UI);
 	if (UWorld* World = GetWorld()) ApplyIconSetToAllWidgets(World);
 }
 
 void UControllerIconManagerSubsystem::OnGamepadTypeXbox()
 {
-	SetIconSet(EIconSet::XBOX);
+	SetIconSet(EIconSet::XBOX_UI);
 	if (UWorld* World = GetWorld()) ApplyIconSetToAllWidgets(World);
 }
 
@@ -395,7 +442,7 @@ void UControllerIconManagerSubsystem::SetIconSet(EIconSet NewSet)
 {
 	if (CurrentSet == NewSet) return;
 	CurrentSet = NewSet;
-	ClearCache();          // limpiar caché al cambiar familia (PS5/XBOX/PC)
+	ClearCache();          // limpiar caché al cambiar familia (PS5_UI/XBOX_UI/PC)
 	SeenWidgets.Empty();   // re-procesa widgets actuales en el próximo tick de "nuevos"
 }
 

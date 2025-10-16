@@ -9,8 +9,8 @@ UENUM(BlueprintType)
 enum class EIconSet : uint8
 {
 	PC,
-	PS5,
-	XBOX
+	PS5_UI,
+	XBOX_UI
 };
 
 UCLASS()
@@ -81,7 +81,7 @@ private:
 	void ClearCache();
 
 	void ApplyIconSetToAllWidgets(UWorld* World);
-	void ApplyIconSetToSingleWidget(class UUserWidget* RootWidget); // helper nuevo
+	void ApplyIconSetToSingleWidget(class UUserWidget* RootWidget);
 	void MaybeReplaceBrush(struct FSlateBrush& Brush);
 
 	// Resolución de textura variante
@@ -90,4 +90,14 @@ private:
 	const TArray<FString>& GetFolderCandidates() const;
 
 	bool IsAllowedName(const FString& AssetName) const;
+
+	// -------- NUEVO: helper de plataforma --------
+	static bool IsPlayStationPlatform()
+	{
+#if PLATFORM_PS5 || PLATFORM_PS4
+		return true;
+#else
+		return false;
+#endif
+	}
 };

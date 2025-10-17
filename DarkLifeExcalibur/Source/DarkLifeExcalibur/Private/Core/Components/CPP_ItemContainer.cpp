@@ -19,9 +19,11 @@ UCPP_ItemContainer::UCPP_ItemContainer()
 void UCPP_ItemContainer::BeginPlay()
 {
 	Super::BeginPlay();
-
-
-	// ...
+	RunesSlots.Add(0, RunesSlot_00);
+	RunesSlots.Add(1, RunesSlot_01);
+	RunesSlots.Add(2, RunesSlot_02);
+	RunesSlots.Add(3, RunesSlot_03);
+// ...
 	
 }
 
@@ -38,7 +40,7 @@ UCPP_DA_Item_Rune* UCPP_ItemContainer::GetRuneBySlotIndex(int index)
 {
 	if ((index >= 0) && (index < 4))
 	{
-		if (RunesSlots.IsValidIndex(index)) {
+		if (RunesSlots.Contains(index)) {
 			return RunesSlots[index];
 		}
 		else return nullptr;
@@ -50,7 +52,7 @@ void UCPP_ItemContainer::SetRuneBySlotIndex(int index, UCPP_DA_Item_Rune* Rune)
 {
 	if ((index >= 0) && (index < 4))
 	{
-		if (RunesSlots.IsValidIndex(index)) {
+		if (RunesSlots.Contains(index)) {
 			RunesSlots[index] = Rune;
 			OnRuneAdded.Broadcast(Rune, index);
 		}
@@ -61,9 +63,9 @@ void UCPP_ItemContainer::SetRuneBySlotIndex(int index, UCPP_DA_Item_Rune* Rune)
 
 void UCPP_ItemContainer::RemoveRuneFromSlot(int index)
 {
-	if ((RunesSlots.IsValidIndex(index)) && IsValid(RunesSlots[index]))
+	if ((RunesSlots.Contains(index)) && IsValid(RunesSlots[index]))
 	{
-		RunesSlots.Remove(RunesSlots[index]);
+		RunesSlots.Add(index, nullptr);
 		OnRuneRemoved.Broadcast(index);
 	}
 }
@@ -142,7 +144,13 @@ void UCPP_ItemContainer::DeleteItemsListFromInventory(TArray<UCPP_DA_Item*> Item
 bool UCPP_ItemContainer::IsItemEquipped(UCPP_DA_Item* Item)
 {
 	EItemCategory ItemCategory = Item->ItemType;
-	UCPP_DA_Item_ExcaliburModule* ExcaliburModuleType = Cast<UCPP_DA_Item_ExcaliburModule>(Item);
+	TObjectPtr<UCPP_DA_Item_ExcaliburModule> ExcaliburModuleType = Cast<UCPP_DA_Item_ExcaliburModule>(Item);
+
+	//This is needed in case the Item is a Rune
+	TArray<TObjectPtr<UCPP_DA_Item_Rune>> AllRunes;
+	RunesSlots.GenerateValueArray(AllRunes);
+	TObjectPtr<UCPP_DA_Item_Rune> RuneItem = Cast<UCPP_DA_Item_Rune>(Item);
+
 	switch (ItemCategory)
 	{
 	case EItemCategory::ExcaliburModule:
@@ -184,7 +192,8 @@ bool UCPP_ItemContainer::IsItemEquipped(UCPP_DA_Item* Item)
 	case EItemCategory::Consumable:
 		break;
 	case EItemCategory::Rune:
-		if (RunesSlots.Find(Cast<UCPP_DA_Item_Rune>(Item)) > -1)
+
+		if (IsValid(RuneItem) && (AllRunes.Find(RuneItem) > -1))
 		{
 			return true;
 		}

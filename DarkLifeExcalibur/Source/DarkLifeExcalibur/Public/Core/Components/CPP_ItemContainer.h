@@ -67,27 +67,40 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+private:
+	TMap<int, TObjectPtr<UCPP_DA_Item_Rune>> RunesSlots;
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
+	// Runes Slots
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TArray<UCPP_DA_Item_Rune*> RunesSlots;
+	TObjectPtr <UCPP_DA_Item_Rune> RunesSlot_00;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TMap<UCPP_DA_Item*, int> MainInventory;
+	TObjectPtr<UCPP_DA_Item_Rune> RunesSlot_01;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UCPP_DA_Item_Rune> RunesSlot_02;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr <UCPP_DA_Item_Rune> RunesSlot_03;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TMap <TObjectPtr <UCPP_DA_Item>, int> MainInventory;
 
 	//Excalibur Equipped Parts
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCPP_DA_Item_ExcaliburPommel* ExcaliburPommel;
+	TObjectPtr <UCPP_DA_Item_ExcaliburPommel> ExcaliburPommel;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCPP_DA_Item_ExcaliburGrip* ExcaliburGrip;
+	TObjectPtr <UCPP_DA_Item_ExcaliburGrip> ExcaliburGrip;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCPP_DA_Item_ExcaliburCrossguard* ExcaliburCrossguard;
+	TObjectPtr <UCPP_DA_Item_ExcaliburCrossguard> ExcaliburCrossguard;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCPP_DA_Item_ExcaliburBlade* ExcaliburBlade;
+	TObjectPtr <UCPP_DA_Item_ExcaliburBlade> ExcaliburBlade;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UCPP_DA_Item_Shield* Shield;
+	TObjectPtr <UCPP_DA_Item_Shield> Shield;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCPP_DA_Item_Bow* Bow;
+	TObjectPtr <UCPP_DA_Item_Bow> Bow;
 
 	//Debug & Test
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -101,7 +101,7 @@ public:
 
    //Inventory
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	TMap<UCPP_DA_Item*, int> Inventory;
+	TMap<TObjectPtr<UCPP_DA_Item>, int> Inventory;
 	
 	
 

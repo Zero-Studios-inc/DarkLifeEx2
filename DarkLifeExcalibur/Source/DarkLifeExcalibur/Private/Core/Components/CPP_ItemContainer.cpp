@@ -50,12 +50,33 @@ UCPP_DA_Item_Rune* UCPP_ItemContainer::GetRuneBySlotIndex(int index)
 
 void UCPP_ItemContainer::SetRuneBySlotIndex(int index, UCPP_DA_Item_Rune* Rune)
 {
-	if ((index >= 0) && (index < 4))
+	if ((index >= 0) && (index < 4) && (IsValid(Rune)))
 	{
-		if (RunesSlots.Contains(index)) {
+		//Assign Rune by Slot Index
+
+		switch (index) {
+		case 0:
+			RunesSlot_00 = Rune;
+			break;
+		case 1:
+			RunesSlot_01 = Rune;
+			break;
+		case 2:
+			RunesSlot_02 = Rune;
+			break;
+		case 3:
+			RunesSlot_03 = Rune;
+			break;
+		default:
+			break;
+		}
+
+		OnRuneAdded.Broadcast(Rune, index);
+
+		/*if (RunesSlots.Contains(index)) {
 			RunesSlots[index] = Rune;
 			OnRuneAdded.Broadcast(Rune, index);
-		}
+		}*/
 
 
 	}
@@ -68,6 +89,38 @@ void UCPP_ItemContainer::RemoveRuneFromSlot(int index)
 		RunesSlots.Add(index, nullptr);
 		OnRuneRemoved.Broadcast(index);
 	}
+}
+
+void UCPP_ItemContainer::SetRune(UCPP_DA_Item_Rune* Rune)
+{
+	//This function add new Rune if the slot is empty...if not then set it to the first slot
+	
+	//Searching for empty slots
+	if (!IsValid(RunesSlot_00)) {
+		RunesSlot_00 = Rune;
+		OnRuneAdded.Broadcast(Rune, 0);
+		return;
+	}
+	else if (!IsValid(RunesSlot_01)) {
+		RunesSlot_01 = Rune;
+		OnRuneAdded.Broadcast(Rune, 1);
+		return;
+	}
+	else if (!IsValid(RunesSlot_02)) {
+		RunesSlot_02 = Rune;
+		OnRuneAdded.Broadcast(Rune, 2);
+		return;
+	}
+	else if (!IsValid(RunesSlot_03)) {
+		RunesSlot_03 = Rune;
+		OnRuneAdded.Broadcast(Rune, 3);
+		return;
+	}
+
+	//If no empty slots then set the rune to the first one
+	RunesSlot_00 = Rune;
+	OnRuneAdded.Broadcast(Rune, 0);
+
 }
 
 void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount = 1)

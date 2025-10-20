@@ -119,7 +119,8 @@ public:
 		void SetRuneBySlotIndex(int index, UCPP_DA_Item_Rune* Rune);
 	UFUNCTION(BlueprintCallable)
 	void RemoveRuneFromSlot(int index);
-
+    UFUNCTION(BlueprintCallable)
+	void SetRune(UCPP_DA_Item_Rune* Rune);
 
 	//Inventory Management
 	UFUNCTION(BlueprintCallable)

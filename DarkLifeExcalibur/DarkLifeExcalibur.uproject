@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.2",
+	"EngineAssociation": "{C6F4D18A-490E-7672-F467-30AC8D98AB37}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -20,12 +20,7 @@
 		},
 		{
 			"Name": "Bridge",
-			"Enabled": true,
-			"SupportedTargetPlatforms": [
-				"Win64",
-				"Mac",
-				"Linux"
-			]
+			"Enabled": true
 		},
 		{
 			"Name": "Volumetrics",
@@ -93,6 +88,10 @@
 		}
 	],
 	"TargetPlatforms": [
-		"Windows"
+		"Windows",
+		"PS5",
+		"XB1",
+		"XSX",
+		"WinGDK"
 	]
 }

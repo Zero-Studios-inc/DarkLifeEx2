@@ -124,7 +124,7 @@ public:
 
 	//Inventory Management
 	UFUNCTION(BlueprintCallable)
-		void SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount);
+		void SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount = 1, bool bDebug = false);
 	UFUNCTION(BlueprintCallable)
 		int GetInventoryItemAmount(UCPP_DA_Item* Item);
 

@@ -123,11 +123,12 @@ void UCPP_ItemContainer::SetRune(UCPP_DA_Item_Rune* Rune)
 
 }
 
-void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount = 1)
+void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount, bool bDebug)
 {
 	if (!IsValid(Item)) { return; }
 
 	EItemCategory ItemCategory = Item->ItemType;
+	FString ItemName = Item->ItemName;
 
 	switch (ItemCategory) {
 
@@ -150,6 +151,12 @@ void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount = 1
 
 	
 	OnItemAdded.Broadcast(Item);
+
+	//Debug
+	if (bDebug) {
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, ItemName);
+	}
+
 }
 
 

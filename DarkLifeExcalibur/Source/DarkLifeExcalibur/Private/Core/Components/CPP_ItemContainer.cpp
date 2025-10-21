@@ -125,19 +125,30 @@ void UCPP_ItemContainer::SetRune(UCPP_DA_Item_Rune* Rune)
 
 void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount = 1)
 {
+	if (!IsValid(Item)) { return; }
+
+	EItemCategory ItemCategory = Item->ItemType;
+
+	switch (ItemCategory) {
+
+	case EItemCategory::Rune:
+		SetRune(Cast<UCPP_DA_Item_Rune>(Item));
+		break;
+
+	default:
+		if (MainInventory.Contains(Item))
+		{
+			MainInventory[Item] += ItemAmount;
+
+		}
+		else
+		{
+			MainInventory.Add(Item, ItemAmount);
+		}
+		break;
+	}
+
 	
-	if (MainInventory.Contains(Item))
-	{
-		
-		MainInventory[Item] += ItemAmount ;
-		
-	}
-	else
-	{
-		
-		MainInventory.Add(Item, ItemAmount);
-		
-	}
 	OnItemAdded.Broadcast(Item);
 }
 

@@ -23,8 +23,8 @@ void UCPP_ItemContainer::BeginPlay()
 	RunesSlots.Add(1, RunesSlot_01);
 	RunesSlots.Add(2, RunesSlot_02);
 	RunesSlots.Add(3, RunesSlot_03);
-// ...
-	
+	// ...
+
 }
 
 
@@ -94,7 +94,7 @@ void UCPP_ItemContainer::RemoveRuneFromSlot(int index)
 void UCPP_ItemContainer::SetRune(UCPP_DA_Item_Rune* Rune)
 {
 	//This function add new Rune if the slot is empty...if not then set it to the first slot
-	
+
 	//Searching for empty slots
 	if (!IsValid(RunesSlot_00)) {
 		RunesSlot_00 = Rune;
@@ -123,12 +123,13 @@ void UCPP_ItemContainer::SetRune(UCPP_DA_Item_Rune* Rune)
 
 }
 
-void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount, bool bDebug)
+void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount, bool bDebug, FString& ItemName)
 {
 	if (!IsValid(Item)) { return; }
 
+	ItemName = "No Valid Data or Error";
 	EItemCategory ItemCategory = Item->ItemType;
-	FString ItemName = Item->ItemName;
+	ItemName = Item->ItemName;
 
 	switch (ItemCategory) {
 
@@ -149,8 +150,9 @@ void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount, bo
 		break;
 	}
 
-	
+
 	OnItemAdded.Broadcast(Item);
+	ItemName = Item->ItemName;
 
 	//Debug
 	if (bDebug) {
@@ -159,14 +161,20 @@ void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item, int ItemAmount, bo
 
 }
 
+void UCPP_ItemContainer::SetInventoryItem(UCPP_DA_Item* Item, int32 ItemAmount, bool bDebug)
+{
+	FString Dummy;
+	SetInventoryItem(Item, ItemAmount, bDebug, Dummy);
+}
+
 
 int UCPP_ItemContainer::GetInventoryItemAmount(UCPP_DA_Item* Item)
 {
 	if ((MainInventory.Contains(Item)))
 	{
 		int Amount = 0;
-			Amount = MainInventory[Item];
-			return Amount;
+		Amount = MainInventory[Item];
+		return Amount;
 	}
 	else return -1;
 
@@ -198,7 +206,7 @@ bool UCPP_ItemContainer::CheckItemsExistenceInInventory(TArray<UCPP_DA_Item*> It
 		return true;
 	}
 	else return false;
-	
+
 }
 
 void UCPP_ItemContainer::DeleteItemsListFromInventory(TArray<UCPP_DA_Item*> ItemsList)
@@ -207,7 +215,7 @@ void UCPP_ItemContainer::DeleteItemsListFromInventory(TArray<UCPP_DA_Item*> Item
 	if ((!ItemsList.IsEmpty()) && (!MainInventory.IsEmpty())) {
 		for (size_t i = 0; i < ItemsList.Num(); i++)
 		{
-			DeleteItemFromInventory(ItemsList[i],Success);
+			DeleteItemFromInventory(ItemsList[i], Success);
 		}
 	}
 }
@@ -225,7 +233,7 @@ bool UCPP_ItemContainer::IsItemEquipped(UCPP_DA_Item* Item)
 	switch (ItemCategory)
 	{
 	case EItemCategory::ExcaliburModule:
-		
+
 		if (IsValid(ExcaliburModuleType)) {
 			EExcaliburPart ExcaliburPart = ExcaliburModuleType->ExcaliburPart;
 			switch (ExcaliburPart)
@@ -248,8 +256,8 @@ bool UCPP_ItemContainer::IsItemEquipped(UCPP_DA_Item* Item)
 				break;
 			case EExcaliburPart::Blade:
 				if (ExcaliburBlade == Cast<UCPP_DA_Item_ExcaliburBlade>(Item)) {
-				return true;
-			}
+					return true;
+				}
 				break;
 			default:
 				break;
@@ -288,7 +296,7 @@ void UCPP_ItemContainer::GetItemInfo(UCPP_DA_Item* Item, UCPP_DA_Item*& ItemInfo
 
 void UCPP_ItemContainer::LoadSavedInfo(UCPP_DarkLifeSaveGame* SaveGame)
 {
-	
+
 	if (IsValid(SaveGame)) {
 		SavedGame = SaveGame;
 		ExcaliburPommel = SavedGame->ExcaliburPommel;
@@ -299,6 +307,6 @@ void UCPP_ItemContainer::LoadSavedInfo(UCPP_DarkLifeSaveGame* SaveGame)
 		Bow = SavedGame->Bow;
 		MainInventory = SavedGame->Inventory;
 	}
-		
+
 }
 

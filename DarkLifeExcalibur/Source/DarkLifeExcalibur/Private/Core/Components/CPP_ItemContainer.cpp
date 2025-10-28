@@ -38,11 +38,32 @@ void UCPP_ItemContainer::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 UCPP_DA_Item_Rune* UCPP_ItemContainer::GetRuneBySlotIndex(int index)
 {
-	if ((index >= 0) && (index < 4))
+	if ((index >= 0) && (index < 3))
 	{
-		if (RunesSlots.Contains(index)) {
-			return RunesSlots[index];
+		TObjectPtr<UCPP_DA_Item_Rune> RuneBySlot;
+
+		switch (index)
+		{
+			case 0:
+				RuneBySlot = RunesSlot_00;
+				break;
+			case 1:
+				RuneBySlot = RunesSlot_01;
+				break;
+			case 2:
+				RuneBySlot = RunesSlot_02;
+				break;
+			case 3:
+				RuneBySlot = RunesSlot_03;
+				break;
+		default:
+			break;
 		}
+
+		if (IsValid(RuneBySlot)) {
+			return RuneBySlot;
+		}
+
 		else return nullptr;
 	}
 	else return nullptr;

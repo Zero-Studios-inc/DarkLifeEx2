@@ -198,6 +198,14 @@ void ACPP_DarkLifeCharacter::Sprint()
 {
 	if ((CurrentCharacterMovement != ECharacterMovement::Ladder) && (CurrentCharacterState == ECharacterState::Normal))
 	{
+		if (bBlocking) {
+	
+				RuneActivation(0);
+				return;
+			
+		}
+
+
 		if (!bBeastPowerMovement)
 		{
 			if (!bSprintKeyPress)
@@ -1527,6 +1535,19 @@ bool ACPP_DarkLifeCharacter::CheckObstacleAbove(double TraceDistance, double Tra
 void ACPP_DarkLifeCharacter::CancelChargeAttack()
 {
 	UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), ChargeAttackTimer);
+}
+
+void ACPP_DarkLifeCharacter::RuneActivation(int RuneSlot)
+{
+	TObjectPtr<UCPP_GameInstance> DLGameInstance = Cast<UCPP_GameInstance>(GetGameInstance());
+	TObjectPtr<UCPP_DA_Item_Rune> Rune = InventoryManager->GetRuneBySlotIndex(RuneSlot);
+	
+	if (Rune && DLGameInstance) {
+		if (DLGameInstance->IsRuneOnCooldown(RuneSlot)) return;
+		Rune->UseItem(this);
+	}
+
+	
 }
 
 

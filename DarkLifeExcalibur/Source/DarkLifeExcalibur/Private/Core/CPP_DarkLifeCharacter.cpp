@@ -1543,7 +1543,10 @@ void ACPP_DarkLifeCharacter::RuneActivation(int RuneSlot)
 	TObjectPtr<UCPP_DA_Item_Rune> Rune = InventoryManager->GetRuneBySlotIndex(RuneSlot);
 	
 	if (Rune && DLGameInstance) {
+
 		if (DLGameInstance->IsRuneOnCooldown(RuneSlot)) return;
+
+		DLGameInstance->RunesUseCoolDown(InventoryManager->GetRuneBySlotIndex(RuneSlot), RuneSlot);
 		Rune->UseItem(this);
 	}
 

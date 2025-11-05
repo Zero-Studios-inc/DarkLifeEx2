@@ -41,6 +41,7 @@ void UCPP_GameInstance::RunesUseCoolDown(UCPP_DA_Item_Rune* AttackRune, int Rune
 
 	FTimerHandle CooldownTimer;
 	FTimerDelegate TimerDelegate;
+	TimerDelegate.BindUObject(this, &UCPP_GameInstance::OnRuneCooldownFinished, RuneSlot);
 
 	switch (RuneSlot)
 	{
@@ -91,7 +92,7 @@ void UCPP_GameInstance::RunesUseCoolDown(UCPP_DA_Item_Rune* AttackRune, int Rune
 
 	
 
-	TimerDelegate.BindUObject(this, &UCPP_GameInstance::OnRuneCooldownFinished, RuneSlot);
+	
 	
 	//RunesCooldownRegistry.Add(AttackRune, CooldownTimer);
 	

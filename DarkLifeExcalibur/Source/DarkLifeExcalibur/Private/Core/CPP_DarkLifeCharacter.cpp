@@ -1544,7 +1544,9 @@ void ACPP_DarkLifeCharacter::RuneActivation(int RuneSlot)
 	
 	if (Rune && DLGameInstance) {
 
-		if (DLGameInstance->IsRuneOnCooldown(RuneSlot)) return;
+		bool bIsRuneOnCooldown = DLGameInstance->IsRuneOnCooldown(RuneSlot);
+
+		if (bIsRuneOnCooldown) return;
 
 		DLGameInstance->RunesUseCoolDown(InventoryManager->GetRuneBySlotIndex(RuneSlot), RuneSlot);
 		Rune->UseItem(this);

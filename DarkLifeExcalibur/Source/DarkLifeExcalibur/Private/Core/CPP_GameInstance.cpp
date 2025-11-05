@@ -26,48 +26,175 @@ void UCPP_GameInstance::LoadGame()
 {
 }
 
-void UCPP_GameInstance::RunesUseCoolDown(UCPP_DA_Item_Rune_Attack* AttackRune)
+void UCPP_GameInstance::RunesUseCoolDown(UCPP_DA_Item_Rune* AttackRune, int RuneSlot)
 {
-	if (!AttackRune || IsRuneOnCooldown(AttackRune))
+	if (!AttackRune || IsRuneOnCooldown(RuneSlot))
 	{
 		return;
 	}
 
+	TObjectPtr<UCPP_DA_Item_Rune_Attack> Rune = Cast <UCPP_DA_Item_Rune_Attack> (AttackRune);
+
+	if (!Rune) return;
+
+	//if ()
+
 	FTimerHandle CooldownTimer;
 	FTimerDelegate TimerDelegate;
+	TimerDelegate.BindUObject(this, &UCPP_GameInstance::OnRuneCooldownFinished, RuneSlot);
 
-	TimerDelegate.BindUObject(this, &UCPP_GameInstance::OnRuneCooldownFinished, AttackRune);
-	
-	RunesCooldownRegistry.Add(AttackRune, CooldownTimer);
-	
-	GetWorld()->GetTimerManager().SetTimer(
-		CooldownTimer,
-		TimerDelegate,
-		AttackRune->UseCooldown,
-		false
-	);
-}
-
-bool UCPP_GameInstance::IsRuneOnCooldown(UCPP_DA_Item_Rune_Attack* AttackRune) const
-{
-	return RunesCooldownRegistry.Contains(AttackRune);
-}
-
-void UCPP_GameInstance::OnRuneCooldownFinished(UCPP_DA_Item_Rune_Attack* AttackRune)
-{
-	RunesCooldownRegistry.Remove(AttackRune);
-	OnRuneCooldownFinishedEvent.Broadcast(AttackRune);
-}
-
-float UCPP_GameInstance::GetRemainingCooldownTime(UCPP_DA_Item_Rune_Attack* AttackRune) const
-{
-	if (!AttackRune || !RunesCooldownRegistry.Contains(AttackRune))
+	switch (RuneSlot)
 	{
-		return 0.0f;
+	case 0:
+	{
+		GetWorld()->GetTimerManager().SetTimer(
+			RuneSlot00CoolDownTimer,
+			TimerDelegate,
+			Rune->UseCooldown,
+			false
+		);
+		break;
+	}
+	case 1:
+	{
+		GetWorld()->GetTimerManager().SetTimer(
+			RuneSlot01CoolDownTimer,
+			TimerDelegate,
+			Rune->UseCooldown,
+			false
+		);
+		break;
+	}
+	case 2:
+	{
+		GetWorld()->GetTimerManager().SetTimer(
+			RuneSlot02CoolDownTimer,
+			TimerDelegate,
+			Rune->UseCooldown,
+			false
+		);
+		break;
+	}
+	case 3:
+	{
+		GetWorld()->GetTimerManager().SetTimer(
+			RuneSlot03CoolDownTimer,
+			TimerDelegate,
+			Rune->UseCooldown,
+			false
+		);
+		break;
+	}
+		
+	default:
+		break;
 	}
 
-	const FTimerHandle& TimerHandle = RunesCooldownRegistry[AttackRune];
-	return GetWorld()->GetTimerManager().GetTimerRemaining(TimerHandle);
+	
+
+	
+	
+	//RunesCooldownRegistry.Add(AttackRune, CooldownTimer);
+	
+	
 }
+
+bool UCPP_GameInstance::IsRuneOnCooldown(int RuneSlot) const
+{
+	switch (RuneSlot)
+	{
+	case 0:
+	{
+		return RuneSlot00CoolDownTimer.IsValid();
+		
+	}
+	case 1:
+	{
+		return RuneSlot01CoolDownTimer.IsValid();
+		
+	}
+	case 2:
+	{
+		return RuneSlot02CoolDownTimer.IsValid();
+		
+	}
+	case 3:
+	{
+		return RuneSlot03CoolDownTimer.IsValid();
+		
+	}
+	default:
+		return RuneSlot00CoolDownTimer.IsValid();
+	}
+}
+
+void UCPP_GameInstance::OnRuneCooldownFinished(int RuneSlot)
+{
+	//RunesCooldownRegistry.Remove(AttackRune);
+
+	switch (RuneSlot)
+	{
+	case 0:
+	{
+		RuneSlot00CoolDownTimer.Invalidate();
+		break;
+	}
+	case 1:
+	{
+		RuneSlot01CoolDownTimer.Invalidate();
+		break;
+	}
+	case 2:
+	{
+		RuneSlot02CoolDownTimer.Invalidate();
+		break;
+	}
+	case 3:
+	{
+		RuneSlot03CoolDownTimer.Invalidate();
+		break;
+	}
+	default:
+		RuneSlot00CoolDownTimer.Invalidate();
+		break;
+	}
+
+	OnRuneCooldownFinishedEvent.Broadcast(RuneSlot);
+}
+
+float UCPP_GameInstance::GetRemainingCooldownTime(int RuneSlot) const
+{
+	switch (RuneSlot)
+	{
+	case 0:
+	{
+		return GetWorld()->GetTimerManager().GetTimerRemaining(RuneSlot00CoolDownTimer);
+		
+	}
+	case 1:
+	{
+		return GetWorld()->GetTimerManager().GetTimerRemaining(RuneSlot01CoolDownTimer);
+		
+	}
+	case 2:
+	{
+		return GetWorld()->GetTimerManager().GetTimerRemaining(RuneSlot02CoolDownTimer);
+		
+
+	}
+	case 3:
+	{
+
+		return GetWorld()->GetTimerManager().GetTimerRemaining(RuneSlot03CoolDownTimer);
+		
+	}
+	default:
+		return GetWorld()->GetTimerManager().GetTimerRemaining(RuneSlot00CoolDownTimer);
+	}
+
+	
+	
+}
+
 
 

@@ -12,7 +12,7 @@ class ACPP_DarkLifeCharacter;
 class UCPP_DarkLifeSaveGame;
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRuneCooldownFinishedEvent, UCPP_DA_Item_Rune_Attack*, Rune);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRuneCooldownFinishedEvent, int, RuneSlot);
 /**
  * 
  */
@@ -37,7 +37,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool bGameLoaded = false;
 	UPROPERTY(BlueprintReadWrite)
-	TMap<UCPP_DA_Item_Rune_Attack*, FTimerHandle> RunesCooldownRegistry;
+	TMap<UCPP_DA_Item_Rune*, FTimerHandle> RunesCooldownRegistry;
 
 	UPROPERTY(BlueprintAssignable, Category = "Runes|Cooldown")
 	FOnRuneCooldownFinishedEvent OnRuneCooldownFinishedEvent;
@@ -49,12 +49,21 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Save/Load")
 	void LoadGame();		
     UFUNCTION(BlueprintCallable, Category = "Runes")
-	void RunesUseCoolDown(UCPP_DA_Item_Rune_Attack* AttackRune);
+	void RunesUseCoolDown(UCPP_DA_Item_Rune* Rune, int RuneSlot);
 	UFUNCTION(BlueprintCallable, Category = "Runes")
-	void OnRuneCooldownFinished(UCPP_DA_Item_Rune_Attack* AttackRune);
+	void OnRuneCooldownFinished(int RuneSlot);
 	UFUNCTION(BlueprintCallable, Category = "Runes")
-	bool IsRuneOnCooldown(UCPP_DA_Item_Rune_Attack* AttackRune) const;
+	bool IsRuneOnCooldown(int RuneSlot) const;
 	UFUNCTION(BlueprintCallable, Category = "Runes|Cooldown")
-	float GetRemainingCooldownTime(UCPP_DA_Item_Rune_Attack* AttackRune) const;
-	
+	float GetRemainingCooldownTime(int RuneSlot) const;
+
+private:
+	UPROPERTY()
+	FTimerHandle RuneSlot00CoolDownTimer;
+	UPROPERTY()
+	FTimerHandle RuneSlot01CoolDownTimer;
+	UPROPERTY()
+	FTimerHandle RuneSlot02CoolDownTimer;
+	UPROPERTY()
+	FTimerHandle RuneSlot03CoolDownTimer;
 };

@@ -519,6 +519,8 @@ public:
 	bool CheckObstacleAbove(double TraceDistance = 100.0, double TraceRadius = 30.0, EDrawDebugTrace::Type DrawDebugTrace = EDrawDebugTrace::None);
 	UFUNCTION(BlueprintCallable)
 	void CancelChargeAttack();
+	UFUNCTION(BlueprintCallable)
+	void RuneActivation(int RuneSlot);
 
 
 	// Called every frame

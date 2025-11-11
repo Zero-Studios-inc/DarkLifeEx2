@@ -56,6 +56,8 @@ public:
 	bool IsRuneOnCooldown(int RuneSlot) const;
 	UFUNCTION(BlueprintCallable, Category = "Runes|Cooldown")
 	float GetRemainingCooldownTime(int RuneSlot) const;
+	UFUNCTION(BlueprintCallable, Category = "Runes|Cooldown")
+	float GetRuneRemainingTime(int RuneSlot);
 
 private:
 	UPROPERTY()

@@ -1550,6 +1550,7 @@ void ACPP_DarkLifeCharacter::RuneActivation(int RuneSlot)
 
 		DLGameInstance->RunesUseCoolDown(InventoryManager->GetRuneBySlotIndex(RuneSlot), RuneSlot);
 		Rune->UseItem(this);
+		RuneActivated.Broadcast(RuneSlot);
 	}
 
 	

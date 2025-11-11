@@ -196,5 +196,49 @@ float UCPP_GameInstance::GetRemainingCooldownTime(int RuneSlot) const
 	
 }
 
+float UCPP_GameInstance::GetRuneRemainingTime(int RuneSlot)
+{
+	float RemainingTime = 0.0f;
+
+	switch (RuneSlot)
+	{
+	case 0: 
+	{
+		if (RuneSlot00CoolDownTimer.IsValid()) {
+			RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(RuneSlot00CoolDownTimer);
+		}
+		
+		break;
+	}
+	case 1:
+	{
+		if (RuneSlot01CoolDownTimer.IsValid()) {
+			RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(RuneSlot01CoolDownTimer);
+		}
+		break;
+	}
+	case 2:
+	{
+		if (RuneSlot02CoolDownTimer.IsValid()) {
+			RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(RuneSlot02CoolDownTimer);
+		}
+		break;
+	}
+	case 3:
+	{
+		if (RuneSlot03CoolDownTimer.IsValid()) {
+			RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(RuneSlot03CoolDownTimer);
+		}
+		break;
+	}
+		
+
+	default:
+		break;
+	}
+
+	return RemainingTime;
+}
+
 
 

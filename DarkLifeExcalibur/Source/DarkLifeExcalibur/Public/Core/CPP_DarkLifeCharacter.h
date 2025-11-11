@@ -135,6 +135,7 @@ class DARKLIFEEXCALIBUR_API ACPP_DarkLifeCharacter : public ACharacter
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttacking);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterMovementChange, ECharacterMovement, NewCharacterMovement);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCharacterEngaged, bool, bEngagedByEnemy, AActor*, Enemy);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRuneActivated, int, RuneSlot);
 
 public:
 	// Sets default values for this character's properties
@@ -148,6 +149,8 @@ public:
 		FOnCharacterMovementChange CharacterMovementChange;
 	UPROPERTY(BlueprintAssignable, Category = "Combat")
 		FOnCharacterEngaged CharacterEngaged;
+		UPROPERTY(BlueprintAssignable)
+		FOnRuneActivated RuneActivated;
 
 	//Character Parameters
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")

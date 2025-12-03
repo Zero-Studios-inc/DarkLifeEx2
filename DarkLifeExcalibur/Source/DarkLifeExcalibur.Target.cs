@@ -12,5 +12,9 @@ public class DarkLifeExcaliburTarget : TargetRules
         CppStandard = CppStandardVersion.Cpp20;
 
         ExtraModuleNames.AddRange(new string[] { "DarkLifeExcalibur" });
+
+        //Adding log files in Shipping
+        BuildEnvironment = TargetBuildEnvironment.Unique;
+        bUseLoggingInShipping = true;
     }
 }

@@ -7,6 +7,7 @@
 #include "Styling/SlateBrush.h"
 #include "Engine/World.h"
 #include "UObject/SoftObjectPath.h"
+#include "UObject/WeakObjectPtr.h"
 #include "Misc/CoreDelegates.h"
 #include "Framework/Application/SlateApplication.h"
 #include "InputCoreTypes.h"
@@ -24,7 +25,6 @@
 #define HAS_COMMONUI 0
 #endif
 
-// Log auxiliar
 static void LogIconSet(const TCHAR* Where, EIconSet Set)
 {
 	UE_LOG(LogTemp, Log, TEXT("[ControllerIcons][%s] IconSet=%d (0=PC,1=PS5_UI,2=XBOX_UI)"), Where, (int32)Set);
@@ -34,34 +34,26 @@ void UControllerIconManagerSubsystem::Initialize(FSubsystemCollectionBase& Colle
 {
 	Super::Initialize(Collection);
 
-	// Nombres a sustituir (los que usa tu HUD)
 	AllowedNames = {
-		FName("Bumper_R"),   // R1 / RB
-		FName("Trigger_R"),  // R2 / RT
-		FName("Trigger_L"),  // L2 / LT
-		FName("FaceRight"),  // ○ / B
-		FName("FaceUp"),     // △ / Y
-		FName("FaceLeft"),   // □ / X
+		FName("Bumper_R"),
+		FName("Trigger_R"),
+		FName("Trigger_L"),
+		FName("FaceRight"),
+		FName("FaceUp"),
+		FName("FaceLeft"),
 		FName("DPad_Up"),
 		FName("DPad_Down"),
 		FName("Bumper_L"),
 		FName("Bumper_R2")
 	};
 
-	// Carpetas por plataforma (tolerante a may/min)
 	FolderNamesPerSet.Add(EIconSet::PS5_UI, { TEXT("PS5_UI"),  TEXT("ps5_ui") });
 	FolderNamesPerSet.Add(EIconSet::XBOX_UI, { TEXT("XBOX_UI"), TEXT("xbox_ui") });
 	FolderNamesPerSet.Add(EIconSet::PC, { TEXT("Pc"),      TEXT("pc"), TEXT("PC") });
 
-	// -------- CAMBIO: set inicial por plataforma --------
-	if (IsPlayStationPlatform())
-	{
-		SetIconSet(EIconSet::PS5_UI);
-	}
-	else
-	{
-		SetIconSet(EIconSet::PC);
-	}
+	// Set inicial por plataforma (NO aplicar aún; World puede ser null aquí)
+	if (IsPlayStationPlatform()) SetIconSet(EIconSet::PS5_UI);
+	else                         SetIconSet(EIconSet::PC);
 
 	// Re-escaneo al cargar mapa
 	PostLoadMapHandle = FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(
@@ -69,24 +61,15 @@ void UControllerIconManagerSubsystem::Initialize(FSubsystemCollectionBase& Colle
 
 	BindInputDetection();
 
-	// Permite forzar por CLI (Shipping): -forceiconset=pc|xbox|xbox_ui|ps5|ps5_ui
+	// Forzar por CLI: -forceiconset=pc|xbox|xbox_ui|ps5|ps5_ui
 	{
 		FString Force;
 		if (FParse::Value(FCommandLine::Get(), TEXT("forceiconset="), Force))
 		{
 			Force = Force.ToLower();
-			if (Force == TEXT("pc"))
-			{
-				SetIconSet(EIconSet::PC);
-			}
-			else if (Force == TEXT("xbox") || Force == TEXT("xbox_ui"))
-			{
-				SetIconSet(EIconSet::XBOX_UI);
-			}
-			else if (Force == TEXT("ps5") || Force == TEXT("ps5_ui"))
-			{
-				SetIconSet(EIconSet::PS5_UI);
-			}
+			if (Force == TEXT("pc")) SetIconSet(EIconSet::PC);
+			else if (Force == TEXT("xbox") || Force == TEXT("xbox_ui")) SetIconSet(EIconSet::XBOX_UI);
+			else if (Force == TEXT("ps5") || Force == TEXT("ps5_ui"))  SetIconSet(EIconSet::PS5_UI);
 			LogIconSet(TEXT("CmdLine"), CurrentSet);
 		}
 	}
@@ -98,37 +81,37 @@ void UControllerIconManagerSubsystem::Initialize(FSubsystemCollectionBase& Colle
 	FTSTicker::GetCoreTicker().AddTicker(
 		FTickerDelegate::CreateWeakLambda(this, [this](float) { EvaluateInitialDevice(); return false; }),
 		0.50f);
+
+	// Warmup y aplicación diferida (evita pegarle a UMG antes de que el mundo esté listo)
 	FTSTicker::GetCoreTicker().AddTicker(
-		FTickerDelegate::CreateWeakLambda(this, [this](float) { EvaluateInitialDevice(); return false; }),
-		1.50f);
-
-	// Escaneo periódico de widgets NUEVOS (cada 0.5s)
-	NewWidgetScanTickerHandle = FTSTicker::GetCoreTicker().AddTicker(
-		FTickerDelegate::CreateUObject(this, &UControllerIconManagerSubsystem::TickScanNewWidgets),
-		0.5f);
-
-	if (UWorld* World = GetWorld())
-	{
-		ApplyIconSetToAllWidgets(World);
-		LogIconSet(TEXT("InitApply"), CurrentSet);
-	}
+		FTickerDelegate::CreateWeakLambda(this, [this](float)
+			{
+				if (UWorld* World = GetWorld())
+				{
+					WarmupCurrentSet();
+					ApplyIconSetToAllWidgets(World);
+					StartNewWidgetScanWindow(NewWidgetScanWindowSeconds);
+					LogIconSet(TEXT("InitApply"), CurrentSet);
+				}
+				return false;
+			}),
+		0.25f
+	);
 }
 
 void UControllerIconManagerSubsystem::Deinitialize()
 {
 	UnbindInputDetection();
 
-	if (NewWidgetScanTickerHandle.IsValid())
-	{
-		FTSTicker::GetCoreTicker().RemoveTicker(NewWidgetScanTickerHandle);
-		NewWidgetScanTickerHandle.Reset();
-	}
+	StopNewWidgetScanTicker();
 	SeenWidgets.Empty();
+	ClearCache();
 
 	if (PostLoadMapHandle.IsValid())
 	{
 		FCoreUObjectDelegates::PostLoadMapWithWorld.Remove(PostLoadMapHandle);
 	}
+
 	Super::Deinitialize();
 }
 
@@ -142,14 +125,14 @@ void UControllerIconManagerSubsystem::BindInputDetection()
 			if (UCommonInputSubsystem* CIS = ULocalPlayer::GetSubsystem<UCommonInputSubsystem>(LP))
 			{
 				// Cambio teclado/gamepad
-				CIS->OnInputMethodChangedNative.AddLambda([this](ECommonInputType NewType)
+				CIS->OnInputMethodChangedNative.AddWeakLambda(this, [this](ECommonInputType NewType)
 					{
 						if (NewType == ECommonInputType::MouseAndKeyboard) OnInputChangedToKeyboard();
 						else OnInputChangedToGamepadGeneric();
 					});
 
 				// Tipo de gamepad
-				CIS->OnGamepadInputTypeChangedNative.AddLambda([this](ECommonGamepadType T)
+				CIS->OnGamepadInputTypeChangedNative.AddWeakLambda(this, [this](ECommonGamepadType T)
 					{
 						if (T == ECommonGamepadType::Playstation) OnGamepadTypePlayStation();
 						else if (T == ECommonGamepadType::Xbox)  OnGamepadTypeXbox();
@@ -157,10 +140,7 @@ void UControllerIconManagerSubsystem::BindInputDetection()
 					});
 
 				// Estado inicial
-				if (CIS->GetCurrentInputType() == ECommonInputType::MouseAndKeyboard)
-				{
-					OnInputChangedToKeyboard();
-				}
+				if (CIS->GetCurrentInputType() == ECommonInputType::MouseAndKeyboard) OnInputChangedToKeyboard();
 				else
 				{
 					switch (CIS->GetCurrentGamepadType())
@@ -175,7 +155,6 @@ void UControllerIconManagerSubsystem::BindInputDetection()
 	}
 #endif
 
-	// UE 5.2: evento de conexión (útil en Shipping)
 #if (ENGINE_MAJOR_VERSION == 5) && (ENGINE_MINOR_VERSION <= 2)
 	PRAGMA_DISABLE_DEPRECATION_WARNINGS
 		ControllerConnHandle = FCoreDelegates::OnControllerConnectionChange.AddLambda(
@@ -196,17 +175,15 @@ void UControllerIconManagerSubsystem::BindInputDetection()
 	PRAGMA_ENABLE_DEPRECATION_WARNINGS
 #endif
 
-		// Polling robusto (Shipping) — también detecta el primer input
+		// Polling robusto (Shipping)
 		PollTickerHandle = FTSTicker::GetCoreTicker().AddTicker(
 			FTickerDelegate::CreateUObject(this, &UControllerIconManagerSubsystem::TickPoll),
 			0.25f
 		);
 
-	// Estado inicial por adjuntos de Slate
 	const bool bAttached = FSlateApplication::IsInitialized() && FSlateApplication::Get().IsGamepadAttached();
 	bLastPolledGamepadAttached = bAttached;
 
-	// -------- CAMBIO: en PS5, si hay mando adjunto, usar PlayStation por defecto --------
 	if (bAttached)
 	{
 		if (IsPlayStationPlatform()) OnGamepadTypePlayStation();
@@ -257,7 +234,6 @@ void UControllerIconManagerSubsystem::EvaluateInitialDevice()
 		{
 			if (UCommonInputSubsystem* CIS = ULocalPlayer::GetSubsystem<UCommonInputSubsystem>(LP))
 			{
-				// Si hay teclado activo pero existe mando → prioriza mando
 				if (CIS->GetCurrentInputType() == ECommonInputType::MouseAndKeyboard && HasAnyGamepadAttached())
 				{
 					if (IsPlayStationPlatform()) { OnGamepadTypePlayStation(); return; }
@@ -270,7 +246,6 @@ void UControllerIconManagerSubsystem::EvaluateInitialDevice()
 					}
 					return;
 				}
-				// Si ya está en modo mando, respeta marca si la conoce
 				else if (CIS->GetCurrentInputType() != ECommonInputType::MouseAndKeyboard)
 				{
 					if (IsPlayStationPlatform()) { OnGamepadTypePlayStation(); return; }
@@ -288,7 +263,6 @@ void UControllerIconManagerSubsystem::EvaluateInitialDevice()
 	}
 #endif
 
-	// Sin CommonUI / no disponible
 	if (HasAnyGamepadAttached())
 	{
 		if (IsPlayStationPlatform()) OnGamepadTypePlayStation();
@@ -312,11 +286,12 @@ static bool Local_AnyKeyDown(APlayerController* PC, const TArray<FKey>& Keys)
 
 bool UControllerIconManagerSubsystem::TickPoll(float /*DeltaTime*/)
 {
-	// Hot-plug por Slate/Core
+	// Hot-plug
 	const bool bAttachedNow = HasAnyGamepadAttached();
 	if (bAttachedNow != bLastPolledGamepadAttached)
 	{
 		bLastPolledGamepadAttached = bAttachedNow;
+
 		if (bAttachedNow)
 		{
 			if (IsPlayStationPlatform()) OnGamepadTypePlayStation();
@@ -326,6 +301,8 @@ bool UControllerIconManagerSubsystem::TickPoll(float /*DeltaTime*/)
 		{
 			OnInputChangedToKeyboard();
 		}
+
+		// Solo log cuando cambia
 		LogIconSet(TEXT("HotPlug"), CurrentSet);
 	}
 
@@ -340,31 +317,23 @@ bool UControllerIconManagerSubsystem::TickPoll(float /*DeltaTime*/)
 		EKeys::Gamepad_FaceButton_Bottom, EKeys::Gamepad_FaceButton_Right,
 		EKeys::Gamepad_FaceButton_Top,    EKeys::Gamepad_FaceButton_Left,
 		EKeys::Gamepad_LeftShoulder,      EKeys::Gamepad_RightShoulder,
-		EKeys::Gamepad_LeftTrigger,       EKeys::Gamepad_RightTrigger,
-		EKeys::Gamepad_Special_Left,      EKeys::Gamepad_Special_Right,
-		EKeys::Gamepad_LeftStick_Up,      EKeys::Gamepad_LeftStick_Down,
-		EKeys::Gamepad_LeftStick_Left,    EKeys::Gamepad_LeftStick_Right,
-		EKeys::Gamepad_RightStick_Up,     EKeys::Gamepad_RightStick_Down,
-		EKeys::Gamepad_RightStick_Left,   EKeys::Gamepad_RightStick_Right
+		EKeys::Gamepad_LeftTrigger,       EKeys::Gamepad_RightTrigger
 	};
 
 	static const TArray<FKey> KBMKeys = {
-		EKeys::LeftMouseButton, EKeys::RightMouseButton, EKeys::MiddleMouseButton,
+		EKeys::LeftMouseButton, EKeys::RightMouseButton,
 		EKeys::W, EKeys::A, EKeys::S, EKeys::D,
-		EKeys::SpaceBar, EKeys::LeftShift, EKeys::RightShift,
-		EKeys::Enter, EKeys::Escape
+		EKeys::SpaceBar, EKeys::Enter, EKeys::Escape
 	};
 
 	if (Local_AnyKeyDown(PC, GamepadKeys))
 	{
 		if (IsPlayStationPlatform()) OnGamepadTypePlayStation();
 		else                         OnInputChangedToGamepadGeneric();
-		LogIconSet(TEXT("KeyPollGamepad"), CurrentSet);
 	}
-	else if (!bAttachedNow && Local_AnyKeyDown(PC, KBMKeys)) // teclado solo si NO hay mando
+	else if (!bAttachedNow && Local_AnyKeyDown(PC, KBMKeys))
 	{
 		OnInputChangedToKeyboard();
-		LogIconSet(TEXT("KeyPollKBM"), CurrentSet);
 	}
 
 	return true;
@@ -372,78 +341,85 @@ bool UControllerIconManagerSubsystem::TickPoll(float /*DeltaTime*/)
 
 void UControllerIconManagerSubsystem::OnPostLoadMap(UWorld* LoadedWorld)
 {
+	if (!LoadedWorld) return;
+
+	// Reset “seen” por mapa nuevo
+	SeenWidgets.Empty();
+
+	// Aplicación y ventana de scan (solo por unos segundos)
+	WarmupCurrentSet();
 	ApplyIconSetToAllWidgets(LoadedWorld);
+	StartNewWidgetScanWindow(NewWidgetScanWindowSeconds);
 
-	// Re-escaneos diferidos por si HUDs se crean tarde (y reevaluar dispositivo)
-	FTSTicker::GetCoreTicker().AddTicker(
-		FTickerDelegate::CreateLambda([this, LoadedWorld](float)
-			{
-				ApplyIconSetToAllWidgets(LoadedWorld);
-				EvaluateInitialDevice();
-				return false;
-			}), 0.25f);
+	// Re-escaneo corto diferido, pero SAFE: no capturar UWorld* crudo
+	TWeakObjectPtr<UWorld> WeakWorld = LoadedWorld;
 
 	FTSTicker::GetCoreTicker().AddTicker(
-		FTickerDelegate::CreateLambda([this, LoadedWorld](float)
+		FTickerDelegate::CreateWeakLambda(this, [this, WeakWorld](float)
 			{
-				ApplyIconSetToAllWidgets(LoadedWorld);
-				EvaluateInitialDevice();
-				return false;
-			}), 1.0f);
+				if (!WeakWorld.IsValid()) return false;
 
-	// Extra tardío para máquinas lentas/Shipping
-	FTSTicker::GetCoreTicker().AddTicker(
-		FTickerDelegate::CreateLambda([this, LoadedWorld](float)
-			{
-				ApplyIconSetToAllWidgets(LoadedWorld);
+				ApplyIconSetToAllWidgets(WeakWorld.Get());
 				EvaluateInitialDevice();
 				return false;
-			}), 2.5f);
+			}),
+		0.35f
+	);
 }
 
 void UControllerIconManagerSubsystem::OnInputChangedToKeyboard()
 {
-	// Preferimos mando: NO volver a PC si hay uno conectado
-	if (HasAnyGamepadAttached())
-	{
-		return;
-	}
+	if (HasAnyGamepadAttached()) return;
 	SetIconSet(EIconSet::PC);
-	if (UWorld* World = GetWorld()) ApplyIconSetToAllWidgets(World);
+	if (UWorld* World = GetWorld())
+	{
+		ApplyIconSetToAllWidgets(World);
+		StartNewWidgetScanWindow(NewWidgetScanWindowSeconds);
+	}
 }
 
 void UControllerIconManagerSubsystem::OnInputChangedToGamepadGeneric()
 {
-	// -------- CAMBIO: en PS5, el "genérico" debe ser PlayStation --------
-	if (IsPlayStationPlatform())
+	if (IsPlayStationPlatform()) SetIconSet(EIconSet::PS5_UI);
+	else                         SetIconSet(EIconSet::XBOX_UI);
+
+	if (UWorld* World = GetWorld())
 	{
-		SetIconSet(EIconSet::PS5_UI);
+		ApplyIconSetToAllWidgets(World);
+		StartNewWidgetScanWindow(NewWidgetScanWindowSeconds);
 	}
-	else
-	{
-		SetIconSet(EIconSet::XBOX_UI);
-	}
-	if (UWorld* World = GetWorld()) ApplyIconSetToAllWidgets(World);
 }
 
 void UControllerIconManagerSubsystem::OnGamepadTypePlayStation()
 {
 	SetIconSet(EIconSet::PS5_UI);
-	if (UWorld* World = GetWorld()) ApplyIconSetToAllWidgets(World);
+	if (UWorld* World = GetWorld())
+	{
+		ApplyIconSetToAllWidgets(World);
+		StartNewWidgetScanWindow(NewWidgetScanWindowSeconds);
+	}
 }
 
 void UControllerIconManagerSubsystem::OnGamepadTypeXbox()
 {
 	SetIconSet(EIconSet::XBOX_UI);
-	if (UWorld* World = GetWorld()) ApplyIconSetToAllWidgets(World);
+	if (UWorld* World = GetWorld())
+	{
+		ApplyIconSetToAllWidgets(World);
+		StartNewWidgetScanWindow(NewWidgetScanWindowSeconds);
+	}
 }
 
 void UControllerIconManagerSubsystem::SetIconSet(EIconSet NewSet)
 {
 	if (CurrentSet == NewSet) return;
+
 	CurrentSet = NewSet;
-	ClearCache();          // limpiar caché al cambiar familia (PS5_UI/XBOX_UI/PC)
-	SeenWidgets.Empty();   // re-procesa widgets actuales en el próximo tick de "nuevos"
+	ClearCache();
+	SeenWidgets.Empty();
+
+	// Warmup cuando cambias set (evita stutter al primer widget)
+	WarmupCurrentSet();
 }
 
 void UControllerIconManagerSubsystem::ClearCache()
@@ -456,11 +432,13 @@ void UControllerIconManagerSubsystem::ForceRescan(UObject* WorldContextObject)
 	if (!WorldContextObject) return;
 	if (UWorld* World = WorldContextObject->GetWorld())
 	{
+		SeenWidgets.Empty();
+		WarmupCurrentSet();
 		ApplyIconSetToAllWidgets(World);
+		StartNewWidgetScanWindow(NewWidgetScanWindowSeconds);
 	}
 }
 
-// ========== APLICACIÓN SEGURA A WIDGETS (UMG APIs) ==========
 void UControllerIconManagerSubsystem::ApplyIconSetToAllWidgets(UWorld* World)
 {
 	if (!World) return;
@@ -474,7 +452,6 @@ void UControllerIconManagerSubsystem::ApplyIconSetToAllWidgets(UWorld* World)
 	}
 }
 
-/** Aplica el set SOLO a un widget concreto (útil para widgets recién creados). */
 void UControllerIconManagerSubsystem::ApplyIconSetToSingleWidget(UUserWidget* UW)
 {
 	if (!IsValid(UW) || !UW->WidgetTree) return;
@@ -484,7 +461,9 @@ void UControllerIconManagerSubsystem::ApplyIconSetToSingleWidget(UUserWidget* UW
 
 	for (UWidget* W : Widgets)
 	{
-		// UImage: API segura
+		// FIX: en consola/Shipping a veces hay widgets en teardown
+		if (!IsValid(W)) continue;
+
 		if (UImage* Img = Cast<UImage>(W))
 		{
 			UTexture2D* OldTex = Cast<UTexture2D>(Img->GetBrush().GetResourceObject());
@@ -493,10 +472,9 @@ void UControllerIconManagerSubsystem::ApplyIconSetToSingleWidget(UUserWidget* UW
 
 			if (UTexture2D* NewTex = ResolveVariantTextureFromOld(OldTex))
 			{
-				Img->SetBrushFromTexture(NewTex, /*bMatchSize=*/true);
+				Img->SetBrushFromTexture(NewTex, true);
 			}
 		}
-		// UButton: sustituimos sólo si el brush usa UTexture2D
 		else if (UButton* Btn = Cast<UButton>(W))
 		{
 			FButtonStyle Style = Btn->GetStyle();
@@ -530,7 +508,6 @@ void UControllerIconManagerSubsystem::ApplyIconSetToSingleWidget(UUserWidget* UW
 
 void UControllerIconManagerSubsystem::MaybeReplaceBrush(FSlateBrush& Brush)
 {
-	// (Compatibilidad si lo llamas en otro sitio; no se usa con UImage)
 	if (UTexture2D* OldTex = Cast<UTexture2D>(Brush.GetResourceObject()))
 	{
 		if (!IsAllowedName(OldTex->GetName())) return;
@@ -548,10 +525,18 @@ void UControllerIconManagerSubsystem::MaybeReplaceBrush(FSlateBrush& Brush)
 
 const TArray<FString>& UControllerIconManagerSubsystem::GetFolderCandidates() const
 {
-	return FolderNamesPerSet[CurrentSet];
+	// FIX CRASH (PS5): NO usar operator[] en TMap aquí
+	if (const TArray<FString>* Found = FolderNamesPerSet.Find(CurrentSet))
+	{
+		return *Found;
+	}
+
+	// Fallback seguro
+	static const TArray<FString> Fallback = { TEXT("PC"), TEXT("pc"), TEXT("Pc") };
+	UE_LOG(LogTemp, Error, TEXT("[ControllerIcons] Missing FolderNamesPerSet for CurrentSet=%d. Using fallback."), (int32)CurrentSet);
+	return Fallback;
 }
 
-// ========== CARGA SEGURA + CACHÉ ==========
 UObject* UControllerIconManagerSubsystem::TryLoadVariantObject(const FString& AssetName)
 {
 	// Cache hit
@@ -560,8 +545,9 @@ UObject* UControllerIconManagerSubsystem::TryLoadVariantObject(const FString& As
 		return Found->Get();
 	}
 
-	// /Game/Assets2D/icon_PS4_PS5/<Folder>/<AssetName>.<AssetName>
-	for (const FString& Folder : GetFolderCandidates())
+	const TArray<FString>& Folders = GetFolderCandidates();
+
+	for (const FString& Folder : Folders)
 	{
 		const FString ObjectPath = FString::Printf(
 			TEXT("%s/%s/%s.%s"), *BaseRoot, *Folder, *AssetName, *AssetName);
@@ -570,18 +556,18 @@ UObject* UControllerIconManagerSubsystem::TryLoadVariantObject(const FString& As
 		if (!SoftPath.IsValid()) continue;
 
 		FStreamableManager& SM = UAssetManager::GetStreamableManager();
-		if (UObject* Obj = SM.LoadSynchronous(SoftPath, /*bManageActiveHandle=*/false))
+		if (UObject* Obj = SM.LoadSynchronous(SoftPath, false))
 		{
 			if (UTexture2D* AsTex = Cast<UTexture2D>(Obj))
 			{
-				LoadedCache.Add(FName(*AssetName), TObjectPtr<UTexture2D>(AsTex)); // keep-alive
+				LoadedCache.Add(FName(*AssetName), TObjectPtr<UTexture2D>(AsTex));
 				return AsTex;
 			}
 			return Obj;
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("[ControllerIcons] No se encontró '%s' en set %d"), *AssetName, (int32)CurrentSet);
+	// OJO: no log aquí en shipping cada vez, porque esto puede spamear y pegar rendimiento
 	return nullptr;
 }
 
@@ -591,10 +577,7 @@ UTexture2D* UControllerIconManagerSubsystem::ResolveVariantTextureFromOld(UTextu
 
 	if (UObject* Obj = TryLoadVariantObject(OldTex->GetName()))
 	{
-		if (UTexture2D* NewTex = Cast<UTexture2D>(Obj))
-		{
-			if (IsValid(NewTex)) return NewTex;
-		}
+		return Cast<UTexture2D>(Obj);
 	}
 	return nullptr;
 }
@@ -604,9 +587,39 @@ bool UControllerIconManagerSubsystem::IsAllowedName(const FString& AssetName) co
 	return AllowedNames.Contains(FName(*AssetName));
 }
 
-/** Ticker que aplica el set a widgets NUEVOS que hayan aparecido desde el último scan. */
-bool UControllerIconManagerSubsystem::TickScanNewWidgets(float /*DeltaTime*/)
+void UControllerIconManagerSubsystem::StartNewWidgetScanWindow(float Seconds)
 {
+	NewWidgetScanRemaining = FMath::Max(Seconds, 0.25f);
+
+	// Si no existe ticker, lo creamos
+	if (!NewWidgetScanTickerHandle.IsValid())
+	{
+		NewWidgetScanTickerHandle = FTSTicker::GetCoreTicker().AddTicker(
+			FTickerDelegate::CreateUObject(this, &UControllerIconManagerSubsystem::TickScanNewWidgets),
+			0.2f // más rápido que 0.5s pero solo corre poco tiempo
+		);
+	}
+}
+
+void UControllerIconManagerSubsystem::StopNewWidgetScanTicker()
+{
+	if (NewWidgetScanTickerHandle.IsValid())
+	{
+		FTSTicker::GetCoreTicker().RemoveTicker(NewWidgetScanTickerHandle);
+		NewWidgetScanTickerHandle.Reset();
+	}
+	NewWidgetScanRemaining = 0.0f;
+}
+
+bool UControllerIconManagerSubsystem::TickScanNewWidgets(float DeltaTime)
+{
+	NewWidgetScanRemaining -= DeltaTime;
+	if (NewWidgetScanRemaining <= 0.0f)
+	{
+		StopNewWidgetScanTicker();
+		return false;
+	}
+
 	UWorld* World = GetWorld();
 	if (!World) return true;
 
@@ -616,11 +629,24 @@ bool UControllerIconManagerSubsystem::TickScanNewWidgets(float /*DeltaTime*/)
 	for (UUserWidget* UW : AllWidgets)
 	{
 		if (!IsValid(UW)) continue;
+
+		// evitar reprocesar
 		if (!SeenWidgets.Contains(UW))
 		{
 			ApplyIconSetToSingleWidget(UW);
 			SeenWidgets.Add(UW);
 		}
 	}
-	return true; // seguir tickeando
+	return true;
+}
+
+void UControllerIconManagerSubsystem::WarmupCurrentSet()
+{
+	// Precarga ligera: intenta resolver los AllowedNames una sola vez
+	// Esto reduce los picos cuando aparece el primer HUD.
+	for (const FName& N : AllowedNames)
+	{
+		const FString NameStr = N.ToString();
+		(void)TryLoadVariantObject(NameStr);
+	}
 }

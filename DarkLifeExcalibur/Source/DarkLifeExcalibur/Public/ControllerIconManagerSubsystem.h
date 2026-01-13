@@ -46,24 +46,20 @@ private:
 	bool TickPoll(float DeltaTime);
 	bool bLastPolledGamepadAttached = false;
 
-	/** Ventana de “scan widgets nuevos” (en segundos). */
-	float NewWidgetScanWindowSeconds = 3.0f;
-	float NewWidgetScanRemaining = 0.0f;
-
-	/** Ticker de scan widgets nuevos (solo corre dentro de la ventana). */
+	/** Escaneo periódico de widgets NUEVOS (para tutoriales/overlays tardíos). */
 	FTSTicker::FDelegateHandle NewWidgetScanTickerHandle;
 	bool TickScanNewWidgets(float DeltaTime);
 
-	/** Conjunto de widgets ya procesados. */
+	/** Conjunto de widgets ya procesados (evita reprocesar los mismos cada tick). */
 	TSet<TWeakObjectPtr<class UUserWidget>> SeenWidgets;
 
-	/** UE 5.2: delegado de conexión. */
+	/** UE 5.2: delegado de conexión (útil en Shipping). */
 #if (ENGINE_MAJOR_VERSION == 5) && (ENGINE_MINOR_VERSION <= 2)
 	FDelegateHandle ControllerConnHandle;
 	TSet<int32> ActiveControllers;
 #endif
 
-	/** Caché y keep-alive de texturas cargadas. */
+	/** Caché y keep-alive de texturas cargadas (evita GC en Shipping). */
 	UPROPERTY(Transient)
 	TMap<FName, TObjectPtr<class UTexture2D>> LoadedCache;
 
@@ -95,12 +91,7 @@ private:
 
 	bool IsAllowedName(const FString& AssetName) const;
 
-	// ---- optimización: scan por ventana / warmup ----
-	void StartNewWidgetScanWindow(float Seconds);
-	void StopNewWidgetScanTicker();
-	void WarmupCurrentSet(); // precarga ligera para evitar stutter en primer HUD
-
-	// Helper: plataforma
+	// -------- NUEVO: helper de plataforma --------
 	static bool IsPlayStationPlatform()
 	{
 #if PLATFORM_PS5 || PLATFORM_PS4

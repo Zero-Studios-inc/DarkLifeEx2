@@ -38,7 +38,7 @@ void UCPP_ItemContainer::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 UCPP_DA_Item_Rune* UCPP_ItemContainer::GetRuneBySlotIndex(int index)
 {
-	if ((index >= 0) && (index < 3))
+	if ((index >= 0) && (index < 4))
 	{
 		TObjectPtr<UCPP_DA_Item_Rune> RuneBySlot;
 

@@ -48,6 +48,7 @@ public:
 	void SaveGame();
 	UFUNCTION(BlueprintCallable, Category = "Save/Load")
 	void LoadGame();		
+	UCPP_DarkLifeSaveGame* ResolveSaveGameObject() const;
     UFUNCTION(BlueprintCallable, Category = "Runes")
 	void RunesUseCoolDown(UCPP_DA_Item_Rune* Rune, int RuneSlot);
 	UFUNCTION(BlueprintCallable, Category = "Runes")

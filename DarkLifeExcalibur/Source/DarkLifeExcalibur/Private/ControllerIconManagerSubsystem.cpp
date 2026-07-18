@@ -16,6 +16,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
+#include "GameLoadLog.h"
 
 #if __has_include("CommonInputSubsystem.h")
 #include "CommonInputSubsystem.h"
@@ -372,33 +373,43 @@ bool UControllerIconManagerSubsystem::TickPoll(float /*DeltaTime*/)
 
 void UControllerIconManagerSubsystem::OnPostLoadMap(UWorld* LoadedWorld)
 {
+	if (!ensureMsgf(IsValid(LoadedWorld), TEXT("Controller icon rescan received an invalid loaded world")))
+	{
+		return;
+	}
+
+	UE_LOG(LogGameLoad, Log, TEXT("Level ready for UI rescan: World=%s Thread=%s"),
+		*GetNameSafe(LoadedWorld), IsInGameThread() ? TEXT("GameThread") : TEXT("OtherThread"));
 	ApplyIconSetToAllWidgets(LoadedWorld);
 
-	// Re-escaneos diferidos por si HUDs se crean tarde (y reevaluar dispositivo)
-	FTSTicker::GetCoreTicker().AddTicker(
-		FTickerDelegate::CreateLambda([this, LoadedWorld](float)
+	// The GameInstance subsystem survives map changes. Never retain a raw UWorld pointer
+	// in these delayed callbacks because the referenced map may unload before they run.
+	const TWeakObjectPtr<UWorld> WeakLoadedWorld(LoadedWorld);
+	const auto ScheduleRescan = [this, WeakLoadedWorld](float Delay)
+	{
+		FTSTicker::GetCoreTicker().AddTicker(
+			FTickerDelegate::CreateWeakLambda(this, [this, WeakLoadedWorld, Delay](float)
 			{
-				ApplyIconSetToAllWidgets(LoadedWorld);
-				EvaluateInitialDevice();
-				return false;
-			}), 0.25f);
+				UWorld* World = WeakLoadedWorld.Get();
+				if (!IsValid(World) || World != GetWorld())
+				{
+					UE_LOG(LogGameLoad, Warning,
+						TEXT("Deferred UI rescan skipped: Delay=%.2f World=%s CurrentWorld=%s"),
+						Delay, *GetNameSafe(World), *GetNameSafe(GetWorld()));
+					return false;
+				}
 
-	FTSTicker::GetCoreTicker().AddTicker(
-		FTickerDelegate::CreateLambda([this, LoadedWorld](float)
-			{
-				ApplyIconSetToAllWidgets(LoadedWorld);
+				ApplyIconSetToAllWidgets(World);
 				EvaluateInitialDevice();
+				UE_LOG(LogGameLoad, Verbose, TEXT("Deferred UI rescan completed: Delay=%.2f World=%s"),
+					Delay, *GetNameSafe(World));
 				return false;
-			}), 1.0f);
+			}), Delay);
+	};
 
-	// Extra tardío para máquinas lentas/Shipping
-	FTSTicker::GetCoreTicker().AddTicker(
-		FTickerDelegate::CreateLambda([this, LoadedWorld](float)
-			{
-				ApplyIconSetToAllWidgets(LoadedWorld);
-				EvaluateInitialDevice();
-				return false;
-			}), 2.5f);
+	ScheduleRescan(0.25f);
+	ScheduleRescan(1.0f);
+	ScheduleRescan(2.5f);
 }
 
 void UControllerIconManagerSubsystem::OnInputChangedToKeyboard()
@@ -463,7 +474,7 @@ void UControllerIconManagerSubsystem::ForceRescan(UObject* WorldContextObject)
 // ========== APLICACIÓN SEGURA A WIDGETS (UMG APIs) ==========
 void UControllerIconManagerSubsystem::ApplyIconSetToAllWidgets(UWorld* World)
 {
-	if (!World) return;
+	if (!IsValid(World)) return;
 
 	TArray<UUserWidget*> AllWidgets;
 	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(World, AllWidgets, UUserWidget::StaticClass(), false);

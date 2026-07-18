@@ -10,6 +10,7 @@
 #include "Core/Components/CPP_ItemContainer.h"
 #include "Data/Items/CPP_DA_Item_Heal.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
+#include "GameLoadLog.h"
 
 
 // Sets default values
@@ -105,8 +106,14 @@ void ACPP_DarkLifeCharacter::SetCrouchSpeed()
 
 void ACPP_DarkLifeCharacter::CheckChargeAttackKey()
 {
-	bool bKeyDownTimeCheck = UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetInputKeyTimeDown(LightAttackKey)
-		>= ChargeAttackKeyDownTime;
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!IsValid(PlayerController))
+	{
+		UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), ChargeAttackTimer);
+		return;
+	}
+
+	bool bKeyDownTimeCheck = PlayerController->GetInputKeyTimeDown(LightAttackKey) >= ChargeAttackKeyDownTime;
 	if ((UKismetInputLibrary::Key_IsValid(LightAttackKey)) && bKeyDownTimeCheck)
 	{
 		if (!bIsAttacking)
@@ -154,17 +161,22 @@ void ACPP_DarkLifeCharacter::ResetComboCounter()
 void ACPP_DarkLifeCharacter::SaveMainInventory()
 {
 	UCPP_GameInstance* GameInstanceRef = Cast<UCPP_GameInstance>(GetGameInstance());
-	if (GameInstanceRef)
+	if (!ensureMsgf(IsValid(GameInstanceRef), TEXT("SaveMainInventory requires UCPP_GameInstance")) ||
+		!ensureMsgf(IsValid(InventoryManager), TEXT("SaveMainInventory requires InventoryManager")))
 	{
-		FProperty* SaveGameProperty = GameInstanceRef->GetClass()->FindPropertyByName(FName(TEXT("Save Game")));
-		void* SaveGamePropertyValue = SaveGameProperty->ContainerPtrToValuePtr<void>(GameInstanceRef);
-		UCPP_DarkLifeSaveGame* SaveGame = *reinterpret_cast<UCPP_DarkLifeSaveGame**>(SaveGamePropertyValue);
-		if (SaveGame)
-		{
-			SaveGame->Inventory = InventoryManager->MainInventory;
-			GameInstanceRef->SaveGame();
-		}
+		UE_LOG(LogGameLoad, Error, TEXT("Inventory save rejected: World=%s GameInstance=%s Inventory=%s"),
+			*GetNameSafe(GetWorld()), *GetNameSafe(GameInstanceRef), *GetNameSafe(InventoryManager));
+		return;
 	}
+
+	UCPP_DarkLifeSaveGame* SaveGame = GameInstanceRef->ResolveSaveGameObject();
+	if (!ensureMsgf(IsValid(SaveGame), TEXT("SaveMainInventory requires a valid SaveGame")))
+	{
+		return;
+	}
+
+	SaveGame->Inventory = InventoryManager->MainInventory;
+	GameInstanceRef->SaveGame();
 }
 
 void ACPP_DarkLifeCharacter::SetRunSpeed()
@@ -271,24 +283,17 @@ void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 		return;
 	}
 
-
-	FProperty* SaveGameProperty = DLGameInstance->GetClass()->FindPropertyByName(FName(TEXT("Save Game")));
-	if (!SaveGameProperty)
+	UCPP_DarkLifeSaveGame* SaveGame = DLGameInstance->ResolveSaveGameObject();
+	if (!ensureMsgf(IsValid(SaveGame), TEXT("InitializeCharacter requires a valid SaveGame")))
 	{
+		UE_LOG(LogGameLoad, Warning, TEXT("Character restore deferred/rejected: World=%s Character=%s SaveGame=<invalid>"),
+			*GetNameSafe(GetWorld()), *GetNameSafe(this));
 		return;
 	}
 
-	void* SaveGamePropertyValue = SaveGameProperty->ContainerPtrToValuePtr<void>(DLGameInstance);
-	if (!SaveGamePropertyValue)
-	{
-		return;
-	}
-
-	UCPP_DarkLifeSaveGame* SaveGame = *reinterpret_cast<UCPP_DarkLifeSaveGame**>(SaveGamePropertyValue);
-	if (!SaveGame)
-	{
-		return;
-	}
+	UE_LOG(LogGameLoad, Log, TEXT("Character restore started: World=%s Character=%s PawnValid=%s Thread=%s"),
+		*GetNameSafe(GetWorld()), *GetNameSafe(this), IsValid(this) ? TEXT("true") : TEXT("false"),
+		IsInGameThread() ? TEXT("GameThread") : TEXT("OtherThread"));
 
 	SetCharacterState(SaveGame->CharacterState);
 	if ((InventoryManager) && (InventoryManager->bUseCustomInitItems == false))
@@ -326,13 +331,23 @@ void ACPP_DarkLifeCharacter::InitializeCharacter_Implementation()
 	{
 		InventoryManager->MainInventory = SaveGame->Inventory;
 	}
+
+	UE_LOG(LogGameLoad, Log, TEXT("Character restore completed: World=%s Character=%s Inventory=%d"),
+		*GetNameSafe(GetWorld()), *GetNameSafe(this), IsValid(InventoryManager) ? InventoryManager->MainInventory.Num() : -1);
 }
 
 
 void ACPP_DarkLifeCharacter::LoadParameters()
 {
 	UCPP_GameInstance* DLGameInstance = Cast<UCPP_GameInstance>(GetGameInstance());
-	UCPP_DarkLifeSaveGame* SaveGame = DLGameInstance->SaveGameObject;
+	if (!ensureMsgf(IsValid(DLGameInstance), TEXT("LoadParameters requires UCPP_GameInstance")))
+	{
+		UE_LOG(LogGameLoad, Error, TEXT("Parameter restore rejected: World=%s GameInstance=%s"),
+			*GetNameSafe(GetWorld()), *GetNameSafe(GetGameInstance()));
+		return;
+	}
+
+	UCPP_DarkLifeSaveGame* SaveGame = DLGameInstance->ResolveSaveGameObject();
 	if (SaveGame)
 	{
 		SaveGame->ParametersCalculation();
@@ -756,7 +771,7 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 
 	if (bTorchUp)
 	{
-		if (GetCurrentMontage() != ShieldAttackAnimations[2] && ShieldAttackAnimations.IsValidIndex(0))
+		if (ShieldAttackAnimations.IsValidIndex(2) && GetCurrentMontage() != ShieldAttackAnimations[2])
 		{
 			PlayAnimMontage(ShieldAttackAnimations[2]);
 			//Stamina = 0;
@@ -778,7 +793,7 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 		}
 		else
 		{
-			if ((!CurrentStateAnimations.IsEmpty()) && (CurrentStateAnimations.IsValidIndex(ComboCounter)))
+			if (CurrentStateAnimations.IsValidIndex(animationIndex))
 			{
 				if ((animationIndex + 1) == CurrentStateAnimations.Num())
 				{
@@ -807,8 +822,8 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 	{
 		switch (CombatState)
 		{
-			case ECharacterCombatState::OneHandShield:
-				if (GetCurrentMontage() != ShieldAttackAnimations[0] && ShieldAttackAnimations.IsValidIndex(0))
+		case ECharacterCombatState::OneHandShield:
+				if (ShieldAttackAnimations.IsValidIndex(0) && GetCurrentMontage() != ShieldAttackAnimations[0])
 				{
 					PlayAnimMontage(ShieldAttackAnimations[0]);
 					//Stamina = 0;
@@ -816,7 +831,7 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 				}
 				break;
 		case ECharacterCombatState::TwoHandSword:
-			if (GetCurrentMontage() != ShieldAttackAnimations[1] && ShieldAttackAnimations.IsValidIndex(1))
+			if (ShieldAttackAnimations.IsValidIndex(1) && GetCurrentMontage() != ShieldAttackAnimations[1])
 			{
 				PlayAnimMontage(ShieldAttackAnimations[1]);
 				//Stamina = 0;
@@ -824,7 +839,7 @@ void ACPP_DarkLifeCharacter::PlayAnimationByCharacterState(int32 animationIndex,
 			}
 			break;
 		case ECharacterCombatState::OneHandSword:
-			if (GetCurrentMontage() != ShieldAttackAnimations[0] && ShieldAttackAnimations.IsValidIndex(0))
+			if (ShieldAttackAnimations.IsValidIndex(0) && GetCurrentMontage() != ShieldAttackAnimations[0])
 			{
 				PlayAnimMontage(ShieldAttackAnimations[0]);
 				//Stamina = 0;

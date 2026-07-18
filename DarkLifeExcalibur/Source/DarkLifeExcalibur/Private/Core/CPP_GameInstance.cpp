@@ -8,18 +8,51 @@
 #include "UObject/PropertyPortFlags.h"
 
 #include "Core/CPP_DarkLifeSaveGame.h"
+#include "GameLoadLog.h"
 
 void UCPP_GameInstance::SaveGame()
 {
-	UCPP_GameInstance* DLGameInstance = Cast<UCPP_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	FProperty* SaveGameProperty = DLGameInstance->GetClass()->FindPropertyByName(FName(TEXT("Save Game")));
-	void* SaveGamePropertyValue = SaveGameProperty->ContainerPtrToValuePtr<void>(DLGameInstance);
-	UCPP_DarkLifeSaveGame* SaveGame = *reinterpret_cast<UCPP_DarkLifeSaveGame**>(SaveGamePropertyValue);
-
-	if (SaveGame)
+	UCPP_DarkLifeSaveGame* ActiveSaveGame = ResolveSaveGameObject();
+	if (!ensureMsgf(IsValid(ActiveSaveGame), TEXT("SaveGame requested without a valid save object")))
 	{
-		UGameplayStatics::SaveGameToSlot(SaveGame, SlotName, 0);
+		UE_LOG(LogGameLoad, Error, TEXT("Save rejected: World=%s Slot=%s SaveGame=<invalid> Thread=%s"),
+			*GetNameSafe(GetWorld()), *SlotName, IsInGameThread() ? TEXT("GameThread") : TEXT("OtherThread"));
+		return;
 	}
+
+	UE_LOG(LogGameLoad, Log, TEXT("Save requested: World=%s Slot=%s SaveGame=%s Thread=%s"),
+		*GetNameSafe(GetWorld()), *SlotName, *GetNameSafe(ActiveSaveGame),
+		IsInGameThread() ? TEXT("GameThread") : TEXT("OtherThread"));
+
+	const bool bSaved = UGameplayStatics::SaveGameToSlot(ActiveSaveGame, SlotName, 0);
+	if (bSaved)
+	{
+		UE_LOG(LogGameLoad, Log, TEXT("Save completed: World=%s Slot=%s Result=Success"),
+			*GetNameSafe(GetWorld()), *SlotName);
+	}
+	else
+	{
+		UE_LOG(LogGameLoad, Error, TEXT("Save completed: World=%s Slot=%s Result=Failure"),
+			*GetNameSafe(GetWorld()), *SlotName);
+	}
+}
+
+UCPP_DarkLifeSaveGame* UCPP_GameInstance::ResolveSaveGameObject() const
+{
+	if (IsValid(SaveGameObject))
+	{
+		return SaveGameObject;
+	}
+
+	// Compatibility with the existing DarkLifeGameInstance Blueprint variable.
+	const FObjectPropertyBase* SaveGameProperty = CastField<FObjectPropertyBase>(
+		GetClass()->FindPropertyByName(TEXT("Save Game")));
+	if (!SaveGameProperty)
+	{
+		return nullptr;
+	}
+
+	return Cast<UCPP_DarkLifeSaveGame>(SaveGameProperty->GetObjectPropertyValue_InContainer(this));
 }
 
 void UCPP_GameInstance::LoadGame()
